@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model ContentSection {
+  id        String   @id @default(cuid())
+  page      String
+  key       String
+  data      String
+  updatedAt DateTime @updatedAt
+
+  @@unique([page, key])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
