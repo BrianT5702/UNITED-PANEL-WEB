@@ -516,7 +516,12 @@ function EditableSection({
                 />
               </div>
             ) : (
-              <div className="ve-slideshow-preview" aria-hidden="true">
+              <div
+                className="ve-slideshow-preview"
+                data-photo-shape={d.imageAspect || "default"}
+                style={imageAspectStyle(d.imageAspect) ?? { aspectRatio: "4 / 3" }}
+                aria-hidden="true"
+              >
                 <span>On the live page, these photos rotate here</span>
               </div>
             )}
@@ -817,7 +822,12 @@ function EditableSection({
               </button>
             </div>
             {images.length ? (
-              <div className="ve-slideshow-preview" aria-hidden="true">
+              <div
+                className="ve-slideshow-preview"
+                data-photo-shape={d.imageAspect || "default"}
+                style={imageAspectStyle(d.imageAspect) ?? { aspectRatio: "4 / 3" }}
+                aria-hidden="true"
+              >
                 <span>On the live page, these photos rotate here</span>
               </div>
             ) : null}

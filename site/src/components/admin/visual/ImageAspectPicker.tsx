@@ -5,6 +5,17 @@ import {
   type ImageAspectId,
 } from "@/lib/page-document";
 
+const PREVIEW_BOX = 44;
+
+/** Fit a ratio inside a square so Wide/Landscape/Square/Tall all look different */
+function previewBoxStyle(css: string): { width: number; height: number } {
+  const [wRaw, hRaw] = css.split("/");
+  const w = Number(wRaw) || 1;
+  const h = Number(hRaw) || 1;
+  const scale = Math.min(PREVIEW_BOX / w, PREVIEW_BOX / h);
+  return { width: Math.round(w * scale), height: Math.round(h * scale) };
+}
+
 export function ImageAspectPicker({
   value,
   onChange,
@@ -25,7 +36,7 @@ export function ImageAspectPicker({
           title="Use the default page shape"
         >
           <span className="ve-aspect-shape-wrap">
-            <span className="ve-aspect-shape" style={{ aspectRatio: "2 / 1" }} />
+            <span className="ve-aspect-shape" style={previewBoxStyle("2 / 1")} />
           </span>
           <span className="ve-aspect-opt-text">
             <span className="ve-aspect-name">Default</span>
@@ -41,7 +52,7 @@ export function ImageAspectPicker({
             title={`${opt.hint} (${opt.ratio})`}
           >
             <span className="ve-aspect-shape-wrap">
-              <span className="ve-aspect-shape" style={{ aspectRatio: opt.css }} />
+              <span className="ve-aspect-shape" style={previewBoxStyle(opt.css)} />
             </span>
             <span className="ve-aspect-opt-text">
               <span className="ve-aspect-name">{opt.label}</span>

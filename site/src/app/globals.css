@@ -926,14 +926,22 @@ main > .page-hero:first-child {
   max-height: min(22rem, 46vh);
 }
 
+.capability-visual[data-photo-shape="square"],
+.capability-visual[data-photo-shape="tall"] {
+  width: auto;
+  max-width: 100%;
+  max-height: none;
+  margin-inline: auto;
+}
+
 .capability-visual[data-photo-shape="square"] {
   aspect-ratio: 1 / 1;
-  max-height: min(22rem, 46vh);
+  height: min(22rem, 50vh);
 }
 
 .capability-visual[data-photo-shape="tall"] {
   aspect-ratio: 3 / 4;
-  max-height: min(28rem, 56vh);
+  height: min(26rem, 56vh);
 }
 
 .capability-visual img {
@@ -1323,6 +1331,8 @@ main > .page-hero:first-child {
   border: 1px dashed var(--line);
   background: var(--bg-soft);
   aspect-ratio: 4 / 3;
+  width: 100%;
+  max-width: 100%;
   display: grid;
   place-items: center;
   padding: 1.25rem;
@@ -1331,6 +1341,26 @@ main > .page-hero:first-child {
   font-size: 0.78rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.ve-slideshow-preview[data-photo-shape="wide"] {
+  aspect-ratio: 2 / 1;
+}
+
+.ve-slideshow-preview[data-photo-shape="square"],
+.ve-slideshow-preview[data-photo-shape="tall"] {
+  width: auto;
+  margin-inline: auto;
+}
+
+.ve-slideshow-preview[data-photo-shape="square"] {
+  aspect-ratio: 1 / 1;
+  height: min(18rem, 42vh);
+}
+
+.ve-slideshow-preview[data-photo-shape="tall"] {
+  aspect-ratio: 3 / 4;
+  height: min(22rem, 50vh);
 }
 
 .ve-slide-index {
@@ -4518,14 +4548,13 @@ html[data-theme="light"] .brand-logo {
 .ve-aspect-shape-wrap {
   display: grid;
   place-items: center;
-  width: 3.35rem;
-  height: 2.55rem;
+  width: 2.85rem;
+  height: 2.85rem;
 }
 
 .ve-aspect-shape {
-  width: 100%;
-  max-height: 100%;
-  max-width: 100%;
+  display: block;
+  box-sizing: border-box;
   border: 1.5px solid currentColor;
   background: rgba(212, 137, 74, 0.18);
   opacity: 0.85;
