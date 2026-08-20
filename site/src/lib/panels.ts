@@ -44,6 +44,15 @@ export type PanelProductContent = {
     items: string[];
     images?: { src: string; alt: string }[];
   };
+  jointDetails?: {
+    eyebrow: string;
+    title: string;
+    summary: string;
+    body: string;
+    image: string;
+    imageAlt: string;
+    pages?: { title: string; lead?: string; src: string; alt: string }[];
+  };
   specsEyebrow: string;
   specsTitle: string;
   specsLead: string;
@@ -115,7 +124,7 @@ export const defaultPirContent: PanelProductContent = {
     {
       id: "3",
       index: "03",
-      title: "TÜV B-s1,d0 · BS 8414-2",
+      title: "Fire classified & cladding tested",
       text: "TÜV Reaction to Fire Classification B-s1,d0, and UR PIR insulated panels have passed BS 8414-2 for external cladding systems.",
     },
   ],
@@ -190,6 +199,10 @@ export const defaultPirContent: PanelProductContent = {
         alt: "UR PIR panels during cold room wall installation",
       },
       {
+        src: "/uploads/pir/UNITED.jpeg",
+        alt: "UR PIR For New RockWool Production Line",
+      },
+      {
         src: "/uploads/pir/cladding-project.jpg",
         alt: "PIR panel cladding on a multi-storey industrial project",
       },
@@ -231,10 +244,34 @@ export const defaultPirContent: PanelProductContent = {
       },
     ],
   },
+  jointDetails: {
+    eyebrow: "Joint detail",
+    title: "UR PIR Panel Joint",
+    summary:
+      "Interlocking tongue & groove joints by thickness, plus typical installation joint details. Expand to view the full diagrams.",
+    body: "UR PIR panels use an interlocking tongue-and-groove joint. The male and female profiles lock together for a continuous insulated wall or ceiling line with a clean, sealed connection between panels.",
+    image: "/uploads/pir/joints/panel-joint.png",
+    imageAlt: "PIR Panel Joint — interlocking tongue and groove diagram",
+    pages: [
+      {
+        title: "Typical panel profile and joints",
+        lead: "Male, female and after-joint profiles for 50–200 mm panel thicknesses.",
+        src: "/uploads/pir/joints/typical-profiles.jpg",
+        alt: "Joint Details — typical panel profile and joints for 50mm to 200mm",
+      },
+      {
+        title: "Installation joint details",
+        lead:
+          "Wall-to-wall, corner, floor, ceiling suspension, nylon hanger, and concrete wall connections.",
+        src: "/uploads/pir/joints/installation-details.jpg",
+        alt: "PIR installation joint details — wall, ceiling, floor and concrete connections",
+      },
+    ],
+  },
   specsEyebrow: "Product range & data",
   specsTitle: "Specifications (PIR)",
   specsLead:
-    "Data from the UR PIR Catalogue — Product Range & Data. Insulation panels are manufactured in-house and delivered to projects’ sites for ready installation.",
+    "Product Range & Data. Insulation panels are manufactured in-house and delivered to projects’ sites for ready installation.",
   specs: [
     {
       label: "Dimension",
@@ -264,7 +301,7 @@ export const defaultPirContent: PanelProductContent = {
   physicalProperties: {
     eyebrow: "Material data",
     title: "Typical physical properties (PIR)",
-    lead: "From the UR PIR Catalogue — typical physical properties table.",
+    lead: "Typical physical properties table.",
     headers: ["Property", "Test method", "Unit", "Result*"],
     rows: [
       ["Core density", "DIN EN ISO 845", "kg/m³", "40.1"],
@@ -282,7 +319,7 @@ export const defaultPirContent: PanelProductContent = {
   roofing: {
     eyebrow: "Roof panels",
     title: "UR PIR roof panels",
-    body: "From the UR PIR Catalogue — roof panel profiles with 1000 mm cover width.",
+    body: "Roof panel profiles with 1000 mm cover width.",
     specs: [
       {
         label: "UR PIR ROOF Panel 25 mm",

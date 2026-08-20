@@ -1,4 +1,8 @@
-export type NavItem = { label: string; href: string };
+export type NavItem = {
+  label: string;
+  href: string;
+  children?: { label: string; href: string }[];
+};
 
 export type HeroContent = {
   brand: string;

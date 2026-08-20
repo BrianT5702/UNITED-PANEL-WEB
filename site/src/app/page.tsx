@@ -1,10 +1,7 @@
-import { ensureSeeded, getHomeContent } from "@/lib/content";
-import { HomePage } from "@/components/site/HomePage";
+import { renderPageDocument } from "@/lib/render-page";
 
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
-  await ensureSeeded();
-  const content = await getHomeContent();
-  return <HomePage content={content} />;
+  return renderPageDocument("home");
 }

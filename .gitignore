@@ -4,25 +4,47 @@
 **/out/
 **/build/
 **/.vercel/
+**/dist/
+**/.turbo/
+**/.cache/
 
-# Env & secrets
+# Env & secrets — never push passwords / API keys
 .env
-.env.local
-.env.*.local
+.env.*
 !**/.env.example
 
-# Local database
-**/prisma/dev.db
-**/prisma/dev.db-journal
+# Local SQLite CMS database (lives on the server after deploy; do not commit)
+**/prisma/*.db
+**/prisma/*.db-journal
+**/prisma/*.db-shm
+**/prisma/*.db-wal
 
-# OS / editor
+# OS / editor junk
 .DS_Store
 Thumbs.db
+Desktop.ini
 *.pem
+*.swp
+*~
+.idea/
+.vscode/*
+!.vscode/extensions.json
 
-# Logs & caches
+# Logs & TypeScript caches
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 **/*.tsbuildinfo
 **/next-env.d.ts
+
+# One-off local scripts / temp exports (keep useful scripts tracked)
+**/scripts/_*.json
+**/scripts/_*.txt
+
+# Large source PDFs (catalogues stay local; extracted web images are under public/uploads)
+*.pdf
+
+# Cursor / local agent artifacts (if present in repo root)
+.cursor/
+agent-transcripts/

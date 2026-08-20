@@ -4,80 +4,55 @@ export type ProductIntroSection = {
   title: string;
   summary: string;
   points: string[];
-  body?: string[];
-  tableTitle?: string;
-  tableHeaders?: string[];
-  tableRows?: string[][];
-  note?: string;
   image: string;
   href: string;
   cta: string;
 };
 
-/** Overview content adapted from ur.com.my United Panel Introduction + current RockWool line */
+/** Brief hub intros for /products — full specs live on each product page */
 export const productIntroSections: ProductIntroSection[] = [
   {
     id: "pir",
-    eyebrow: "About PIR",
-    title: "Polyisocyanurate (PIR)",
+    eyebrow: "PIR",
+    title: "Polyisocyanurate panels",
     summary:
-      "ASEAN’s first and only PIR Double Belt Continuous Line. FM Global (FM) approved Class 1 (4880 / 4881, no height restriction), TÜV B-s1,d0, and BS 8414-2 tested — manufactured in-house and delivered ready for installation.",
+      "ASEAN’s first PIR Double Belt Continuous Line — FM Approved Class 1, TÜV B-s1,d0, and BS 8414-2 tested. Built in-house for cold rooms and industrial envelopes.",
     points: [
-      "ASEAN’s first & only PIR Double Belt Continuous Line",
-      "FM Approvals 4880 / 4881 Class 1 — valid without height restrictions",
-      "TÜV Reaction to Fire Classification B-s1,d0",
-      "Passed BS 8414-2 external cladding fire test",
-      "Insulation panels 50–200 mm · width 1150 mm · any desired length",
-      "Roof panels 25 mm / 40 mm · cover width 1000 mm",
-      "PPGI and PVC-laminated steel skins · Ribbed / Micro Lining / Flat finishes",
+      "FM 4880 / 4881 Class 1 — no height restriction",
+      "Continuous-line consistency and finish options",
+      "Full thicknesses, joints, and specs on the PIR page",
     ],
-    body: [
-      "PIR panels are available in a range of profiles, thicknesses and finishes. Typical physical properties in the catalogue include core density 40.1 kg/m³, thermal conductivity 20.35 mW/m·K, and closed cell content 93%.",
-      "UR PIR roof panels are offered in 25 mm and 40 mm core thicknesses with 1000 mm cover width.",
-    ],
-    image: "/uploads/pir/facility.jpg",
+    image: "/uploads/pir/UNITED.jpeg",
     href: "/products/pir",
-    cta: "View PIR panels & specs →",
+    cta: "View PIR panels →",
   },
   {
     id: "pu",
-    eyebrow: "About PU / PUR",
-    title: "Polyurethane (PU)",
+    eyebrow: "PU / PUR",
+    title: "Polyurethane panels",
     summary:
-      "Polyurethane (PUR), commonly called PU, is used in UR® panels. Rigid polyurethane foam is favoured for refrigeration and cold storage panels because of its mechanical, chemical, biological and moisture properties.",
+      "Rigid PU foam panels favoured for refrigeration and cold storage — strong thermal performance, moisture resistance, and food-grade suitability in a modest thickness.",
     points: [
-      "Food grade compliance",
-      "Superior thermal performance",
-      "Moisture and corrosion resistance",
-      "High density mechanical strength",
-      "Fire retardant (incorporated)",
-      "CFC free",
+      "High insulation in a slim core",
+      "Moisture, corrosion, and structural strength",
+      "SIRIM-backed quality for cold storage projects",
     ],
-    body: [
-      "Insulation performance for PU panels is high even with a modest material thickness. Air and water cannot circulate within the panel walls, which supports better insulation and installation in varied weather conditions.",
-      "PU panels are particularly suitable for wall and roof applications due to their structural strength. In the event of fire, the foam does not drip or run, helping minimise flammable mass and limit flame spread. Full typical physical properties are listed on the PU product page.",
-    ],
-    note: "UR® panels have been certified by SIRIM QAS International and approved by the Malaysia fire authorities (BOMBA).",
-    image: "https://www.ur.com.my/userfiles/image/pro-pu-panel-01.jpg",
+    image: "/uploads/About/manufacturing.png",
     href: "/products/pu",
-    cta: "View PU panels & specs →",
+    cta: "View PU panels →",
   },
   {
     id: "rockwool",
-    eyebrow: "About RockWool",
-    title: "RockWool mineral-wool panels",
+    eyebrow: "RockWool",
+    title: "Mineral-wool panels",
     summary:
-      "Alongside PIR and PU, United Panel now manufactures RockWool mineral-wool core panels on Malaysia’s first fully automated RockWool production line — expanding options for fire-conscious cold room and industrial projects.",
+      "RockWool core panels from Malaysia’s first fully automated RockWool line — a fire-conscious option beside our PIR and PU systems.",
     points: [
       "Mineral-wool (stone fibre) core",
-      "Strong fire-conscious performance for envelopes and cold rooms",
-      "Same in-house manufacturing discipline as our foam panel lines",
-      "Suitable for cold storage and building envelope applications",
+      "Built for fire-conscious cold rooms and envelopes",
+      "Same in-house manufacturing discipline as our foam lines",
     ],
-    body: [
-      "RockWool complements our chemical-foam panel range. Choose the core that fits your project’s thermal, fire and budget requirements — our team can advise on the right system.",
-    ],
-    image: "/uploads/rockwool/RockWool Panels.jpeg",
+    image: "/uploads/About/FactoryLook.png",
     href: "/products/rockwool",
     cta: "View RockWool panels →",
   },

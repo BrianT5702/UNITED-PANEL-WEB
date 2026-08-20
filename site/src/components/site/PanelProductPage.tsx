@@ -1,6 +1,8 @@
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { OverviewSlideshow } from "@/components/site/OverviewSlideshow";
+import { LightboxImage } from "@/components/site/LightboxImage";
+import { DetailsCloseButton } from "@/components/site/DetailsCloseButton";
 import type { PanelProductContent } from "@/lib/panels";
 import { SITE_NAV } from "@/lib/nav";
 
@@ -52,6 +54,7 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
           <a href="#features">Advantages</a>
           {content.finishes ? <a href="#finishes">Finishes</a> : null}
           {content.applications ? <a href="#applications">Applications</a> : null}
+          {content.jointDetails ? <a href="#joint">Joint</a> : null}
           <a href="#specs">Specifications</a>
           {content.physicalProperties ? <a href="#properties">Properties</a> : null}
           {content.roofing ? <a href="#roofing">Roofing</a> : null}
@@ -158,6 +161,61 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
                 </div>
               ) : null}
             </div>
+          </section>
+        ) : null}
+
+        {content.jointDetails ? (
+          <section className="section section-compact" id="joint">
+            <details className="panel-joint">
+              <summary className="panel-joint-summary">
+                <div className="section-head panel-joint-head">
+                  <p className="eyebrow">{content.jointDetails.eyebrow}</p>
+                  <h2>{content.jointDetails.title}</h2>
+                  <p className="section-lead">{content.jointDetails.summary}</p>
+                </div>
+                <span className="panel-joint-toggle" role="button" aria-hidden="true">
+                  Show joint details
+                </span>
+              </summary>
+              <div className="panel-joint-body">
+                <div className="panel-joint-main">
+                  <div className="panel-joint-copy">
+                    <p>{content.jointDetails.body}</p>
+                  </div>
+                  <figure className="panel-joint-figure">
+                    <LightboxImage
+                      src={content.jointDetails.image}
+                      alt={content.jointDetails.imageAlt}
+                      caption={content.jointDetails.title}
+                    />
+                    <figcaption>{content.jointDetails.title}</figcaption>
+                  </figure>
+                </div>
+                {content.jointDetails.pages && content.jointDetails.pages.length > 0 ? (
+                  <div className="panel-joint-pages">
+                    {content.jointDetails.pages.map((page) => (
+                      <figure className="panel-joint-page" key={page.src}>
+                        <div className="panel-joint-page-head">
+                          <h3>{page.title}</h3>
+                          {page.lead ? <p>{page.lead}</p> : null}
+                        </div>
+                        <LightboxImage
+                          src={page.src}
+                          alt={page.alt}
+                          caption={page.title}
+                        />
+                      </figure>
+                    ))}
+                  </div>
+                ) : null}
+                <div className="panel-joint-footer">
+                  <DetailsCloseButton
+                    className="panel-joint-hide"
+                    label="Hide joint details"
+                  />
+                </div>
+              </div>
+            </details>
           </section>
         ) : null}
 

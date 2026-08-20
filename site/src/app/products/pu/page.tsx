@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import { PanelProductPage } from "@/components/site/PanelProductPage";
-import { defaultPuContent } from "@/lib/panels";
+import { renderPageDocument } from "@/lib/render-page";
 
 export const metadata: Metadata = {
   title: "PU Panels | United Panel-System",
   description:
-    "Polyurethane (PU) insulated panels — customisable thickness, joints and finishes for cold storage projects in Malaysia.",
+    "Customisable polyurethane (PU) insulated panels for cold storage — United Panel-System Malaysia.",
 };
 
-export default function Page() {
-  return <PanelProductPage content={defaultPuContent} />;
+export const dynamic = "force-dynamic";
+
+export default async function Page() {
+  return renderPageDocument("products/pu");
 }
