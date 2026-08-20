@@ -3,6 +3,7 @@ import { randomBytes } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 import { isAuthenticated } from "@/lib/auth";
+import { getUploadsDir } from "@/lib/uploads";
 
 export async function POST(request: Request) {
   if (!(await isAuthenticated())) {
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
   const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
   const safeExt = ["jpg", "jpeg", "png", "webp", "gif"].includes(ext) ? ext : "jpg";
   const filename = `${Date.now()}-${randomBytes(6).toString("hex")}.${safeExt}`;
-  const uploadsDir = path.join(process.cwd(), "public", "uploads");
+  const uploadsDir = getUploadsDir();
   await mkdir(uploadsDir, { recursive: true });
   const buffer = Buffer.from(await file.arrayBuffer());
   await writeFile(path.join(uploadsDir, filename), buffer);
