@@ -1747,7 +1747,7 @@ function cloneDoc(doc: PageDocument): PageDocument {
 
 export function VisualPageEditor({
   pageId,
-  pageLabel,
+  pageLabel: _pageLabel,
   livePath,
   initial,
   initialNav,
