@@ -5,7 +5,7 @@ import { defaultHomeContent } from "./defaults";
 import { defaultPirContent, type PirContent } from "./pir";
 import { DEFAULT_SITE_NAV, normalizeNavItems, cloneNav } from "./nav";
 import type { PageDocument } from "./page-document";
-import { repairApplicationSlideshow, repairSectionNotes } from "./page-document";
+import { repairApplicationSlideshow, repairCertCardGrids, repairSectionNotes } from "./page-document";
 import { getDefaultPageDocument } from "./page-defaults";
 import {
   SITE_PAGES,
@@ -183,7 +183,7 @@ export async function savePirContent(data: PirContent) {
 }
 
 function normalizeDocument(doc: PageDocument): PageDocument {
-  return repairSectionNotes(repairApplicationSlideshow(doc));
+  return repairCertCardGrids(repairSectionNotes(repairApplicationSlideshow(doc)));
 }
 
 export async function getPageDocument(pageId: string): Promise<PageDocument> {

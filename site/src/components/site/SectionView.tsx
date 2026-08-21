@@ -208,19 +208,34 @@ export function SectionView({
     }
     case "cardGrid": {
       const d = section.data;
+      const isCerts = d.variant === "certs";
       const hasImages = d.items.some((item) => Boolean(item.image));
-      const isGateway = cols === 2 && hasImages;
-      const isHub = cols === 2 && !hasImages;
-      const grid = isGateway
-        ? "home-gateway-grid"
-        : isHub
-          ? "about-hub-grid"
-          : cols === 3
-            ? "product-grid"
-            : "offer-grid";
-      const cardClass = isGateway ? "home-gateway-card" : isHub ? "about-hub-card" : "product-card";
-      const bodyClass = isGateway ? "home-gateway-body" : isHub ? "about-hub-body" : "product-card-body";
-      const cardAspect = imageAspectStyle(d.imageAspect);
+      const isGateway = !isCerts && cols === 2 && hasImages;
+      const isHub = !isCerts && cols === 2 && !hasImages;
+      const grid = isCerts
+        ? "panel-cert-grid"
+        : isGateway
+          ? "home-gateway-grid"
+          : isHub
+            ? "about-hub-grid"
+            : cols === 3
+              ? "product-grid"
+              : "offer-grid";
+      const cardClass = isCerts
+        ? "panel-cert-card"
+        : isGateway
+          ? "home-gateway-card"
+          : isHub
+            ? "about-hub-card"
+            : "product-card";
+      const bodyClass = isCerts
+        ? "panel-cert-body"
+        : isGateway
+          ? "home-gateway-body"
+          : isHub
+            ? "about-hub-body"
+            : "product-card-body";
+      const cardAspect = isCerts ? undefined : imageAspectStyle(d.imageAspect);
       return (
         <section
           className={`section section-compact ${isHub ? "about-hub-section" : ""} ${nested ? "pb-nested" : ""}`}
@@ -238,19 +253,32 @@ export function SectionView({
               const inner = (
                 <>
                   {item.image ? (
-                    <div
-                      className={`${isGateway ? "home-gateway-media" : "product-card-image"} pb-photo-frame`}
-                      style={cardAspect}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={item.image} alt="" style={imageFocusStyle(item.focus)} />
-                    </div>
+                    isCerts ? (
+                      <div className="panel-cert-logo">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={item.image} alt="" />
+                      </div>
+                    ) : (
+                      <div
+                        className={`${isGateway ? "home-gateway-media" : "product-card-image"} pb-photo-frame`}
+                        style={cardAspect}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={item.image} alt="" style={imageFocusStyle(item.focus)} />
+                      </div>
+                    )
+                  ) : isCerts ? (
+                    <div className="panel-cert-logo panel-cert-logo-empty" aria-hidden="true" />
                   ) : null}
                   <div className={bodyClass}>
                     {item.eyebrow ? <p className="eyebrow">{item.eyebrow}</p> : null}
                     <h3>{item.title}</h3>
                     {item.text ? <p>{item.text}</p> : null}
-                    {item.href ? <span className="product-card-link">Open →</span> : null}
+                    {item.href ? (
+                      <span className={isCerts ? "panel-cert-link" : "product-card-link"}>
+                        {isCerts ? "Learn more →" : "Open →"}
+                      </span>
+                    ) : null}
                   </div>
                 </>
               );

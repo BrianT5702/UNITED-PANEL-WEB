@@ -106,8 +106,16 @@ export type ProofSectionData = {
 /** Friendly photo crop shapes for editors */
 export type ImageAspectId = "wide" | "landscape" | "square" | "tall";
 
-/** Which part of a cropped photo is visible (0–100%, like CSS object-position) */
-export type ImageFocus = { x: number; y: number };
+/**
+ * Crop inside the photo frame:
+ * - x/y = which part is visible (0–100%, like CSS object-position)
+ * - zoom = how close the crop is (1 = normal, up to 3 = zoomed in)
+ */
+export type ImageFocus = { x: number; y: number; zoom?: number };
+
+export const IMAGE_ZOOM_MIN = 1;
+export const IMAGE_ZOOM_MAX = 3;
+export const IMAGE_ZOOM_STEP = 0.1;
 
 export const IMAGE_ASPECT_OPTIONS: ReadonlyArray<{
   id: ImageAspectId;
@@ -143,16 +151,37 @@ function clampPercent(n: number): number {
   return Math.min(100, Math.max(0, n));
 }
 
+export function normalizeImageZoom(zoom?: number | null): number {
+  const n = typeof zoom === "number" && Number.isFinite(zoom) ? zoom : IMAGE_ZOOM_MIN;
+  const stepped = Math.round(n / IMAGE_ZOOM_STEP) * IMAGE_ZOOM_STEP;
+  return Math.min(IMAGE_ZOOM_MAX, Math.max(IMAGE_ZOOM_MIN, Math.round(stepped * 10) / 10));
+}
+
 export function normalizeImageFocus(focus?: ImageFocus | null): ImageFocus {
   return {
     x: clampPercent(focus?.x ?? 50),
     y: clampPercent(focus?.y ?? 50),
+    zoom: normalizeImageZoom(focus?.zoom),
   };
 }
 
-export function imageFocusStyle(focus?: ImageFocus | null): { objectPosition: string } {
+/** object-position + optional scale for editor/live crop */
+export function imageFocusStyle(focus?: ImageFocus | null): {
+  objectPosition: string;
+  transform?: string;
+  transformOrigin?: string;
+} {
   const f = normalizeImageFocus(focus);
-  return { objectPosition: `${f.x}% ${f.y}%` };
+  const zoom = normalizeImageZoom(f.zoom);
+  return {
+    objectPosition: `${f.x}% ${f.y}%`,
+    ...(zoom > IMAGE_ZOOM_MIN
+      ? {
+          transform: `scale(${zoom})`,
+          transformOrigin: `${f.x}% ${f.y}%`,
+        }
+      : {}),
+  };
 }
 
 /** Default time each slideshow photo stays visible */
@@ -224,6 +253,11 @@ export type CardGridSectionData = {
   items: CardItem[];
   /** Crop shape for card photos in this section */
   imageAspect?: ImageAspectId;
+  /**
+   * certs = logo tiles (contain, light mark area) for approvals / warranty cards
+   * default = photo product cards
+   */
+  variant?: "default" | "certs";
 };
 
 export type FeatureListSectionData = {
@@ -865,6 +899,79 @@ export function repairSectionNotes(doc: PageDocument): PageDocument {
       };
     }
     return section;
+  });
+  return changed ? { ...doc, sections } : doc;
+}
+
+/**
+ * Quality / certification card grids should use logo tiles (not stretched photo cards).
+ * Also fixes the PU ISO card that incorrectly reused the warranty icon.
+ */
+export function repairCertCardGrids(doc: PageDocument): PageDocument {
+  let changed = false;
+  const sections: PageSection[] = doc.sections.map((section) => {
+    if (section.type !== "cardGrid") return section;
+    const title = (section.data.title || "").toLowerCase();
+    const looksLikeCerts =
+      section.data.variant === "certs" ||
+      title.includes("confidence") ||
+      title.includes("certified quality") ||
+      section.data.items.some((item) =>
+        ["iso", "warranty", "approved", "fm", "tuv", "quality"].includes(item.id),
+      );
+    if (!looksLikeCerts) return section;
+
+    const items = section.data.items.map((item) => {
+      const name = (item.title || "").toLowerCase();
+      const image = (item.image || "").toLowerCase();
+      if (
+        (item.id === "iso" || name.includes("iso 9001")) &&
+        image.includes("warranty")
+      ) {
+        changed = true;
+        return {
+          ...item,
+          title: "ISO 9001:2015",
+          text:
+            item.text && item.text.toLowerCase().includes("17975")
+              ? item.text
+              : "Manufactured under an audited quality management system — Certification No. 17975-A.",
+          image: "/uploads/pir/certs/catalogue-page-18.jpg",
+          href: item.href || "/about/certified/quality-recognition",
+        };
+      }
+      if (item.id === "warranty" || name.includes("corrosion")) {
+        const next = {
+          ...item,
+          title: "20-year corrosion-free warranty",
+          text:
+            item.text && item.text.length > 50
+              ? item.text
+              : "Eligible corrosion-free skin finishes are covered for up to 20 years — ask us which coatings apply to your project.",
+          href: item.href || "/contact",
+        };
+        if (
+          next.title !== item.title ||
+          next.text !== item.text ||
+          next.href !== item.href
+        ) {
+          changed = true;
+        }
+        return next;
+      }
+      return item;
+    });
+
+    if (section.data.variant !== "certs") changed = true;
+    return {
+      ...section,
+      columns: section.columns || 3,
+      data: {
+        ...section.data,
+        variant: "certs",
+        items,
+      },
+    };
   });
   return changed ? { ...doc, sections } : doc;
 }

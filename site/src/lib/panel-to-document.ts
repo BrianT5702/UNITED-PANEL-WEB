@@ -175,6 +175,7 @@ export function panelProductToDocument(content: PanelProductContent): PageDocume
         eyebrow: content.certsEyebrow,
         title: content.certsTitle,
         lead: content.certsLead,
+        variant: "certs",
         items: content.certifications.map((c) => ({
           id: c.id,
           title: c.name,

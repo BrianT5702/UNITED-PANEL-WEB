@@ -482,30 +482,33 @@ export const defaultPuContent: PanelProductContent = {
     ],
     note: "UR® panels have been certified by SIRIM QAS International and approved by the Malaysia fire authorities (BOMBA).",
   },
-  certsEyebrow: "Certified, recognised and approved",
+  certsEyebrow: "Quality & assurance",
   certsTitle: "Quality you can specify with confidence",
   certsLead:
-    "UR® PU panels are backed by recognised quality systems and a corrosion-free finish option with long-term warranty support.",
+    "Recognised approvals, a long-term corrosion-free finish warranty, and audited manufacturing — so consultants and buyers can specify UR® PU with clear evidence.",
   certifications: [
     {
       id: "approved",
       name: "Certified & recognised",
       detail:
-        "UR panels are tested and recognised for commercial and industrial use — aligned with our TÜV, SIRIM and Bomba approvals programme.",
+        "Tested for commercial and industrial use — aligned with our TÜV, SIRIM QAS International and Bomba approvals programme.",
       image: "https://www.ur.com.my/userFiles/image/awardsssa3.png",
       href: "/about/certified",
     },
     {
       id: "warranty",
-      name: "Corrosion-Free Warranty",
-      detail: "20 years warranty on eligible corrosion-free finishes.",
+      name: "20-year corrosion-free warranty",
+      detail:
+        "Eligible corrosion-free skin finishes are covered for up to 20 years — ask us which coatings apply to your project.",
       image: "https://www.ur.com.my/userfiles/image/icon-warranty.png",
+      href: "/contact",
     },
     {
       id: "iso",
       name: "ISO 9001:2015",
-      detail: "Manufactured under an audited quality management system — Certification No. 17975-A.",
-      image: "https://www.ur.com.my/userfiles/image/icon-warranty.png",
+      detail:
+        "Manufactured under an audited quality management system — Certification No. 17975-A.",
+      image: "/uploads/pir/certs/catalogue-page-18.jpg",
       href: "/about/certified/quality-recognition",
     },
   ],

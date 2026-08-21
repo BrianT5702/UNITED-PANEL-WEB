@@ -8,8 +8,12 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import {
+  IMAGE_ZOOM_MAX,
+  IMAGE_ZOOM_MIN,
+  IMAGE_ZOOM_STEP,
   imageFocusStyle,
   normalizeImageFocus,
+  normalizeImageZoom,
   type ImageFocus,
 } from "@/lib/page-document";
 
@@ -61,7 +65,7 @@ export function EImage({
   onChange: (url: string) => void;
   className?: string;
   label?: string;
-  /** Crop focus inside the frame (drag to reframe when set with onFocusChange) */
+  /** Crop focus + zoom inside the frame (drag / zoom when set with onFocusChange) */
   focus?: ImageFocus;
   onFocusChange?: (next: ImageFocus) => void;
 }) {
@@ -80,11 +84,12 @@ export function EImage({
   } | null>(null);
 
   const canReframe = Boolean(value && onFocusChange);
+  const zoom = normalizeImageZoom(localFocus.zoom);
 
   useEffect(() => {
     if (dragging) return;
     setLocalFocus(normalizeImageFocus(focus));
-  }, [focus?.x, focus?.y, dragging]);
+  }, [focus?.x, focus?.y, focus?.zoom, dragging]);
 
   async function onFile(file: File | null) {
     if (!file) return;
@@ -105,9 +110,24 @@ export function EImage({
     inputRef.current?.click();
   }
 
+  function commitFocus(next: ImageFocus) {
+    const normalized = normalizeImageFocus(next);
+    localFocusRef.current = normalized;
+    setLocalFocus(normalized);
+    onFocusChange?.(normalized);
+  }
+
+  function nudgeZoom(delta: number) {
+    if (!canReframe) return;
+    commitFocus({
+      ...localFocusRef.current,
+      zoom: normalizeImageZoom(normalizeImageZoom(localFocusRef.current.zoom) + delta),
+    });
+  }
+
   function onPointerDown(e: ReactPointerEvent<HTMLDivElement>) {
     if (!canReframe || e.button !== 0) return;
-    if ((e.target as HTMLElement).closest(".ve-image-badge")) return;
+    if ((e.target as HTMLElement).closest(".ve-image-badge, .ve-zoom-controls")) return;
     e.preventDefault();
     e.stopPropagation();
 
@@ -132,6 +152,7 @@ export function EImage({
       const next = normalizeImageFocus({
         x: state.origin.x - ((ev.clientX - state.startX) / rect.width) * 100,
         y: state.origin.y - ((ev.clientY - state.startY) / rect.height) * 100,
+        zoom: state.origin.zoom,
       });
       localFocusRef.current = next;
       setLocalFocus(next);
@@ -160,6 +181,7 @@ export function EImage({
 
   const frameStyle = {
     ["--photo-focus" as string]: `${localFocus.x}% ${localFocus.y}%`,
+    ["--photo-zoom" as string]: String(zoom),
   } as CSSProperties;
 
   return (
@@ -169,7 +191,7 @@ export function EImage({
       style={frameStyle}
       onPointerDown={onPointerDown}
       onClick={(e) => {
-        if ((e.target as HTMLElement).closest(".ve-image-badge")) return;
+        if ((e.target as HTMLElement).closest(".ve-image-badge, .ve-zoom-controls")) return;
         if (canReframe) return;
         openPicker();
       }}
@@ -181,7 +203,11 @@ export function EImage({
           openPicker();
         }
       }}
-      title={canReframe ? "Drag to choose which part of the photo shows" : "Click to add / change photo"}
+      title={
+        canReframe
+          ? "Drag to reframe · use − / + to zoom"
+          : "Click to add / change photo"
+      }
     >
       {value ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -196,7 +222,39 @@ export function EImage({
         <span>{uploading ? "Uploading…" : label}</span>
       )}
       <div className="ve-image-chrome">
-        {canReframe ? <span className="ve-reframe-hint">Drag to reframe</span> : <span />}
+        {canReframe ? (
+          <div className="ve-zoom-controls" onPointerDown={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="ve-zoom-btn"
+              title="Zoom out"
+              disabled={zoom <= IMAGE_ZOOM_MIN}
+              onClick={(e) => {
+                e.stopPropagation();
+                nudgeZoom(-IMAGE_ZOOM_STEP);
+              }}
+            >
+              −
+            </button>
+            <span className="ve-zoom-label" title="Zoom level">
+              {Math.round(zoom * 100)}%
+            </span>
+            <button
+              type="button"
+              className="ve-zoom-btn"
+              title="Zoom in"
+              disabled={zoom >= IMAGE_ZOOM_MAX}
+              onClick={(e) => {
+                e.stopPropagation();
+                nudgeZoom(IMAGE_ZOOM_STEP);
+              }}
+            >
+              +
+            </button>
+          </div>
+        ) : (
+          <span />
+        )}
         <button
           type="button"
           className="ve-image-badge"

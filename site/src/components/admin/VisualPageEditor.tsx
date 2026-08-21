@@ -607,14 +607,44 @@ function EditableSection({
             </div>
           )}
           <div className="ve-tool-group" style={{ marginBottom: "0.75rem" }}>
-            <ImageAspectPicker
-              value={d.imageAspect}
-              onChange={(imageAspect) => setData({ ...d, imageAspect })}
-            />
+            <span className="ve-placement-label">Card style</span>
+            <button
+              type="button"
+              className={`ve-tool-btn ${(d.variant || "default") === "default" ? "is-active" : ""}`}
+              onClick={() => setData({ ...d, variant: "default" })}
+            >
+              Photo cards
+            </button>
+            <button
+              type="button"
+              className={`ve-tool-btn ${d.variant === "certs" ? "is-active" : ""}`}
+              onClick={() => setData({ ...d, variant: "certs" })}
+            >
+              Cert / logo cards
+            </button>
           </div>
-          <div className={(section.columns || 3) === 2 ? "home-gateway-grid" : "product-grid"}>
+          {d.variant !== "certs" ? (
+            <div className="ve-tool-group" style={{ marginBottom: "0.75rem" }}>
+              <ImageAspectPicker
+                value={d.imageAspect}
+                onChange={(imageAspect) => setData({ ...d, imageAspect })}
+              />
+            </div>
+          ) : null}
+          <div
+            className={
+              d.variant === "certs"
+                ? "panel-cert-grid"
+                : (section.columns || 3) === 2
+                  ? "home-gateway-grid"
+                  : "product-grid"
+            }
+          >
             {d.items.map((item, index) => (
-              <article className="product-card ve-card" key={item.id}>
+              <article
+                className={d.variant === "certs" ? "panel-cert-card ve-card" : "product-card ve-card"}
+                key={item.id}
+              >
                 <div className="ve-card-actions">
                   <button type="button" className="ve-move" onClick={() => setData({ ...d, items: reorder(d.items, index, index - 1) })}>
                     ←
@@ -630,16 +660,26 @@ function EditableSection({
                     Remove
                   </button>
                 </div>
-                <div className="product-card-image pb-photo-frame" style={imageAspectStyle(d.imageAspect)}>
-                  <EImage
-                    value={item.image || ""}
-                    onChange={(image) => updateItem(index, { image })}
-                    focus={item.focus}
-                    onFocusChange={(focus) => updateItem(index, { focus })}
-                    label="Card photo"
-                  />
-                </div>
-                <div className="product-card-body">
+                {d.variant === "certs" ? (
+                  <div className="panel-cert-logo">
+                    <EImage
+                      value={item.image || ""}
+                      onChange={(image) => updateItem(index, { image })}
+                      label="Logo / mark"
+                    />
+                  </div>
+                ) : (
+                  <div className="product-card-image pb-photo-frame" style={imageAspectStyle(d.imageAspect)}>
+                    <EImage
+                      value={item.image || ""}
+                      onChange={(image) => updateItem(index, { image })}
+                      focus={item.focus}
+                      onFocusChange={(focus) => updateItem(index, { focus })}
+                      label="Card photo"
+                    />
+                  </div>
+                )}
+                <div className={d.variant === "certs" ? "panel-cert-body" : "product-card-body"}>
                   <EText
                     as="p"
                     className="eyebrow"
