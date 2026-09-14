@@ -4,7 +4,7 @@ import { renderPageDocument } from "@/lib/render-page";
 export const metadata: Metadata = {
   title: "PU Panels | United Panel-System",
   description:
-    "Customisable polyurethane (PU) insulated panels for cold storage — United Panel-System Malaysia.",
+    "UR PU insulation panels — 50–250 mm cores, clip-lock / cam-lock joints, SIRIM-listed and Bomba-approved for cold storage. United Panel-System Malaysia.",
 };
 
 export const dynamic = "force-dynamic";

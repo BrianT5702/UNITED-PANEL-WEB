@@ -28,13 +28,26 @@ export function SiteHeader({
     return () => window.removeEventListener("scroll", sync);
   }, []);
 
+  useEffect(() => {
+    document.body.classList.toggle("has-nav-open", open);
+    const prev = document.body.style.overflow;
+    if (open) document.body.style.overflow = "hidden";
+    return () => {
+      document.body.classList.remove("has-nav-open");
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
   const closeMenu = () => {
     setOpen(false);
     setExpanded(null);
   };
 
   return (
-    <header className={`site-header${scrolled ? " is-scrolled" : ""}`}>
+    <header className={`site-header${scrolled ? " is-scrolled" : ""}${open ? " is-nav-open" : ""}`}>
+      {open ? (
+        <button type="button" className="nav-backdrop" aria-label="Close menu" onClick={closeMenu} />
+      ) : null}
       <a className="brand" href={brandHref} aria-label={`${settings.siteName} home`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img className="brand-logo" src={settings.logoUrl} alt={settings.siteName} />

@@ -106,6 +106,43 @@ export type ProofSectionData = {
 /** Friendly photo crop shapes for editors */
 export type ImageAspectId = "wide" | "landscape" | "square" | "tall";
 
+/** Where a logo / contained photo sits inside its tile */
+export type ImageAlignId =
+  | "top-left"
+  | "top"
+  | "top-right"
+  | "left"
+  | "center"
+  | "right"
+  | "bottom-left"
+  | "bottom"
+  | "bottom-right";
+
+export const IMAGE_ALIGN_OPTIONS: ReadonlyArray<{
+  id: ImageAlignId;
+  label: string;
+  justify: "flex-start" | "center" | "flex-end";
+  align: "flex-start" | "center" | "flex-end";
+}> = [
+  { id: "top-left", label: "Top left", justify: "flex-start", align: "flex-start" },
+  { id: "top", label: "Top", justify: "center", align: "flex-start" },
+  { id: "top-right", label: "Top right", justify: "flex-end", align: "flex-start" },
+  { id: "left", label: "Left", justify: "flex-start", align: "center" },
+  { id: "center", label: "Middle", justify: "center", align: "center" },
+  { id: "right", label: "Right", justify: "flex-end", align: "center" },
+  { id: "bottom-left", label: "Bottom left", justify: "flex-start", align: "flex-end" },
+  { id: "bottom", label: "Bottom", justify: "center", align: "flex-end" },
+  { id: "bottom-right", label: "Bottom right", justify: "flex-end", align: "flex-end" },
+];
+
+export function isImageAlignId(value: unknown): value is ImageAlignId {
+  return IMAGE_ALIGN_OPTIONS.some((o) => o.id === value);
+}
+
+export function resolveImageAlign(id?: string | null) {
+  return IMAGE_ALIGN_OPTIONS.find((o) => o.id === id) ?? IMAGE_ALIGN_OPTIONS[4];
+}
+
 /**
  * Crop inside the photo frame:
  * - x/y = which part is visible (0–100%, like CSS object-position)
@@ -288,13 +325,17 @@ export type DataTableSectionData = {
   note?: string;
 };
 
+export type GalleryLayoutId = "grid" | "slideshow" | "logos" | "pages";
+
 export type GallerySectionData = {
   eyebrow?: string;
   title?: string;
-  /** grid = photo listing (default); slideshow = rotating carousel */
-  layout?: "grid" | "slideshow";
+  /** grid = photos; slideshow = carousel; logos = centred marks; pages = full document pages */
+  layout?: GalleryLayoutId;
   items: GalleryItem[];
   imageAspect?: ImageAspectId;
+  /** Where logos sit in the tile (left / middle / right, plus corners) */
+  imageAlign?: ImageAlignId;
   slideshowIntervalSec?: number;
 };
 
@@ -917,7 +958,9 @@ export function repairCertCardGrids(doc: PageDocument): PageDocument {
       title.includes("confidence") ||
       title.includes("certified quality") ||
       section.data.items.some((item) =>
-        ["iso", "warranty", "approved", "fm", "tuv", "quality"].includes(item.id),
+        ["iso", "warranty", "approved", "fm", "tuv", "quality", "sirim", "bomba"].includes(
+          item.id,
+        ),
       );
     if (!looksLikeCerts) return section;
 

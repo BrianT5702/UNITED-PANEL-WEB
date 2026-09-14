@@ -656,7 +656,7 @@ const aboutDefaults: Record<string, PageDocument> = {
             {
               id: "cg1",
               src: "/uploads/pir/certs/catalogue-page-17.jpg",
-              alt: "Certified Quality — UR PIR Catalogue",
+              alt: "Certified Quality",
             },
             {
               id: "cg2",
@@ -671,7 +671,7 @@ const aboutDefaults: Record<string, PageDocument> = {
         type: "richText",
         data: {
           title: "Certified, Recognized and Approved",
-          body: "Quality control is an incontestable trait of UR panel products and we are well-equipped with the knowledge of the latest building, fire and environmental regulations.\n\nAs shown in the UR PIR Catalogue, our certifications include FM Global (FM) Approval, TÜV Fire Classification, BS 8414-2 external cladding fire testing, ISO 9001:2015, SIRIM Quality System / SIRIM QAS International, Jabatan Bomba dan Penyelamat Malaysia, and a cooperative agreement with UNDP towards HCFC Phase-Out Management Plans.",
+          body: "Quality control is an incontestable trait of UR panel products and we are well-equipped with the knowledge of the latest building, fire and environmental regulations.\n\nOur certifications include FM Global (FM) Approval, TÜV Fire Classification, BS 8414-2 external cladding fire testing, ISO 9001:2015, SIRIM Quality System / SIRIM QAS International, Jabatan Bomba dan Penyelamat Malaysia, and a cooperative agreement with UNDP towards HCFC Phase-Out Management Plans.",
         },
       },
       {
@@ -742,7 +742,7 @@ const aboutDefaults: Record<string, PageDocument> = {
         columns: 1,
         data: {
           items: [
-            { id: "fmp", src: "/uploads/pir/certs/page20-hires.jpg", alt: "FM Global Approval catalogue page" },
+            { id: "fmp", src: "/uploads/pir/certs/page20-hires.jpg", alt: "FM Global Approval" },
           ],
         },
       },

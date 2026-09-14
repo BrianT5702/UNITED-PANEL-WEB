@@ -31,13 +31,13 @@ export const productIntroSections: ProductIntroSection[] = [
     eyebrow: "PU / PUR",
     title: "Polyurethane panels",
     summary:
-      "Rigid PU foam panels favoured for refrigeration and cold storage — strong thermal performance, moisture resistance, and food-grade suitability in a modest thickness.",
+      "Rigid PU foam panels for refrigeration and cold storage — high insulation in a modest thickness, with clip-lock / cam-lock joints and SIRIM-listed, Bomba-approved quality.",
     points: [
-      "High insulation in a slim core",
-      "Moisture, corrosion, and structural strength",
-      "SIRIM-backed quality for cold storage projects",
+      "50–250 mm cores, 1150 mm width, custom length",
+      "Clip-lock, cam-lock and semi cam-lock joints",
+      "SIRIM QAS listed · Bomba approved · CFC-free",
     ],
-    image: "/uploads/About/manufacturing.png",
+    image: "/uploads/pu/apps/install-blue-warehouse.jpg",
     href: "/products/pu",
     cta: "View PU panels →",
   },

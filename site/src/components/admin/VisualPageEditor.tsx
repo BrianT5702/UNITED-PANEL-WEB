@@ -36,8 +36,10 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { AboutShell } from "@/components/site/AboutShell";
 import { LogoutButton } from "./LogoutButton";
+import { AdminGuide, AdminGuideButton } from "./AdminGuide";
 import { EImage, EText } from "./visual/Editable";
 import { ImageAspectPicker } from "./visual/ImageAspectPicker";
+import { ImageAlignPicker } from "./visual/ImageAlignPicker";
 import { SlideshowIntervalControl } from "./visual/SlideshowIntervalControl";
 import { SectionButtonsEditor } from "./visual/SectionButtons";
 import { PageLinkField } from "./visual/PageLinkField";
@@ -1067,11 +1069,32 @@ function EditableSection({
             >
               Slideshow
             </button>
+            <button
+              type="button"
+              className={`ve-tool-btn ${d.layout === "logos" ? "is-active" : ""}`}
+              onClick={() => setData({ ...d, layout: "logos" })}
+            >
+              Logos
+            </button>
+            <button
+              type="button"
+              className={`ve-tool-btn ${d.layout === "pages" ? "is-active" : ""}`}
+              onClick={() => setData({ ...d, layout: "pages" })}
+            >
+              Pages
+            </button>
           </div>
-          <ImageAspectPicker
-            value={d.imageAspect}
-            onChange={(imageAspect) => setData({ ...d, imageAspect })}
-          />
+          {d.layout !== "logos" && d.layout !== "pages" ? (
+            <ImageAspectPicker
+              value={d.imageAspect}
+              onChange={(imageAspect) => setData({ ...d, imageAspect })}
+            />
+          ) : (
+            <ImageAlignPicker
+              value={d.imageAlign}
+              onChange={(imageAlign) => setData({ ...d, imageAlign })}
+            />
+          )}
           {d.layout === "slideshow" ? (
             <SlideshowIntervalControl
               value={d.slideshowIntervalSec}
@@ -1082,8 +1105,15 @@ function EditableSection({
             {d.items.map((item, index) => (
               <div className="ve-card ve-slide-card" key={item.id}>
                 <div
-                  className="ve-slide-frame pb-photo-frame"
-                  style={imageAspectStyle(d.imageAspect) ?? { aspectRatio: "2 / 1" }}
+                  className={`ve-slide-frame${d.layout === "logos" ? " about-figure-logo" : " pb-photo-frame"}`}
+                  data-align={d.layout === "logos" ? d.imageAlign || "center" : undefined}
+                  style={
+                    d.layout === "logos"
+                      ? undefined
+                      : imageAspectStyle(d.imageAspect) ?? {
+                          aspectRatio: d.layout === "pages" ? "3 / 4" : "2 / 1",
+                        }
+                  }
                 >
                   <EImage
                     value={item.src}
@@ -1818,6 +1848,7 @@ export function VisualPageEditor({
   const [future, setFuture] = useState<PageDocument[]>([]);
   const [moreOpen, setMoreOpen] = useState(false);
   const [showTip, setShowTip] = useState(true);
+  const [guideOpen, setGuideOpen] = useState(false);
   const dirtyRef = useRef(false);
   const docRef = useRef(doc);
   const pastRef = useRef(past);
@@ -1941,6 +1972,7 @@ export function VisualPageEditor({
         <div className="ve-toolbar-actions">
           {dirty ? <span className="ve-dirty">Not saved yet</span> : null}
           {message ? <span className="ve-msg">{message}</span> : null}
+          <AdminGuideButton onClick={() => setGuideOpen(true)} />
           <button className="btn btn-primary ve-bar-btn" type="button" onClick={save} disabled={saving}>
             {saving ? "Saving…" : "Save changes"}
           </button>
@@ -1968,6 +2000,16 @@ export function VisualPageEditor({
                   <button type="button" className="ve-more-item" onClick={redo} disabled={!future.length}>
                     Redo
                   </button>
+                  <button
+                    type="button"
+                    className="ve-more-item"
+                    onClick={() => {
+                      setMoreOpen(false);
+                      setGuideOpen(true);
+                    }}
+                  >
+                    Help
+                  </button>
                   <a className="ve-more-item" href="/admin/nav" onClick={() => setMoreOpen(false)}>
                     Edit website menu
                   </a>
@@ -1993,16 +2035,29 @@ export function VisualPageEditor({
       {showTip ? (
         <div className="ve-howto">
           <p>
-            <strong>How to edit:</strong> Click any text to change it. On photos, use{" "}
-            <em>Change photo</em>. Use <em>+ Add a block here</em> to insert new content. Under each
-            block, use the dark bar to move, duplicate, or remove it. When you finish, click{" "}
-            <strong>Save changes</strong>.
+            <strong>How to edit:</strong> click text to change it, use <em>Change photo</em> on pictures,
+            then <strong>Save changes</strong>. Open <em>Help</em> for a full walkthrough of each
+            button and what it does.
           </p>
-          <button type="button" className="ve-howto-dismiss" onClick={dismissTip}>
-            Got it
-          </button>
+          <div className="ve-howto-actions">
+            <button
+              type="button"
+              className="ve-howto-dismiss"
+              onClick={() => {
+                setGuideOpen(true);
+                dismissTip();
+              }}
+            >
+              Open help
+            </button>
+            <button type="button" className="ve-howto-dismiss" onClick={dismissTip}>
+              Got it
+            </button>
+          </div>
         </div>
       ) : null}
+
+      <AdminGuide open={guideOpen} onClose={() => setGuideOpen(false)} />
 
       {doc.chrome === "about" && doc.about ? (
         <AboutShell

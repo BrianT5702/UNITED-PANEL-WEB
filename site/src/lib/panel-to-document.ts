@@ -146,6 +146,21 @@ export function panelProductToDocument(content: PanelProductContent): PageDocume
     });
   }
 
+  if (content.comparisonTable) {
+    sections.push({
+      id: newId("compare"),
+      type: "dataTable",
+      data: {
+        eyebrow: content.comparisonTable.eyebrow,
+        title: content.comparisonTable.title,
+        lead: content.comparisonTable.lead,
+        headers: [...content.comparisonTable.headers],
+        rows: content.comparisonTable.rows.map((r) => [...r]),
+        note: content.comparisonTable.note,
+      },
+    });
+  }
+
   if (content.roofing) {
     sections.push({
       id: newId("roofing"),

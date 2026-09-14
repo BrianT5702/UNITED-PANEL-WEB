@@ -84,8 +84,8 @@ export const defaultHomeContent: HomeContent = {
       {
         id: "pur",
         title: "PU Panels",
-        text: "Customisable polyurethane panels for cold storage construction.",
-        image: "/uploads/About/manufacturing.png",
+        text: "Customisable polyurethane panels for cold storage — SIRIM-listed, Bomba-approved.",
+        image: "/uploads/pu/apps/install-blue-warehouse.jpg",
         href: "/products/pu",
       },
       {

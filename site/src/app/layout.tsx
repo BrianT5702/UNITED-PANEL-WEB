@@ -20,6 +20,16 @@ export const metadata: Metadata = {
     "PIR, PU and RockWool insulated panels for cold storage — United Panel-System (M) Sdn Bhd.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover" as const,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#eef1f4" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0d10" },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

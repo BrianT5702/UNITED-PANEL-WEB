@@ -65,6 +65,15 @@ export type PanelProductContent = {
     rows: string[][];
     note?: string;
   };
+  /** Optional comparison table (e.g. equivalent insulation thickness) */
+  comparisonTable?: {
+    eyebrow: string;
+    title: string;
+    lead?: string;
+    headers: string[];
+    rows: string[][];
+    note?: string;
+  };
   roofing?: {
     eyebrow: string;
     title: string;
@@ -103,7 +112,7 @@ export const defaultPirContent: PanelProductContent = {
   brand: "United Panel · PIR",
   headline: "Polyisocyanurate (PIR) Panels",
   tagline: "ASEAN’s First & Only PIR Double Belt Continuous Line",
-  lead: "Quality premium PIR panels from ASEAN’s first and only PIR Double Belt Continuous Line — FM Global (FM) approved Class 1 without height restrictions, with catalogue-published product range, finishes and typical physical properties.",
+  lead: "Quality premium PIR panels from ASEAN’s first and only PIR Double Belt Continuous Line — FM Global (FM) approved Class 1 without height restrictions, with published product range, finishes and typical physical properties.",
   primaryCta: "Request a Quote",
   secondaryCta: "View specifications",
   heroImage: "/uploads/pir/install-wall.jpg",
@@ -314,7 +323,7 @@ export const defaultPirContent: PanelProductContent = {
       ["Closed cell content", "DIN ISO 4590", "%", "93"],
       ["Flammability", "DIN 4120", "B2", "5 cm flame height"],
     ],
-    note: "*Based on sample submitted subjected to standard tests deviation. Source: UR PIR Catalogue.",
+    note: "*Based on sample submitted subjected to standard tests deviation.",
   },
   roofing: {
     eyebrow: "Roof panels",
@@ -330,12 +339,11 @@ export const defaultPirContent: PanelProductContent = {
         value: "Cover width 1000 mm · core 40 mm · overall height 74 mm · rib 38 mm",
       },
     ],
-    note: "Source: UR PIR Catalogue — Product Range & Data.",
   },
   certsEyebrow: "Product certification list",
   certsTitle: "Certified quality",
   certsLead:
-    "UR PIR panel is FM Global (FM) approved and TÜV classified B-s1,d0, with ISO, SIRIM QAS International (including BS 8414-2 cladding fire testing) and Bomba recognition as shown in the catalogue.",
+    "UR PIR panel is FM Global (FM) approved and TÜV classified B-s1,d0, with ISO, SIRIM QAS International (including BS 8414-2 cladding fire testing) and Bomba recognition.",
   certifications: [
     {
       id: "fm",
@@ -368,7 +376,7 @@ export const defaultPirContent: PanelProductContent = {
       title: "PU Panels",
       text: "Customisable polyurethane panels for interior and exterior cold storage use.",
       href: "/products/pu",
-      image: "https://www.ur.com.my/userfiles/image/pro-pu-panel-01.jpg",
+      image: "/uploads/pu/apps/site-01.jpg",
     },
     {
       title: "RockWool Panels",
@@ -390,72 +398,155 @@ export const defaultPirContent: PanelProductContent = {
 export const defaultPuContent: PanelProductContent = {
   slug: "pu",
   brand: "United Panel · PU",
-  headline: "Polyurethane (PU) Panels",
-  lead: "Highly customisable insulated panels with a range of core thicknesses, finishes and joint systems — suitable for interior and exterior cold storage applications.",
+  headline: "Polyurethane (PU) Insulation Panels",
+  tagline: "One-stop solution for your cold storage needs",
+  lead: "Highly customisable UR PU panels with a range of core thicknesses, finishes and joint systems — assembled vertically or horizontally for interior and exterior cold storage.",
   primaryCta: "Request a Quote",
   secondaryCta: "View specifications",
-  heroImage: "https://www.ur.com.my/userfiles/image/pro-pu-panel-01.jpg",
+  heroImage: "/uploads/pu/apps/install-blue-warehouse.jpg",
   mediaLabel: "",
   proof: [
     {
       id: "1",
       index: "01",
-      title: "Excellent insulation",
-      text: "Strong thermal efficiency helps keep cold rooms stable and energy costs under control.",
+      title: "High insulation, modest thickness",
+      text: "PU foam delivers the same insulation as much thicker brick, wool or polystyrene — air and water cannot circulate inside the core.",
     },
     {
       id: "2",
       index: "02",
-      title: "Easy to install",
-      text: "Clip-lock, cam-lock and semi cam-lock joint options support clean, efficient assembly.",
+      title: "Clip, cam and semi cam-lock",
+      text: "Tongue-and-groove clip-lock, cam-lock and semi cam-lock joints for clean wall and ceiling assembly.",
     },
     {
       id: "3",
       index: "03",
-      title: "Built to last",
-      text: "Durable skins and finishes — including corrosion-free options with up to 20 years warranty.",
+      title: "SIRIM listed · Bomba approved",
+      text: "UR PU is a certified and listed product by SIRIM QAS International, and tested and approved by Bomba Malaysia for commercial and industrial use.",
     },
   ],
   overviewEyebrow: "Overview",
   overviewTitle: "Custom panels for real projects",
   overviewBody1:
-    "Polyurethane panels are highly customisable. We offer a range of core thickness, support finishings and panel joints to choose from.",
+    "Polyurethane panels are highly customisable. We have a range of core thicknesses, support finishings and panel joints to choose from. The rigid polyurethane foam is favoured for insulation panels because of its mechanical, chemical, biological and moisture properties.",
   overviewBody2:
-    "Panels can be assembled by vertical or horizontal disposition and are suitable for interior and exterior applications — a practical choice for restaurants, cold rooms, and industrial refrigeration fit-outs.",
-  overviewImage: "/uploads/pu/02-install.jpg",
+    "Panels can be assembled by vertical or horizontal disposition and are suitable for interior and exterior applications — for restaurants, cold rooms, warehouses and industrial refrigeration fit-outs.",
+  overviewImage: "/uploads/pu/apps/site-01.jpg",
   overviewImages: [
-    "/uploads/pu/01-finished.jpg",
-    "/uploads/pu/02-install.jpg",
+    "/uploads/pu/apps/site-01.jpg",
+    "/uploads/pu/apps/site-02.jpg",
+    "/uploads/pu/apps/install-blue-warehouse.jpg",
+    "/uploads/pu/apps/app-5c.jpg",
+    "/uploads/pu/apps/warehouse-11b.jpg",
     "/uploads/pu/03-assembly.jpg",
   ],
-  overviewImageStartIndex: 1,
-  featuresEyebrow: "PU features",
-  featuresTitle: "What you get with UR PU",
+  overviewImageStartIndex: 0,
+  featuresEyebrow: "Advantages of PU foam",
+  featuresTitle: "What UR PU panels offer",
+  featuresLead:
+    "Excellent insulating efficiency, easy installation and maintenance, aesthetically pleasing finishes, and durable construction for daily cold-room use.",
   features: [
-    "Excellent insulating efficiency",
-    "Easy installation and maintenance",
-    "Aesthetically pleasing finishes",
-    "Durable construction for daily cold-room use",
+    "Food grade compliance",
+    "Moisture and corrosion resistance",
+    "Superior thermal performance — high insulation even with a modest material thickness",
+    "High density mechanical strength — suitable for wall and roof applications",
+    "Fire retardant — in a fire the foam does not drip or run, minimising flammable mass",
+    "CFC free",
+    "Air- and water-tight core — installation in all weather conditions",
+    "Clip-lock, cam-lock and semi cam-lock tongue-and-groove joints",
   ],
-  specsEyebrow: "Specifications",
+  applications: {
+    eyebrow: "Applications",
+    title: "Where PU panels are used",
+    lead: "Suitable for interior and exterior insulated walls, ceilings and cold-store envelopes.",
+    items: [
+      "Chiller and freezer rooms for fresh / frozen food",
+      "Controlled atmosphere rooms",
+      "Food processing rooms",
+      "Production rooms",
+      "Clean rooms",
+      "Pharmaceutical storage rooms",
+      "Warehouses",
+      "Cross-docking facilities",
+    ],
+    images: [
+      {
+        src: "/uploads/pu/apps/app-5c.jpg",
+        alt: "PU panel corridor in a cold storage facility",
+      },
+      {
+        src: "/uploads/pu/apps/warehouse-11b.jpg",
+        alt: "White PU panel walls and ceiling at loading docks",
+      },
+      {
+        src: "/uploads/pu/apps/install-blue-warehouse.jpg",
+        alt: "Installing tall UR PU wall panels in a warehouse",
+      },
+      {
+        src: "/uploads/pu/01-finished.jpg",
+        alt: "Finished PU panel interior",
+      },
+      {
+        src: "/uploads/pu/apps/site-02.jpg",
+        alt: "UR PU panels showing foam core and metal skins",
+      },
+    ],
+  },
+  jointDetails: {
+    eyebrow: "Joint detail",
+    title: "UR PU Panel Joint",
+    summary:
+      "Clip-lock, cam-lock and semi cam-lock tongue & groove joints, plus typical wall, ceiling and floor installation details. Expand to view the full diagrams.",
+    body: "UR PU panels use interlocking tongue-and-groove joints. Clip-lock, cam-lock and semi cam-lock systems lock together for a continuous insulated wall or ceiling line, sealed with non-setting butyl, polysulphide or silicone as specified.",
+    image: "/uploads/pu/joints/clip-joint-01.png",
+    imageAlt: "PU panel clip joint — interlocking tongue and groove",
+    pages: [
+      {
+        title: "Polyurethane panel clip joints",
+        lead: "Tongue-and-groove clip joint profiles shown with product range and typical site photos.",
+        src: "/uploads/pu/joints/product-range-page.jpg",
+        alt: "PU insulation panels, specifications and clip joints",
+      },
+      {
+        title: "Installation joint details",
+        lead:
+          "Ceiling-to-ceiling, door sectional, and wall-to-ceiling connections with 38 × 38 mm aluminium angles and N-mastic.",
+        src: "/uploads/pu/joints/installation-details-1.jpg",
+        alt: "PU installation joints — ceiling, door sectional and wall-to-ceiling details",
+      },
+      {
+        title: "Corners, walls and ceiling hangers",
+        lead:
+          "Wall-to-wall corners, wall joints, large suspension and nylon hanger ceiling details.",
+        src: "/uploads/pu/joints/installation-details-2.jpg",
+        alt: "PU wall corner, wall joint, large suspension and nylon hanger details",
+      },
+    ],
+  },
+  specsEyebrow: "Product range & data",
   specsTitle: "Specifications (PU)",
-  specsLead: "From United Panel-System. Confirm colours, joints and thicknesses for your project.",
+  specsLead:
+    "Insulation panels are manufactured in-house and delivered to project sites for ready installation.",
   specs: [
-    { label: "Dimension", value: "1150 mm width × any desired length" },
+    { label: "Dimension", value: "1150 mm × desired length" },
     {
       label: "Thickness",
-      value: "50 / 75 / 100 / 125 / 150 / 200 / 250 mm",
+      value: "50 mm / 75 mm / 100 mm / 125 mm / 200 mm / 250 mm",
     },
     { label: "Weight", value: "Varies in accordance to thickness" },
     {
-      label: "Skins",
+      label: "Skins — steel",
       value:
-        "Standard steel 0.36 / 0.45 / 0.5 / 0.6 / 0.7 mm thick, 180 g/m² nominal zinc coating. Paint of polyester or silicone modified polyester. Colours: white (other colours and finishes available). Aluminium and stainless steel subjected to quantities available.",
+        "0.36 mm / 0.45 mm / 0.5 mm / 0.6 mm / 0.7 mm thick, 180 g/m² nominal zinc coating. Paint of polyester or silicone modified polyester. Colour: white (other colours and finishes available).",
+    },
+    {
+      label: "Skins — aluminium & stainless steel",
+      value: "Subject to quantities available",
     },
     {
       label: "Joints",
       value:
-        "Clip-lock (tongue & groove), Cam-lock system (tongue & groove), Semi cam-lock system (tongue & groove)",
+        "Clip-lock (tongue & groove) · Cam-lock system (tongue & groove) · Semi cam-lock system (tongue & groove)",
     },
     {
       label: "Sealants",
@@ -463,13 +554,13 @@ export const defaultPuContent: PanelProductContent = {
     },
   ],
   physicalProperties: {
-    eyebrow: "Material data",
+    eyebrow: "Panel characteristics",
     title: "Typical physical properties (PU)",
-    lead: "Indicative foam performance values for UR® polyurethane panels.",
-    headers: ["Property", "Test method", "Unit", "Result"],
+    lead: "Typical physical properties of the rigid polyurethane foam used in UR PU panels.",
+    headers: ["Property", "Test method", "Unit", "Result*"],
     rows: [
       ["Core density", "ISO EN 845", "kg/m³", "42 – 44"],
-      ["Thermal conductivity", "DIN 52612", "W/m·K", "0.019"],
+      ["Thermal conductivity", "DIN 52612", "W/m·K", "0.021"],
       ["Compressive stress", "DIN 53421", "N/mm²", "0.16"],
       ["Dimensional stability (−30°C / +80°C)", "DIN 53431", "%", "Max 0.1 / Max 0.2"],
       ["Water absorption", "DIN 53428", "Volume change (%)", "< 2"],
@@ -480,58 +571,61 @@ export const defaultPuContent: PanelProductContent = {
       ["Water vapour transmission", "—", "Perm-in", "1.8 – 3.8"],
       ["Operating temperature", "—", "°C", "−40 to +80"],
     ],
-    note: "UR® panels have been certified by SIRIM QAS International and approved by the Malaysia fire authorities (BOMBA).",
+    note: "*Based on sample, subject to standard tests deviations. UR panels have been certified by SIRIM QAS International and approved by the Malaysia fire authorities (BOMBA).",
   },
-  certsEyebrow: "Quality & assurance",
-  certsTitle: "Quality you can specify with confidence",
+  comparisonTable: {
+    eyebrow: "Insulation performance",
+    title: "Equivalent thickness for the same degree of insulation",
+    lead: "PU panels keep insulation high even with a modest material thickness. Air and water cannot penetrate and circulate within the panel walls.",
+    headers: ["Material", "Thickness required"],
+    rows: [
+      ["Common bricks", "860 mm"],
+      ["Concrete bricks", "380 mm"],
+      ["Softwood", "140 mm"],
+      ["Fibreboard", "65 mm"],
+      ["Cork", "50 mm"],
+      ["Mineral wool", "46 mm"],
+      ["Polystyrene (PS)", "40 mm"],
+      ["Polyurethane (PU)", "25 mm"],
+    ],
+  },
+  certsEyebrow: "Certified, recognised and approved",
+  certsTitle: "Certified quality",
   certsLead:
-    "Recognised approvals, a long-term corrosion-free finish warranty, and audited manufacturing — so consultants and buyers can specify UR® PU with clear evidence.",
+    "UR PU panel is a certified and listed product by SIRIM QAS International. PU insulation panels have also been tested and approved by Bomba Malaysia for commercial and industrial use. Manufacturing is ISO 9001:2015 certified, CFC-free, and eligible skins carry a corrosion-free finish warranty.",
   certifications: [
     {
-      id: "approved",
-      name: "Certified & recognised",
+      id: "sirim",
+      name: "SIRIM QAS International",
       detail:
-        "Tested for commercial and industrial use — aligned with our TÜV, SIRIM QAS International and Bomba approvals programme.",
-      image: "https://www.ur.com.my/userFiles/image/awardsssa3.png",
-      href: "/about/certified",
+        "Certified and listed product — a recognised body for quality excellence.",
+      image: "/uploads/pir/certs/sirim.jpg",
+      href: "/about/certified/quality-recognition",
+    },
+    {
+      id: "bomba",
+      name: "Bomba Malaysia",
+      detail:
+        "Tested and approved by the Fire and Rescue Department of Malaysia for commercial and industrial use.",
+      image: "/uploads/pir/certs/card-bomba.jpg",
+      href: "/about/certified/quality-recognition",
     },
     {
       id: "warranty",
       name: "20-year corrosion-free warranty",
       detail:
-        "Eligible corrosion-free skin finishes are covered for up to 20 years — ask us which coatings apply to your project.",
-      image: "https://www.ur.com.my/userfiles/image/icon-warranty.png",
+        "Eligible corrosion-free steel skins — polyester or silicone-modified polyester on 180 g/m² zinc-coated steel. Ask us which coatings apply to your project.",
+      image: "/uploads/pu/certs/warranty-20-year.png",
       href: "/contact",
     },
-    {
-      id: "iso",
-      name: "ISO 9001:2015",
-      detail:
-        "Manufactured under an audited quality management system — Certification No. 17975-A.",
-      image: "/uploads/pir/certs/catalogue-page-18.jpg",
-      href: "/about/certified/quality-recognition",
-    },
   ],
-  gallery: [
-    {
-      src: "/uploads/pu/01-finished.jpg",
-      alt: "Finished PU panel interior application",
-    },
-    {
-      src: "/uploads/pu/02-install.jpg",
-      alt: "PU panel installation on site",
-    },
-    {
-      src: "/uploads/pu/03-assembly.jpg",
-      alt: "Large-scale PU panel assembly",
-    },
-  ],
+  gallery: [],
   related: [
     {
       title: "PIR Panels",
       text: "FM Approved continuous-line PIR for fire-critical cold stores.",
       href: "/products/pir",
-      image: "https://www.ur.com.my/userFiles/image/8.jpg",
+      image: "/uploads/pir/UNITED.jpeg",
     },
     {
       title: "RockWool Panels",

@@ -404,10 +404,14 @@ export function SectionView({
     case "gallery": {
       const d = section.data;
       const isSlideshow = d.layout === "slideshow";
+      const isLogos = d.layout === "logos";
+      const isPages = d.layout === "pages";
+      const photoAlign = d.imageAlign || "center";
       const slideshowImages = d.items
         .filter((item) => item.src)
         .map((item) => ({ src: item.src, focus: item.focus }));
-      const aspect = imageAspectStyle(d.imageAspect);
+      const aspect = isLogos || isPages ? undefined : imageAspectStyle(d.imageAspect);
+      const figureKind = isLogos ? " about-figure-logo" : isPages ? " about-figure-page" : "";
       return (
         <section className={`section section-compact ${nested ? "pb-nested" : ""}`} id={anchorId}>
           {d.title ? (
@@ -431,18 +435,26 @@ export function SectionView({
             <div className={`pb-gallery ${gridClass(cols)}`}>
               {d.items.map((item) => (
                 <figure
-                  className={`about-figure${item.src ? "" : " about-figure-empty"}`}
+                  className={`about-figure${item.src ? "" : " about-figure-empty"}${figureKind}`}
+                  data-align={isLogos ? photoAlign : undefined}
                   key={item.id}
                 >
                   {item.src ? (
-                    <div className="pb-photo-frame" style={aspect}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={item.src}
-                        alt={item.alt || ""}
-                        style={imageFocusStyle(item.focus)}
-                      />
-                    </div>
+                    isLogos ? (
+                      <div className="about-figure-logo-stage">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={item.src} alt={item.alt || ""} />
+                      </div>
+                    ) : (
+                      <div className="pb-photo-frame" style={aspect}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={item.src}
+                          alt={item.alt || ""}
+                          style={imageFocusStyle(item.focus)}
+                        />
+                      </div>
+                    )
                   ) : (
                     <div className="about-figure-placeholder pb-photo-frame" style={aspect} aria-hidden="true" />
                   )}

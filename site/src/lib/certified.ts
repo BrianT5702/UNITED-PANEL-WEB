@@ -8,7 +8,7 @@ export type CertifiedPage = {
   heroImage?: string;
 };
 
-/** Catalogue-aligned certification tabs (UR PIR Catalogue — Certified Quality / Fire Performance). */
+/** Certification tabs (Certified Quality / Fire Performance). */
 export const CERTIFIED_PAGES: CertifiedPage[] = [
   {
     slug: "fm-global",

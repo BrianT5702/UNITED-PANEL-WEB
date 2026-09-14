@@ -48,3 +48,6 @@ pnpm-debug.log*
 # Cursor / local agent artifacts (if present in repo root)
 .cursor/
 agent-transcripts/
+
+# Print-ready catalogue artwork (large .ai/.tif/.psd source files — keep local)
+/PUR/

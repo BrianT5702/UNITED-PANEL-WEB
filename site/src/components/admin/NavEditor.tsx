@@ -10,6 +10,7 @@ import {
 } from "@/lib/pages";
 import { cloneNav } from "@/lib/nav";
 import { LogoutButton } from "@/components/admin/LogoutButton";
+import { AdminGuide, AdminGuideButton } from "@/components/admin/AdminGuide";
 
 function pageByPath(pages: SitePage[], href: string) {
   return pages.find((p) => p.path === href);
@@ -30,6 +31,7 @@ export function NavEditor({
   const [dirty, setDirty] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newGroup, setNewGroup] = useState<Exclude<PageGroup, "Home">>("Other");
+  const [guideOpen, setGuideOpen] = useState(false);
 
   function commit(next: NavItem[]) {
     setItems(next);
@@ -136,6 +138,7 @@ export function NavEditor({
         <div className="ve-toolbar-actions">
           {message ? <span className="ve-msg">{message}</span> : null}
           {dirty ? <span className="ve-dirty">Unsaved</span> : null}
+          <AdminGuideButton onClick={() => setGuideOpen(true)} />
           <button className="btn btn-primary ve-bar-btn" type="button" onClick={save} disabled={saving}>
             {saving ? "Saving…" : "Save menu"}
           </button>
@@ -145,6 +148,8 @@ export function NavEditor({
           <LogoutButton className="ve-bar-btn" />
         </div>
       </div>
+
+      <AdminGuide open={guideOpen} onClose={() => setGuideOpen(false)} />
 
       <main className="ve-nav-editor">
         <header className="ve-nav-intro">
