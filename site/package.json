@@ -9,8 +9,10 @@
     "lint": "eslint",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
-    "db:setup": "prisma db push && tsx prisma/seed.ts",
-    "postinstall": "prisma generate"
+    "db:setup": "prisma db push && tsx prisma/seed.ts && tsx scripts/content-import.ts",
+    "postinstall": "prisma generate",
+    "content:export": "tsx scripts/content-export.ts",
+    "content:import": "tsx scripts/content-import.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

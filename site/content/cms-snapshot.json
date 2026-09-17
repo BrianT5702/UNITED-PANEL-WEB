@@ -1,0 +1,3212 @@
+{
+  "version": 1,
+  "exportedAt": "2026-09-17T03:49:08.377Z",
+  "sections": [
+    {
+      "page": "about",
+      "key": "document",
+      "data": {
+        "title": "About Us",
+        "chrome": "about",
+        "about": {
+          "crumbs": [],
+          "activeHref": "/about",
+          "image": "https://www.ur.com.my/userfiles/image/newfactoryoutlok.png",
+          "brand": "United Panel-System",
+          "lead": "Based in Johor since 1978, we manufacture insulated panel systems for cold rooms — backed by in-house production, research, and recognised certifications."
+        },
+        "sections": [
+          {
+            "id": "about-lead",
+            "type": "richText",
+            "data": {
+              "eyebrow": "United Panel-System",
+              "title": "Cold storage panels, made in Malaysia",
+              "body": "Based in Johor since 1978, we manufacture insulated panel systems for walk-in cold rooms and refrigeration storage — backed by in-house production, research, and recognised certifications."
+            }
+          },
+          {
+            "id": "about-hub",
+            "type": "cardGrid",
+            "columns": 2,
+            "data": {
+              "eyebrow": "Explore",
+              "title": "About our company",
+              "lead": "Start with who we are, then open vision, R&D, and the approvals behind our panels.",
+              "items": [
+                {
+                  "id": "a1",
+                  "eyebrow": "01",
+                  "title": "Company Profile",
+                  "text": "Our history, facilities in Johor, and how we manufacture insulated panels for cold storage.",
+                  "href": "/about/company-profile",
+                  "image": "/uploads/About/FactoryLook.png"
+                },
+                {
+                  "id": "a2",
+                  "eyebrow": "02",
+                  "title": "Vision & Mission",
+                  "text": "The direction that guides our products, quality standards, and customer partnerships.",
+                  "href": "/about/vision-mission",
+                  "image": "/uploads/About/manufacturing.png"
+                },
+                {
+                  "id": "a3",
+                  "eyebrow": "03",
+                  "title": "Research & Development",
+                  "text": "How we improve panel performance, production methods, and application support.",
+                  "href": "/about/research-development",
+                  "image": "/uploads/About/line.jpg"
+                },
+                {
+                  "id": "a4",
+                  "eyebrow": "04",
+                  "title": "Certified, Recognized and Approved",
+                  "text": "FM Global, TÜV fire classification, and ISO, SIRIM & Bomba recognition.",
+                  "href": "/about/certified",
+                  "image": "/uploads/About/suction.jpg"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "page": "about/certified",
+      "key": "document",
+      "data": {
+        "title": "Certified Quality",
+        "chrome": "about",
+        "about": {
+          "crumbs": [
+            {
+              "label": "Certified, Recognized and Approved"
+            }
+          ],
+          "activeHref": "/about/certified",
+          "image": "/uploads/pir/certs/catalogue-page-17.jpg",
+          "brand": "United Panel-System",
+          "lead": "FM Global, TÜV fire classification, ISO, SIRIM and Bomba recognition — proof behind UR panel quality."
+        },
+        "sections": [
+          {
+            "id": "cert-body",
+            "type": "richText",
+            "data": {
+              "eyebrow": "Assurance",
+              "title": "Certified, recognized and approved",
+              "body": "Quality control sits at the centre of UR panel products. We stay aligned with current building, fire, and environmental requirements — and we back our systems with recognised third-party approvals."
+            }
+          },
+          {
+            "id": "cert-cards",
+            "type": "cardGrid",
+            "columns": 3,
+            "data": {
+              "eyebrow": "Explore",
+              "title": "Our key certifications",
+              "lead": "Open each area for the full approval story, test notes, and supporting marks.",
+              "items": [
+                {
+                  "id": "fm",
+                  "eyebrow": "01",
+                  "title": "FM Global Approval",
+                  "text": "Class 1 — FM 4880 / 4881, including the UBC-26 room test for fire containment.",
+                  "image": "/uploads/1786329906497-98f858fd8275.png",
+                  "href": "/about/certified/fm-global"
+                },
+                {
+                  "id": "tuv",
+                  "eyebrow": "02",
+                  "title": "TÜV Fire Classification",
+                  "text": "Reaction to Fire Classification B-s1,d0 — tested and classified by TÜV Singapore.",
+                  "image": "/uploads/1786329850226-9d669339d73f.png",
+                  "href": "/about/certified/tuv"
+                },
+                {
+                  "id": "iso",
+                  "eyebrow": "03",
+                  "title": "ISO, SIRIM & Bomba",
+                  "text": "ISO 9001:2015, SIRIM QAS International (including BS 8414-2), and Bomba Malaysia.",
+                  "image": "/uploads/1786330037381-b8df24c28f5a.png",
+                  "href": "/about/certified/quality-recognition"
+                }
+              ],
+              "variant": "certs"
+            }
+          },
+          {
+            "id": "cert-points",
+            "type": "featureList",
+            "data": {
+              "eyebrow": "Coverage",
+              "title": "What our approvals support",
+              "items": [
+                "FM Global (FM) Approval for UR PIR panels",
+                "TÜV reaction-to-fire classification",
+                "BS 8414-2 external cladding fire testing under SIRIM QAS",
+                "ISO 9001:2015 quality management certification",
+                "Recognition by Jabatan Bomba dan Penyelamat Malaysia"
+              ]
+            }
+          },
+          {
+            "id": "cert-gallery",
+            "type": "gallery",
+            "columns": 2,
+            "data": {
+              "layout": "pages",
+              "eyebrow": "Overview",
+              "title": "Certification overview",
+              "items": [
+                {
+                  "id": "cg1",
+                  "src": "/uploads/pir/certs/catalogue-page-17.jpg",
+                  "alt": "Certified Quality"
+                },
+                {
+                  "id": "cg2",
+                  "src": "/uploads/pir/certs/catalogue-page-18.jpg",
+                  "alt": "UR Certifications wall"
+                }
+              ]
+            }
+          },
+          {
+            "id": "cert-cta",
+            "type": "contactCta",
+            "data": {
+              "eyebrow": "Documentation",
+              "title": "Need certificates or reports?",
+              "body": "Contact us for verification guidance or supporting documents for your specification.",
+              "ctaLabel": "Contact us →",
+              "ctaHref": "/contact"
+            }
+          },
+          {
+            "id": "richText_x9b8ygoq",
+            "type": "richText",
+            "data": {
+              "title": "Certified, Recognized and Approved",
+              "body": "Quality control is an incontestable trait of UR panel products and we are well-equipped with the knowledge of the latest building, fire and environmental regulations.\n\nOur certifications include FM Global (FM) Approval, TÜV Fire Classification, BS 8414-2 external cladding fire testing, ISO 9001:2015, SIRIM Quality System / SIRIM QAS International, Jabatan Bomba dan Penyelamat Malaysia, and a cooperative agreement with UNDP towards HCFC Phase-Out Management Plans."
+            }
+          },
+          {
+            "id": "cardGrid_4hhme4p8",
+            "type": "cardGrid",
+            "columns": 3,
+            "data": {
+              "title": "Explore certifications",
+              "items": [
+                {
+                  "id": "fm",
+                  "title": "FM Global (FM) Approval",
+                  "text": "Class 1 — FM 4880 / 4881 · includes UBC-26 room test",
+                  "image": "/uploads/pir/certs/fm.png",
+                  "href": "/about/certified/fm-global"
+                },
+                {
+                  "id": "tuv",
+                  "title": "TÜV Fire Classification",
+                  "text": "Reaction to Fire Classification B-s1,d0 — TÜV Singapore",
+                  "image": "/uploads/pir/certs/tuv.jpg",
+                  "href": "/about/certified/tuv"
+                },
+                {
+                  "id": "iso",
+                  "title": "ISO, SIRIM & Bomba",
+                  "text": "ISO 9001:2015 · SIRIM QAS (incl. BS 8414-2) · Bomba Malaysia",
+                  "image": "/uploads/pir/certs/iso.jpg",
+                  "href": "/about/certified/quality-recognition"
+                }
+              ],
+              "variant": "certs"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "page": "about/certified/fm-global",
+      "key": "document",
+      "data": {
+        "title": "FM Global (FM) Approval",
+        "chrome": "about",
+        "about": {
+          "crumbs": [
+            {
+              "label": "Certified, Recognized and Approved",
+              "href": "/about/certified"
+            },
+            {
+              "label": "FM Global Approval"
+            }
+          ],
+          "activeHref": "/about/certified/fm-global",
+          "image": "/uploads/pir/certs/catalogue-page-20.jpg",
+          "brand": "United Panel-System",
+          "lead": "UR PIR panels are FM Global (FM) APPROVED — Class 1 to FM Approvals Standard 4880 / 4881, without height restrictions."
+        },
+        "sections": [
+          {
+            "id": "fm-body",
+            "type": "richText",
+            "data": {
+              "eyebrow": "Fire performance",
+              "title": "FM Global (FM) Approval",
+              "body": "PIR is recognised as a fire-safer alternative to many other foam cores. UR PIR panels are FM Global (FM) APPROVED to Class 1 under FM Approvals Standards 4880 and 4881 — without height restrictions."
+            }
+          },
+          {
+            "id": "fm-logo",
+            "type": "gallery",
+            "columns": 1,
+            "data": {
+              "layout": "logos",
+              "items": [
+                {
+                  "id": "fml",
+                  "src": "/uploads/pir/certs/fm.png",
+                  "alt": "FM APPROVED"
+                }
+              ]
+            }
+          },
+          {
+            "id": "richText_8dab2v87",
+            "type": "richText",
+            "data": {
+              "title": "FM Room Test (UBC-26)",
+              "body": "In order to obtain FM Approvals Standard 4880, UR PIR panels are subjected to a number of stringent tests. One of these tests is the UBC-26 room test.\n\nUR PIR panels test results show that fire is contained in the room and there is no fire propagation to the extremities of the panel construction."
+            }
+          },
+          {
+            "id": "richText_z5rtzvwp",
+            "type": "richText",
+            "data": {
+              "title": "FM Global (FM) Approval",
+              "body": "PIR is recognised by the industry as the fire safe alternative to other foam cores. UR PIR panel is FM Global (FM) APPROVED.\n\nUR PIR panels obtained Class 1 fire rating according to FM Approvals Standard 4880 and 4881. These ratings are valid without height restrictions."
+            }
+          },
+          {
+            "id": "fm-callout",
+            "type": "callout",
+            "data": {
+              "title": "Important",
+              "body": "Not FM Approved ≠ PIR. Always verify the specific UR® FM approved PIR panel for your project."
+            }
+          },
+          {
+            "id": "fm-points",
+            "type": "featureList",
+            "data": {
+              "eyebrow": "Key facts",
+              "title": "What the approval covers",
+              "items": [
+                "Class 1 fire rating under FM Approvals Standard 4880 and 4881",
+                "Valid without height restrictions",
+                "UBC-26 room testing as part of the approval pathway",
+                "Fire contained in the room with no propagation to panel extremities in test results"
+              ]
+            }
+          },
+          {
+            "id": "fm-room",
+            "type": "mediaText",
+            "columns": 2,
+            "data": {
+              "eyebrow": "Room test",
+              "title": "FM Room Test (UBC-26)",
+              "body": "To obtain FM Approvals Standard 4880, UR PIR panels go through stringent tests — including the UBC-26 room test.",
+              "body2": "Test results show fire is contained in the room, with no fire propagation to the extremities of the panel construction.",
+              "image": "/uploads/pir/certs/fm-room.jpg",
+              "imageSide": "left"
+            }
+          },
+          {
+            "id": "fm-page",
+            "type": "gallery",
+            "columns": 1,
+            "data": {
+              "layout": "pages",
+              "eyebrow": "Reference",
+              "title": "FM Global approval",
+              "items": [
+                {
+                  "id": "fmp",
+                  "src": "/uploads/pir/certs/page20-hires.jpg",
+                  "alt": "FM Global Approval"
+                }
+              ]
+            }
+          },
+          {
+            "id": "fm-contact",
+            "type": "contactCta",
+            "data": {
+              "eyebrow": "Verify",
+              "title": "Confirm FM approval",
+              "body": "Verify UR® FM approved PIR panels at www.approvalguide.com, or contact our team for project support.",
+              "ctaLabel": "Contact us →",
+              "ctaHref": "/contact"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "page": "about/certified/quality-recognition",
+      "key": "document",
+      "data": {
+        "title": "ISO, SIRIM & Bomba",
+        "chrome": "about",
+        "about": {
+          "crumbs": [
+            {
+              "label": "Certified, Recognized and Approved",
+              "href": "/about/certified"
+            },
+            {
+              "label": "ISO, SIRIM & Bomba"
+            }
+          ],
+          "activeHref": "/about/certified/quality-recognition",
+          "image": "/uploads/pir/certs/catalogue-page-18.jpg",
+          "brand": "United Panel-System",
+          "lead": "ISO 9001:2015, SIRIM QAS International, and Jabatan Bomba recognition behind our quality systems."
+        },
+        "sections": [
+          {
+            "id": "qr-lead",
+            "type": "richText",
+            "data": {
+              "eyebrow": "Quality & local recognition",
+              "title": "ISO, SIRIM & Bomba",
+              "body": "Alongside FM Global and TÜV fire classification, UR panel products carry quality and local recognition marks — including ISO 9001:2015, SIRIM QAS International, and Jabatan Bomba dan Penyelamat Malaysia."
+            }
+          },
+          {
+            "id": "qr-logos",
+            "type": "gallery",
+            "columns": 3,
+            "data": {
+              "layout": "logos",
+              "eyebrow": "Marks",
+              "title": "Recognised systems",
+              "items": [
+                {
+                  "id": "iso",
+                  "src": "/uploads/pir/certs/iso.jpg",
+                  "alt": "ISO 9001:2015"
+                },
+                {
+                  "id": "sirim",
+                  "src": "/uploads/pir/certs/sirim.jpg",
+                  "alt": "SIRIM QAS International"
+                },
+                {
+                  "id": "bomba",
+                  "src": "/uploads/pir/certs/bomba.png",
+                  "alt": "Bomba Malaysia"
+                }
+              ]
+            }
+          },
+          {
+            "id": "qr-iso",
+            "type": "mediaText",
+            "columns": 2,
+            "data": {
+              "eyebrow": "Quality system",
+              "title": "ISO 9001:2015",
+              "body": "UNITED PANEL-SYSTEM (M) SDN BHD is an ISO certified company — Certification No. 17975-A — covering the quality management system behind our panel manufacturing.",
+              "image": "/uploads/pir/certs/card-iso.jpg",
+              "imageSide": "left"
+            }
+          },
+          {
+            "id": "qr-sirim",
+            "type": "mediaText",
+            "columns": 2,
+            "data": {
+              "eyebrow": "Listed product",
+              "title": "SIRIM QAS International",
+              "body": "UR® panel is a certified and listed product by SIRIM QAS International.",
+              "body2": "Under SIRIM QAS International, UR PIR insulated panels have also passed and met the requirements when tested to BS 8414-2 for external cladding systems.",
+              "image": "/uploads/pir/certs/card-sirim.jpg",
+              "imageSide": "right"
+            }
+          },
+          {
+            "id": "qr-bomba",
+            "type": "mediaText",
+            "columns": 2,
+            "data": {
+              "eyebrow": "Local approval",
+              "title": "Jabatan Bomba dan Penyelamat Malaysia",
+              "body": "Locally, our insulation panels have been tested and approved by the Fire and Rescue Department of Malaysia (Bomba) for commercial and industrial use.",
+              "image": "/uploads/pir/certs/card-bomba.jpg",
+              "imageSide": "left"
+            }
+          },
+          {
+            "id": "qr-cta",
+            "type": "contactCta",
+            "data": {
+              "eyebrow": "Documentation",
+              "title": "Request supporting documents",
+              "body": "Contact our team for certificates, listing details, or guidance for your specification package.",
+              "ctaLabel": "Contact us →",
+              "ctaHref": "/contact"
+            }
+          },
+          {
+            "id": "richText_dn8qf9me",
+            "type": "richText",
+            "data": {
+              "title": "ISO, SIRIM & Bomba",
+              "body": "Alongside FM Global and TÜV fire classification, UR panel products are listed under quality and local recognition marks — including ISO 9001:2015, SIRIM QAS International (including BS 8414-2 cladding fire testing), and Jabatan Bomba dan Penyelamat Malaysia."
+            }
+          },
+          {
+            "id": "richText_gzpa413q",
+            "type": "richText",
+            "data": {
+              "title": "ISO 9001:2015",
+              "body": "UNITED PANEL-SYSTEM (M) SDN BHD is an ISO certified company — Certification No. 17975-A."
+            }
+          },
+          {
+            "id": "richText_y5ppahvg",
+            "type": "richText",
+            "data": {
+              "title": "SIRIM QAS International",
+              "body": "UR® panel is a certified and listed product by SIRIM QAS International. Under SIRIM QAS International, UR PIR insulated panels have also passed and met the requirements when tested to BS 8414-2 for external cladding systems."
+            }
+          },
+          {
+            "id": "richText_ww6wuf88",
+            "type": "richText",
+            "data": {
+              "title": "Jabatan Bomba dan Penyelamat Malaysia",
+              "body": "Locally, our insulation panels have been tested and approved by the Fire and Rescue Department of Malaysia (Bomba) for commercial and industrial use."
+            }
+          }
+        ]
+      }
+    },
+    {
+      "page": "about/certified/tuv",
+      "key": "document",
+      "data": {
+        "title": "TÜV Fire Classification",
+        "chrome": "about",
+        "about": {
+          "crumbs": [
+            {
+              "label": "Certified, Recognized and Approved",
+              "href": "/about/certified"
+            },
+            {
+              "label": "TÜV Fire Classification"
+            }
+          ],
+          "activeHref": "/about/certified/tuv",
+          "image": "/uploads/pir/certs/catalogue-page-22.jpg",
+          "brand": "United Panel-System",
+          "lead": "UR PIR panels are tested and classified by TÜV Singapore — product safety proven alongside FM Global approval."
+        },
+        "sections": [
+          {
+            "id": "tuv-body",
+            "type": "richText",
+            "data": {
+              "eyebrow": "Product safety",
+              "title": "TÜV Fire Classification",
+              "body": "Alongside FM Global approval, UR PIR panels have been tested and classified by TÜV Singapore — giving customers an independent reaction-to-fire reference for specification work."
+            }
+          },
+          {
+            "id": "tuv-logo",
+            "type": "gallery",
+            "columns": 1,
+            "data": {
+              "layout": "logos",
+              "items": [
+                {
+                  "id": "tl",
+                  "src": "/uploads/pir/certs/tuv.jpg",
+                  "alt": "TÜV SÜD"
+                }
+              ]
+            }
+          },
+          {
+            "id": "richText_5wnlfmx3",
+            "type": "richText",
+            "data": {
+              "title": "TÜV Fire Classification",
+              "body": "Product safety is of the utmost importance to us and our customers. In addition to obtaining FM Global (FM) approval, UR PIR panel has been tested and classified by TÜV Singapore."
+            }
+          },
+          {
+            "id": "tuv-callout",
+            "type": "callout",
+            "data": {
+              "title": "Classification",
+              "body": "REACTION TO FIRE CLASSIFICATION: B-s1,d0"
+            }
+          },
+          {
+            "id": "tuv-points",
+            "type": "featureList",
+            "data": {
+              "eyebrow": "Why it matters",
+              "title": "What this classification supports",
+              "items": [
+                "Independent testing through TÜV Singapore",
+                "Clear reaction-to-fire classification for project documentation",
+                "Complements FM Global approval for fire performance assurance"
+              ]
+            }
+          },
+          {
+            "id": "tuv-page",
+            "type": "gallery",
+            "columns": 1,
+            "data": {
+              "layout": "pages",
+              "eyebrow": "Reference",
+              "title": "TÜV classification",
+              "items": [
+                {
+                  "id": "tvp",
+                  "src": "/uploads/pir/certs/page22-hires.jpg",
+                  "alt": "TÜV Fire Classification"
+                }
+              ]
+            }
+          },
+          {
+            "id": "tuv-contact",
+            "type": "contactCta",
+            "data": {
+              "eyebrow": "Reports",
+              "title": "Need the full report?",
+              "body": "Contact us for the full TÜV report and further test details for your project file.",
+              "ctaLabel": "Contact us →",
+              "ctaHref": "/contact"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "page": "about/company-profile",
+      "key": "document",
+      "data": {
+        "title": "Company Profile",
+        "chrome": "about",
+        "about": {
+          "crumbs": [
+            {
+              "label": "Company Profile"
+            }
+          ],
+          "activeHref": "/about/company-profile",
+          "image": "/uploads/About/FactoryLook.png",
+          "brand": "United Panel-System",
+          "lead": "Since 1978 — insulated panels for walk-in cold rooms and refrigeration storage, proudly made in Malaysia."
+        },
+        "sections": [
+          {
+            "id": "cp-lead",
+            "type": "richText",
+            "data": {
+              "eyebrow": "Since 1978",
+              "title": "Insulated panels from Johor, Malaysia",
+              "body": "United Panel-System (M) Sdn. Bhd. specialises in insulated panels for walk-in cold rooms and refrigeration storage — manufactured in-house and trusted across commercial and industrial projects."
+            }
+          },
+          {
+            "id": "richText_qbypvxy5",
+            "type": "richText",
+            "data": {
+              "title": "Company Profile",
+              "body": "Since 1978, United Panel-System (M) Sdn. Bhd. has specialised in insulated panels for walk-in cold rooms and refrigeration storage — proudly made in Malaysia."
+            }
+          },
+          {
+            "id": "cp-stats",
+            "type": "stats",
+            "data": {
+              "items": [
+                {
+                  "id": "s1",
+                  "value": "1978",
+                  "label": "Established"
+                },
+                {
+                  "id": "s2",
+                  "value": "Johor",
+                  "label": "HQ & factory"
+                },
+                {
+                  "id": "s3",
+                  "value": "ASEAN",
+                  "label": "First PIR Double Belt Continuous Line"
+                },
+                {
+                  "id": "s4",
+                  "value": "FM",
+                  "label": "Approved PIR panels"
+                }
+              ]
+            }
+          },
+          {
+            "id": "cp-story",
+            "type": "mediaText",
+            "columns": 2,
+            "data": {
+              "eyebrow": "Our story",
+              "title": "Built for cold storage",
+              "body": "Formerly United Refrigerator Trading Sdn. Bhd., we produce polyurethane (PU), polyisocyanurate (PIR) and RockWool insulated panels for commercial and industrial refrigeration.",
+              "body2": "Our head office and production sit in Johor. As Malaysia’s largest multi-purpose plant of its kind, we also supply a complete range of refrigeration system products.",
+              "image": "/uploads/About/FactoryLook.png",
+              "imageSide": "left"
+            }
+          },
+          {
+            "id": "cp-pillars",
+            "type": "cardGrid",
+            "columns": 2,
+            "data": {
+              "eyebrow": "What sets us apart",
+              "title": "Production and trust",
+              "lead": "In-house manufacturing and long-standing customer relationships across the region.",
+              "items": [
+                {
+                  "id": "p1",
+                  "title": "In-house production",
+                  "text": "First and only PIR Double Belt Continuous Line in ASEAN for cold store panels and roofing. FM Approved PIR panels are made on a fully automated continuous line.",
+                  "image": "/uploads/About/line.jpg"
+                },
+                {
+                  "id": "p2",
+                  "title": "Trusted quality",
+                  "text": "Decades of industry experience and product quality have earned continued support from customers across commercial and industrial refrigeration.",
+                  "image": "/uploads/About/suction.jpg"
+                }
+              ]
+            }
+          },
+          {
+            "id": "cp-gallery",
+            "type": "gallery",
+            "columns": 3,
+            "data": {
+              "items": [
+                {
+                  "id": "g1",
+                  "src": "/uploads/About/manufacturing.png",
+                  "alt": "Manufacturing"
+                },
+                {
+                  "id": "g2",
+                  "src": "",
+                  "alt": "Systems & parts"
+                },
+                {
+                  "id": "g3",
+                  "src": "",
+                  "alt": "Panel products"
+                }
+              ]
+            }
+          },
+          {
+            "id": "cp-cta",
+            "type": "contactCta",
+            "data": {
+              "eyebrow": "Next step",
+              "title": "Talk to our team",
+              "body": "Ask about panel systems, refrigeration parts, or project support for your cold storage needs.",
+              "ctaLabel": "Contact us →",
+              "ctaHref": "/contact"
+            },
+            "buttons": [
+              {
+                "id": "cta",
+                "label": "Contact us →",
+                "href": "/contact",
+                "style": "ghost",
+                "action": "link"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "page": "about/research-development",
+      "key": "document",
+      "data": {
+        "title": "Research & Development",
+        "chrome": "about",
+        "about": {
+          "crumbs": [
+            {
+              "label": "Research & Development"
+            }
+          ],
+          "activeHref": "/about/research-development",
+          "image": "/uploads/About/line.jpg",
+          "brand": "United Panel-System",
+          "lead": "Continuous R&D and computer-aided engineering keep our production methods, skills, and panel performance moving forward."
+        },
+        "sections": [
+          {
+            "id": "rd-lead",
+            "type": "richText",
+            "data": {
+              "eyebrow": "Capability",
+              "title": "Research that improves real production",
+              "body": "Continuous research and development — supported by computer-aided engineering — keeps our methods, skills, and panel performance moving forward."
+            }
+          },
+          {
+            "id": "richText_mhjfmbm1",
+            "type": "richText",
+            "data": {
+              "title": "Research & Development",
+              "body": "Continuous research and development — using computer-aided engineering — keeps our production methods, skills, and knowledge moving forward."
+            }
+          },
+          {
+            "id": "rd-approach",
+            "type": "mediaText",
+            "columns": 2,
+            "data": {
+              "eyebrow": "Our approach",
+              "title": "Engineering-led improvement",
+              "body": "We continually research and develop production methods with computer-aided engineering, expanding the skills and knowledge behind every panel we make.",
+              "body2": "Experience in this field helps us select the right technologies and embed them into practical designs for cold storage and building envelope use.",
+              "image": "/uploads/pir/production-line.jpg",
+              "imageSide": "left"
+            }
+          },
+          {
+            "id": "rd-focus",
+            "type": "featureList",
+            "data": {
+              "eyebrow": "Focus areas",
+              "title": "What we keep improving",
+              "items": [
+                "Panel performance for cold storage and industrial envelopes",
+                "Production precision on continuous and injection lines",
+                "Joint details, finishes, and installation practicality",
+                "Fire, quality, and application requirements for project specifications"
+              ]
+            }
+          },
+          {
+            "id": "rd-rw",
+            "type": "mediaText",
+            "columns": 2,
+            "data": {
+              "eyebrow": "New capability",
+              "title": "RockWool panels",
+              "body": "Alongside PU and PIR, we manufacture RockWool mineral-wool core panels on Malaysia’s first fully automated RockWool production line.",
+              "body2": "The same in-house manufacturing discipline, with a mineral-wool core engineered for cold storage and building envelope applications.",
+              "image": "/uploads/rockwool/RockWool Panel 3.jpeg",
+              "linkLabel": "Learn more about RockWool →",
+              "linkHref": "/products/rockwool",
+              "imageSide": "right"
+            }
+          },
+          {
+            "id": "rd-cta",
+            "type": "contactCta",
+            "data": {
+              "eyebrow": "Projects",
+              "title": "Need technical guidance?",
+              "body": "Ask our team about panel selection, performance requirements, or production options for your project.",
+              "ctaLabel": "Contact us →",
+              "ctaHref": "/contact"
+            },
+            "buttons": [
+              {
+                "id": "cta",
+                "label": "Contact us →",
+                "href": "/contact",
+                "style": "ghost",
+                "action": "link"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "page": "about/vision-mission",
+      "key": "document",
+      "data": {
+        "title": "Vision & Mission",
+        "chrome": "about",
+        "about": {
+          "crumbs": [
+            {
+              "label": "Vision & Mission"
+            }
+          ],
+          "activeHref": "/about/vision-mission",
+          "image": "/uploads/vision-mission/auto.jpg",
+          "brand": "United Panel-System",
+          "lead": "Advanced production, in-house quality control, and products trusted across commercial and industrial refrigeration."
+        },
+        "sections": [
+          {
+            "id": "vm-lead",
+            "type": "richText",
+            "data": {
+              "eyebrow": "Direction",
+              "title": "Lead through quality manufacturing",
+              "body": "Advanced production, in-house quality control, and products trusted across commercial and industrial refrigeration — that is how UR® aims to lead."
+            }
+          },
+          {
+            "id": "vm-pillars",
+            "type": "cardGrid",
+            "columns": 2,
+            "data": {
+              "eyebrow": "What we stand for",
+              "title": "Mission and vision",
+              "lead": "We keep manufacturing and quality under one roof, and we keep raising the standard of what we deliver.",
+              "items": [
+                {
+                  "id": "mission",
+                  "eyebrow": "Our mission",
+                  "title": "Technology-led manufacturing",
+                  "text": "We use advanced production methods and do not outsource our panel work. Customers get consistent quality and direct service control from the people who make the product.",
+                  "image": "/uploads/vision-mission/glueinjecting.jpg"
+                },
+                {
+                  "id": "vision",
+                  "eyebrow": "Our vision",
+                  "title": "Lead through excellence",
+                  "text": "Everyone at UR® takes pride in the products we manufacture. We aim to lead our field by continually improving both product performance and the service around it.",
+                  "image": "/uploads/vision-mission/suction.jpg"
+                }
+              ]
+            }
+          },
+          {
+            "id": "vm-values",
+            "type": "featureList",
+            "data": {
+              "eyebrow": "How we work",
+              "title": "Everyday commitments",
+              "lead": "Clear principles that shape production, service, and long-term partnerships.",
+              "items": [
+                "Keep core manufacturing in-house for tighter quality control",
+                "Invest in production technology and skilled people",
+                "Deliver reliable panels for commercial and industrial cold storage",
+                "Support customers with responsive technical and project guidance"
+              ]
+            }
+          },
+          {
+            "id": "richText_mphet4h4",
+            "type": "richText",
+            "data": {
+              "title": "Vision & Mission",
+              "body": "Advanced production, in-house quality control, and products trusted across commercial and industrial refrigeration — that is how UR® aims to lead."
+            }
+          },
+          {
+            "id": "vm-serve",
+            "type": "mediaText",
+            "columns": 2,
+            "data": {
+              "eyebrow": "Where we serve",
+              "title": "Trusted across industries",
+              "body": "Our products are used in restaurants, hotels, resorts, bakeries, supermarkets, and other commercial and industrial applications — wherever reliable cold storage performance matters.",
+              "image": "/uploads/vision-mission/cold.jpeg",
+              "imageSide": "left",
+              "linkLabel": "View our products →",
+              "linkHref": "/products",
+              "images": [
+                {
+                  "id": "slide_hzn0syff",
+                  "src": "/uploads/vision-mission/cold.jpeg",
+                  "alt": "Photo"
+                },
+                {
+                  "id": "slide_wuqv8277",
+                  "src": "/uploads/1786346871253-68cfdf5a697d.jpg",
+                  "alt": "Photo",
+                  "focus": {
+                    "x": 0,
+                    "y": 0
+                  }
+                }
+              ],
+              "slideshowIntervalSec": 2
+            }
+          },
+          {
+            "id": "vm-cta",
+            "type": "contactCta",
+            "data": {
+              "eyebrow": "Partner with us",
+              "title": "Start a conversation",
+              "body": "Tell us about your project and we will recommend suitable panel options.",
+              "ctaLabel": "Contact us →",
+              "ctaHref": "/contact"
+            },
+            "buttons": [
+              {
+                "id": "cta",
+                "label": "Contact us →",
+                "href": "/contact",
+                "style": "ghost",
+                "action": "link"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "page": "contact",
+      "key": "document",
+      "data": {
+        "title": "Contact Us",
+        "chrome": "default",
+        "sections": [
+          {
+            "id": "contact-hero",
+            "type": "richText",
+            "data": {
+              "eyebrow": "Next step",
+              "title": "Contact Us",
+              "body": "Tell us about panels, parts, or advisory needs. Our team will follow up with suitable options."
+            }
+          },
+          {
+            "id": "contact-cta",
+            "type": "contactCta",
+            "data": {
+              "eyebrow": "Reach our team",
+              "title": "Sales & enquiries",
+              "body": "Email, phone, or WhatsApp — we will follow up with suitable options.",
+              "email": "sales@ur.com.my",
+              "phone": "+60 00-000 0000",
+              "whatsapp": "+60 00-000 0000",
+              "ctaLabel": "Email sales",
+              "ctaHref": "mailto:sales@ur.com.my"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "page": "home",
+      "key": "capability",
+      "data": {
+        "eyebrow": "Our capability",
+        "title": "Automated manufacturing you can trust",
+        "body": "Advanced continuous production in Malaysia — consistent quality for cold storage and industrial projects.",
+        "image": "https://www.ur.com.my/userfiles/image/bannerpg2.png",
+        "points": [
+          "Continuous PIR production line — ASEAN first & only",
+          "In-house manufacturing with tight quality control",
+          "New RockWool automated line in Malaysia"
+        ],
+        "ctaLabel": "Talk to our team →",
+        "ctaHref": "#contact"
+      }
+    },
+    {
+      "page": "home",
+      "key": "certificates",
+      "data": {
+        "eyebrow": "Assurance",
+        "title": "Certificates & compliance",
+        "lead": "Independent certification and approvals that give buyers and consultants confidence.",
+        "items": [
+          {
+            "id": "c1",
+            "label": "FM Global Approval",
+            "thumb": "",
+            "href": "https://www.ur.com.my/fm-global-approval-36.aspx"
+          },
+          {
+            "id": "c2",
+            "label": "ISO 9001:2015",
+            "thumb": "",
+            "href": ""
+          },
+          {
+            "id": "c3",
+            "label": "TÜV Classification",
+            "thumb": "",
+            "href": ""
+          }
+        ]
+      }
+    },
+    {
+      "page": "home",
+      "key": "contact",
+      "data": {
+        "eyebrow": "Next step",
+        "title": "Enquire about your project",
+        "body": "Tell us about panels, parts, or advisory needs. Our team will follow up with suitable options.",
+        "email": "sales@ur.com.my",
+        "phone": "+60 00-000 0000",
+        "whatsapp": "+60 00-000 0000"
+      }
+    },
+    {
+      "page": "home",
+      "key": "document",
+      "data": {
+        "title": "Homepage",
+        "chrome": "default",
+        "sections": [
+          {
+            "id": "home-hero",
+            "type": "hero",
+            "data": {
+              "brand": "United Panel-System",
+              "headline": "Solutions for your cold storage needs",
+              "lead": "Insulated panels, refrigeration parts, and advisory services — one stop for cold storage projects in Malaysia.",
+              "backgroundImage": "https://www.ur.com.my/userfiles/image/WIW3.png",
+              "buttons": [
+                {
+                  "id": "primary",
+                  "label": "View products",
+                  "href": "/products",
+                  "style": "primary",
+                  "action": "link"
+                },
+                {
+                  "id": "secondary",
+                  "label": "Contact us",
+                  "href": "/contact",
+                  "style": "primary",
+                  "action": "link"
+                }
+              ]
+            },
+            "buttons": [
+              {
+                "id": "primary",
+                "label": "View products",
+                "href": "/products",
+                "style": "primary",
+                "action": "link"
+              },
+              {
+                "id": "secondary",
+                "label": "Contact us",
+                "href": "/contact",
+                "style": "primary",
+                "action": "link"
+              }
+            ]
+          },
+          {
+            "id": "home-proof",
+            "type": "proof",
+            "data": {
+              "items": [
+                {
+                  "id": "p1",
+                  "index": "01",
+                  "title": "ASEAN PIR Double Belt Line",
+                  "text": "First and only PIR Double Belt Continuous Line in ASEAN for cold store panels."
+                },
+                {
+                  "id": "p2",
+                  "index": "02",
+                  "title": "FM Approved PIR panels",
+                  "text": "Fire-rated insulated panel solutions trusted for commercial and industrial cold storage."
+                },
+                {
+                  "id": "p3",
+                  "index": "03",
+                  "title": "Based in Malaysia since 1978",
+                  "text": "Decades of cold room panel expertise from our manufacturing facilities in Johor."
+                }
+              ]
+            }
+          },
+          {
+            "id": "home-gateways",
+            "type": "cardGrid",
+            "columns": 2,
+            "data": {
+              "eyebrow": "Explore",
+              "title": "What we offer",
+              "lead": "Start here for a quick overview — open each section for full details.",
+              "items": [
+                {
+                  "id": "about",
+                  "eyebrow": "About Us",
+                  "title": "Our company",
+                  "text": "Profile, vision, R&D and certifications — who we are and how we manufacture.",
+                  "href": "/about",
+                  "image": "https://www.ur.com.my/userfiles/image/newfactoryoutlok.png"
+                },
+                {
+                  "id": "products",
+                  "eyebrow": "Products",
+                  "title": "Insulated panels",
+                  "text": "PIR, PU and RockWool panel systems for cold rooms and industrial envelopes.",
+                  "href": "/products",
+                  "image": "https://www.ur.com.my/userFiles/image/8.jpg"
+                },
+                {
+                  "id": "services",
+                  "eyebrow": "Services",
+                  "title": "Advisory & support",
+                  "text": "Guidance for cold storage planning, panel selection and project delivery.",
+                  "href": "/services",
+                  "image": "https://www.ur.com.my/userfiles/image/fronad2.jpg"
+                },
+                {
+                  "id": "parts",
+                  "eyebrow": "Refrigeration Parts",
+                  "title": "Parts & brands",
+                  "text": "Authorised refrigeration components from leading global brands.",
+                  "href": "/parts",
+                  "image": "https://www.ur.com.my/userfiles/image/front-spare-part.jpg"
+                }
+              ]
+            }
+          },
+          {
+            "id": "home-contact",
+            "type": "contactCta",
+            "data": {
+              "eyebrow": "Next step",
+              "title": "Enquire about your project",
+              "body": "Tell us about panels, parts, or advisory needs. Our team will follow up with suitable options.",
+              "email": "sales@ur.com.my",
+              "phone": "+60 00-000 0000",
+              "whatsapp": "+60 00-000 0000",
+              "ctaLabel": "Contact Us",
+              "ctaHref": "/contact"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "page": "home",
+      "key": "footer",
+      "data": {
+        "companyName": "United Panel-System(M) Sdn Bhd",
+        "tagline": "One stop solution for your cold storage needs",
+        "copyright": "All Rights Reserved. {year} United Panel-System(M) Sdn Bhd. (772009-A)",
+        "note": ""
+      }
+    },
+    {
+      "page": "home",
+      "key": "hero",
+      "data": {
+        "brand": "United Panel-System",
+        "headline": "Solutions for your cold storage needs",
+        "lead": "Insulated panels, refrigeration parts, and advisory services — one stop for cold storage projects in Malaysia.",
+        "primaryCtaLabel": "View products",
+        "primaryCtaHref": "/products",
+        "secondaryCtaLabel": "Contact us",
+        "secondaryCtaHref": "/contact",
+        "backgroundImage": "https://www.ur.com.my/userfiles/image/WIW3.png",
+        "mediaLabel": ""
+      }
+    },
+    {
+      "page": "home",
+      "key": "nav",
+      "data": {
+        "items": [
+          {
+            "label": "Home",
+            "href": "/"
+          },
+          {
+            "label": "About Us",
+            "href": "/about",
+            "children": [
+              {
+                "label": "Company Profile",
+                "href": "/about/company-profile"
+              },
+              {
+                "label": "Vision & Mission",
+                "href": "/about/vision-mission"
+              },
+              {
+                "label": "Research & Development",
+                "href": "/about/research-development"
+              },
+              {
+                "label": "Certified, Recognized and Approved",
+                "href": "/about/certified"
+              },
+              {
+                "label": "FM Global Approval",
+                "href": "/about/certified/fm-global"
+              },
+              {
+                "label": "TÜV Fire Classification",
+                "href": "/about/certified/tuv"
+              },
+              {
+                "label": "ISO, SIRIM & Bomba",
+                "href": "/about/certified/quality-recognition"
+              }
+            ]
+          },
+          {
+            "label": "Products",
+            "href": "/products",
+            "children": [
+              {
+                "label": "All products",
+                "href": "/products"
+              },
+              {
+                "label": "PIR Panels",
+                "href": "/products/pir"
+              },
+              {
+                "label": "PU Panels",
+                "href": "/products/pu"
+              },
+              {
+                "label": "RockWool Panels",
+                "href": "/products/rockwool"
+              }
+            ]
+          },
+          {
+            "label": "Services",
+            "href": "/services"
+          },
+          {
+            "label": "Refrigeration Parts",
+            "href": "/parts"
+          },
+          {
+            "label": "Contact Us",
+            "href": "/contact"
+          }
+        ]
+      }
+    },
+    {
+      "page": "home",
+      "key": "news",
+      "data": {
+        "visible": false,
+        "eyebrow": "News",
+        "title": "Latest updates",
+        "items": [
+          {
+            "id": "n1",
+            "date": "01/Jul/23",
+            "title": "Malaysian International Food & Beverage Fair",
+            "href": "#"
+          }
+        ]
+      }
+    },
+    {
+      "page": "home",
+      "key": "parts",
+      "data": {
+        "eyebrow": "2 · Refrigeration parts",
+        "title": "Authorised parts & brands",
+        "lead": "We distribute world-renowned refrigeration components — compressors, controls, and system parts.",
+        "items": [
+          {
+            "id": "parts-main",
+            "title": "Refrigeration Parts",
+            "text": "Authorised distributor for leading brands used across cold storage and refrigeration systems.",
+            "image": "https://www.ur.com.my/userfiles/image/front-spare-part.jpg",
+            "href": "/parts"
+          },
+          {
+            "id": "parts-brands",
+            "title": "Brand partners",
+            "text": "Bitzer, LU-VE, Danfoss, Emerson, and more — exclusive and authorised lines.",
+            "image": "https://www.ur.com.my/userfiles/image/blankk1.png",
+            "href": "/parts"
+          }
+        ]
+      }
+    },
+    {
+      "page": "home",
+      "key": "products",
+      "data": {
+        "eyebrow": "Products",
+        "title": "Insulated panel systems",
+        "lead": "Overview of our panel range — open each product for full specifications and details.",
+        "items": [
+          {
+            "id": "pir",
+            "title": "PIR Panels",
+            "text": "FM Approved polyisocyanurate panels from our continuous production line.",
+            "image": "/uploads/pir/UNITED.jpeg",
+            "href": "/products/pir"
+          },
+          {
+            "id": "pur",
+            "title": "PU Panels",
+            "text": "Customisable polyurethane panels for cold storage — SIRIM-listed, Bomba-approved.",
+            "image": "/uploads/pu/apps/install-blue-warehouse.jpg",
+            "href": "/products/pu"
+          },
+          {
+            "id": "rockwool",
+            "title": "RockWool Panels",
+            "text": "Mineral-wool core panels from Malaysia’s first fully automated RockWool line.",
+            "image": "/uploads/About/FactoryLook.png",
+            "href": "/products/rockwool"
+          }
+        ]
+      }
+    },
+    {
+      "page": "home",
+      "key": "proof",
+      "data": {
+        "items": [
+          {
+            "id": "p1",
+            "index": "01",
+            "title": "ASEAN PIR Double Belt Line",
+            "text": "First and only PIR Double Belt Continuous Line in ASEAN for cold store panels."
+          },
+          {
+            "id": "p2",
+            "index": "02",
+            "title": "FM Approved PIR panels",
+            "text": "Fire-rated insulated panel solutions trusted for commercial and industrial cold storage."
+          },
+          {
+            "id": "p3",
+            "index": "03",
+            "title": "Made in Malaysia since 1978",
+            "text": "Decades of cold room panel expertise from our manufacturing facilities in Johor."
+          }
+        ]
+      }
+    },
+    {
+      "page": "home",
+      "key": "services",
+      "data": {
+        "eyebrow": "3 · Services",
+        "title": "Advisory & project support",
+        "lead": "Experienced guidance for cold storage planning, panel selection, and project delivery.",
+        "items": [
+          {
+            "id": "svc-advisory",
+            "title": "Advisory Services",
+            "text": "Comprehensive advisory for cold storage design, panel choice, and project requirements.",
+            "image": "https://www.ur.com.my/userfiles/image/fronad2.jpg",
+            "href": "/services"
+          },
+          {
+            "id": "svc-solutions",
+            "title": "Cold storage solutions",
+            "text": "End-to-end support for walk-in cold rooms, freezers, and industrial refrigeration facilities.",
+            "image": "https://www.ur.com.my/userfiles/image/bannerpg2.png",
+            "href": "/services"
+          }
+        ]
+      }
+    },
+    {
+      "page": "home",
+      "key": "settings",
+      "data": {
+        "logoUrl": "https://www.ur.com.my/images/logo-2.png",
+        "siteName": "United Panel-System"
+      }
+    },
+    {
+      "page": "parts",
+      "key": "document",
+      "data": {
+        "title": "Refrigeration Parts",
+        "chrome": "default",
+        "sections": [
+          {
+            "id": "parts-hero",
+            "type": "richText",
+            "data": {
+              "eyebrow": "2 · Refrigeration parts",
+              "title": "Authorised parts & brands",
+              "body": "We distribute world-renowned refrigeration components — compressors, controls, and system parts."
+            }
+          },
+          {
+            "id": "parts-cards",
+            "type": "cardGrid",
+            "columns": 2,
+            "data": {
+              "items": [
+                {
+                  "id": "parts-main",
+                  "title": "Refrigeration Parts",
+                  "text": "Authorised distributor for leading brands used across cold storage and refrigeration systems.",
+                  "image": "https://www.ur.com.my/userfiles/image/front-spare-part.jpg",
+                  "href": "/parts"
+                },
+                {
+                  "id": "parts-brands",
+                  "title": "Brand partners",
+                  "text": "Bitzer, LU-VE, Danfoss, Emerson, and more — exclusive and authorised lines.",
+                  "image": "https://www.ur.com.my/userfiles/image/blankk1.png",
+                  "href": "/parts"
+                }
+              ]
+            }
+          },
+          {
+            "id": "parts-cta",
+            "type": "contactCta",
+            "data": {
+              "eyebrow": "Enquire",
+              "title": "Need refrigeration parts?",
+              "body": "Contact our team about authorised brands and components.",
+              "ctaLabel": "Enquire about parts →",
+              "ctaHref": "/contact"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "page": "pir",
+      "key": "page",
+      "data": {
+        "slug": "pir",
+        "brand": "United Panel · PIR",
+        "headline": "Polyisocyanurate (PIR) Panels",
+        "tagline": "ASEAN’s First & Only PIR Double Belt Continuous Line",
+        "lead": "Quality premium PIR panels from ASEAN’s first and only PIR Double Belt Continuous Line — FM Global (FM) approved Class 1 without height restrictions, with published product range, finishes and typical physical properties.",
+        "primaryCta": "Request a Quote",
+        "secondaryCta": "View specifications",
+        "heroImage": "/uploads/pir/install-wall.jpg",
+        "mediaLabel": "",
+        "proof": [
+          {
+            "id": "1",
+            "index": "01",
+            "title": "ASEAN Double Belt Continuous Line",
+            "text": "The first and only PIR Double Belt Continuous Line in ASEAN for cold store panels."
+          },
+          {
+            "id": "2",
+            "index": "02",
+            "title": "FM Global (FM) approved",
+            "text": "Class 1 to FM Approvals Standard 4880 / 4881 for walls, roof/ceiling and exterior wall systems — valid without height restrictions."
+          },
+          {
+            "id": "3",
+            "index": "03",
+            "title": "Fire classified & cladding tested",
+            "text": "TÜV Reaction to Fire Classification B-s1,d0, and UR PIR insulated panels have passed BS 8414-2 for external cladding systems."
+          }
+        ],
+        "overviewEyebrow": "Overview",
+        "overviewTitle": "ASEAN’s first Double Belt Continuous Line",
+        "overviewBody1": "Over the past 30 years, we have been recognised as one of the most established panel manufacturers in our industry. Our continuous effort in keeping up with our market’s current technology extends to our manufacturing capabilities. All of our PIR panels are manufactured in our own premises to ensure that tight control and stringent quality standards are met.",
+        "overviewBody2": "We are the first PIR Double Belt Continuous production line in the ASEAN region for insulation purposes. A PIR continuous production line is ideal for high-volume production of insulating panels, and our specialised team is able to cater for this complex turnkey manufacturing system.",
+        "overviewImage": "/uploads/pir/facility.jpg",
+        "overviewImages": [
+          "/uploads/pir/facility.jpg",
+          "/uploads/pir/production-line.jpg",
+          "/uploads/pir/coldroom-install.jpg",
+          "/uploads/pir/project-site.jpg"
+        ],
+        "overviewImageStartIndex": 0,
+        "overviewLinkLabel": "About FM Global approval →",
+        "overviewLinkHref": "/about/certified/fm-global",
+        "featuresEyebrow": "Advantages",
+        "featuresTitle": "What PIR panels offer",
+        "featuresLead": "PIR has the best insulation rating of all widely-used thermal insulation materials due to the low heat-conductivity. In addition to its thermal performance, PIR panels offer:",
+        "features": [
+          "Superior fire resistance — reduced flammability compared with other panel cores",
+          "Moisture resistant — closed-cell foam properties",
+          "Stronger parallel compression strength — better dimensional stability",
+          "More savings — lower energy costs for both heating and cooling",
+          "Faster delivery time — foam has a faster reaction rate",
+          "No restrictions on length in a single panel — produced on a continuous line",
+          "Environmental benefits — PIR cores contain no CFCs or HCFCs",
+          "ASEAN’s first PIR Double Belt Continuous Line for insulation, with in-house manufacture under stringent quality control",
+          "Ideal for high-volume production — specialised team support for complex turnkey manufacturing"
+        ],
+        "finishes": {
+          "eyebrow": "Surface finishes",
+          "title": "Ribbed, Micro Lining and Flat",
+          "lead": "Choose the outer profile that suits the façade or room finish.",
+          "items": [
+            {
+              "name": "Ribbed",
+              "image": "/uploads/pir/finish-ribbed.png",
+              "alt": "UR PIR panel with ribbed surface finish"
+            },
+            {
+              "name": "Micro Lining",
+              "image": "/uploads/pir/finish-micro-lining.png",
+              "alt": "UR PIR panel with micro lining surface finish"
+            },
+            {
+              "name": "Flat",
+              "image": "/uploads/pir/finish-flat.png",
+              "alt": "UR PIR panel with flat surface finish"
+            }
+          ]
+        },
+        "applications": {
+          "eyebrow": "Applications",
+          "title": "Where PIR panels are used",
+          "lead": "Suitable for insulated wall, ceiling and exterior cladding systems — including cold storage and industrial envelopes. PIR panels are suitable for both temperature-controlled and hygiene-safe environments for a temperature range between +20°C to −40°C.",
+          "items": [
+            "Insulated walls and ceilings",
+            "Exterior wall cladding systems",
+            "Cold storage and freezer rooms",
+            "Food processing facilities",
+            "Warehouses and industrial buildings",
+            "Clean rooms and controlled environments"
+          ],
+          "images": [
+            {
+              "src": "/uploads/pir/install-wall.jpg",
+              "alt": "UR PIR panels during cold room wall installation"
+            },
+            {
+              "src": "/uploads/pir/UNITED.jpeg",
+              "alt": "UR PIR For New RockWool Production Line"
+            },
+            {
+              "src": "/uploads/pir/cladding-project.jpg",
+              "alt": "PIR panel cladding on a multi-storey industrial project"
+            },
+            {
+              "src": "/uploads/pir/install-tall.jpg",
+              "alt": "Large-scale UR PIR panel wall installation"
+            },
+            {
+              "src": "/uploads/pir/app-industrial-facade.jpg",
+              "alt": "Industrial facility clad with UR PIR panels"
+            },
+            {
+              "src": "/uploads/pir/app-warehouse.jpg",
+              "alt": "Warehouse with PIR panel exterior cladding"
+            },
+            {
+              "src": "/uploads/pir/app-cladding-wall.jpg",
+              "alt": "Close view of PIR panel exterior cladding"
+            },
+            {
+              "src": "/uploads/pir/app-crane-install.jpg",
+              "alt": "Crane installing a long UR PIR wall panel"
+            },
+            {
+              "src": "/uploads/pir/app-highbay-interior.jpg",
+              "alt": "High-bay interior PIR panel installation"
+            },
+            {
+              "src": "/uploads/pir/app-processing-corridor.jpg",
+              "alt": "PIR panel walls in a processing corridor"
+            },
+            {
+              "src": "/uploads/pir/app-coldroom-interior.jpg",
+              "alt": "Finished cold room with white PIR panels"
+            },
+            {
+              "src": "/uploads/pir/app-coldroom-install.jpg",
+              "alt": "Cold room PIR panel installation in progress"
+            }
+          ]
+        },
+        "jointDetails": {
+          "eyebrow": "Joint detail",
+          "title": "UR PIR Panel Joint",
+          "summary": "Interlocking tongue & groove joints by thickness, plus typical installation joint details. Expand to view the full diagrams.",
+          "body": "UR PIR panels use an interlocking tongue-and-groove joint. The male and female profiles lock together for a continuous insulated wall or ceiling line with a clean, sealed connection between panels.",
+          "image": "/uploads/pir/joints/panel-joint.png",
+          "imageAlt": "PIR Panel Joint — interlocking tongue and groove diagram",
+          "pages": [
+            {
+              "title": "Typical panel profile and joints",
+              "lead": "Male, female and after-joint profiles for 50–200 mm panel thicknesses.",
+              "src": "/uploads/pir/joints/typical-profiles.jpg",
+              "alt": "Joint Details — typical panel profile and joints for 50mm to 200mm"
+            },
+            {
+              "title": "Installation joint details",
+              "lead": "Wall-to-wall, corner, floor, ceiling suspension, nylon hanger, and concrete wall connections.",
+              "src": "/uploads/pir/joints/installation-details.jpg",
+              "alt": "PIR installation joint details — wall, ceiling, floor and concrete connections"
+            }
+          ]
+        },
+        "specsEyebrow": "Product range & data",
+        "specsTitle": "Specifications (PIR)",
+        "specsLead": "Product Range & Data. Insulation panels are manufactured in-house and delivered to projects’ sites for ready installation.",
+        "specs": [
+          {
+            "label": "Dimension",
+            "value": "1150 mm × any desired length"
+          },
+          {
+            "label": "Thickness",
+            "value": "50 mm, 75 mm, 100 mm, 125 mm, 150 mm, 180 mm, 200 mm"
+          },
+          {
+            "label": "Joint",
+            "value": "UR PIR Panel Joint — interlocking tongue & groove (male / female)"
+          },
+          {
+            "label": "Skins — PPGI",
+            "value": "0.36 mm, 0.40 mm, 0.45 mm, 0.50 mm, 0.60 mm, 0.70 mm"
+          },
+          {
+            "label": "Skins — PVC laminated steel",
+            "value": "0.56 mm, 0.60 mm, 0.65 mm, 0.70 mm, 0.80 mm"
+          },
+          {
+            "label": "Surface finishes",
+            "value": "Ribbed · Micro Lining · Flat"
+          }
+        ],
+        "physicalProperties": {
+          "eyebrow": "Material data",
+          "title": "Typical physical properties (PIR)",
+          "lead": "Typical physical properties table.",
+          "headers": [
+            "Property",
+            "Test method",
+            "Unit",
+            "Result*"
+          ],
+          "rows": [
+            [
+              "Core density",
+              "DIN EN ISO 845",
+              "kg/m³",
+              "40.1"
+            ],
+            [
+              "Thermal conductivity",
+              "DIN EN 12667",
+              "mW/m·K",
+              "20.35"
+            ],
+            [
+              "Compression stress",
+              "DIN EN 826 / ISO 844",
+              "N/mm²",
+              "0.153"
+            ],
+            [
+              "Dimensional stability (−30°C) — length",
+              "DIN ISO 2796",
+              "%",
+              "−0.1"
+            ],
+            [
+              "Dimensional stability (−30°C) — width",
+              "DIN ISO 2796",
+              "%",
+              "0.0"
+            ],
+            [
+              "Dimensional stability (−30°C) — height",
+              "DIN ISO 2796",
+              "%",
+              "0.0"
+            ],
+            [
+              "Water absorption",
+              "—",
+              "Vol.-%",
+              "1.5"
+            ],
+            [
+              "Closed cell content",
+              "DIN ISO 4590",
+              "%",
+              "93"
+            ],
+            [
+              "Flammability",
+              "DIN 4120",
+              "B2",
+              "5 cm flame height"
+            ]
+          ],
+          "note": "*Based on sample submitted subjected to standard tests deviation."
+        },
+        "roofing": {
+          "eyebrow": "Roof panels",
+          "title": "UR PIR roof panels",
+          "body": "Roof panel profiles with 1000 mm cover width.",
+          "specs": [
+            {
+              "label": "UR PIR ROOF Panel 25 mm",
+              "value": "Cover width 1000 mm · core 25 mm · overall height 59 mm · rib 38 mm"
+            },
+            {
+              "label": "UR PIR ROOF Panel 40 mm",
+              "value": "Cover width 1000 mm · core 40 mm · overall height 74 mm · rib 38 mm"
+            }
+          ]
+        },
+        "certsEyebrow": "Product certification list",
+        "certsTitle": "Certified quality",
+        "certsLead": "UR PIR panel is FM Global (FM) approved and TÜV classified B-s1,d0, with ISO, SIRIM QAS International (including BS 8414-2 cladding fire testing) and Bomba recognition.",
+        "certifications": [
+          {
+            "id": "fm",
+            "name": "FM Global (FM) Approval",
+            "detail": "Class 1 fire rating to FM Approvals Standard 4880 / 4881 — valid without height restrictions. Includes the UBC-26 room test: fire contained with no propagation; core charring < 6.4 mm.",
+            "image": "/uploads/pir/certs/fm.png",
+            "href": "/about/certified/fm-global"
+          },
+          {
+            "id": "tuv",
+            "name": "TÜV Fire Classification",
+            "detail": "Tested and classified by TÜV Singapore — Reaction to Fire Classification B-s1,d0, in relation to reaction to fire behaviour, smoke production and flaming droplets.",
+            "image": "/uploads/pir/certs/tuv.jpg",
+            "href": "/about/certified/tuv"
+          },
+          {
+            "id": "quality",
+            "name": "ISO, SIRIM & Bomba",
+            "detail": "ISO 9001:2015 (Certification No. 17975-A), SIRIM QAS International — including BS 8414-2 external cladding fire testing — and Jabatan Bomba dan Penyelamat Malaysia recognition.",
+            "image": "/uploads/pir/certs/sirim.jpg",
+            "href": "/about/certified/quality-recognition"
+          }
+        ],
+        "gallery": [],
+        "related": [
+          {
+            "title": "PU Panels",
+            "text": "Customisable polyurethane panels for interior and exterior cold storage use.",
+            "href": "/products/pu",
+            "image": "https://www.ur.com.my/userfiles/image/pro-pu-panel-01.jpg"
+          },
+          {
+            "title": "RockWool Panels",
+            "text": "Mineral-wool core panels from Malaysia’s first fully automated RockWool line.",
+            "href": "/products/rockwool",
+            "image": "/uploads/rockwool/RockWool Panels.jpeg"
+          }
+        ],
+        "contactEyebrow": "Next step",
+        "contactTitle": "Enquire about PIR panels",
+        "contactBody": "Share thickness, project type, and location. Our team will follow up with suitable PIR options and lead times.",
+        "email": "sales@ur.com.my",
+        "phone": "+607 355 8000",
+        "whatsapp": "+607 355 8000",
+        "footerTagline": "PIR Panels"
+      }
+    },
+    {
+      "page": "products",
+      "key": "document",
+      "data": {
+        "title": "Products",
+        "chrome": "default",
+        "sections": [
+          {
+            "id": "prod-hero",
+            "type": "hero",
+            "data": {
+              "brand": "United Panel",
+              "headline": "Insulated panel systems",
+              "lead": "PIR, PU, and RockWool — three cores for cold storage and industrial projects. Choose a system below, then open full specifications on each product page.",
+              "backgroundImage": "/uploads/About/FactoryLook.png",
+              "size": "short",
+              "buttons": []
+            }
+          },
+          {
+            "id": "intro-pir",
+            "type": "mediaText",
+            "columns": 2,
+            "data": {
+              "eyebrow": "PIR",
+              "title": "Polyisocyanurate panels",
+              "body": "ASEAN’s first PIR Double Belt Continuous Line — FM Approved Class 1, TÜV B-s1,d0, and BS 8414-2 tested. Built in-house for cold rooms and industrial envelopes.\n\n• FM 4880 / 4881 Class 1 — no height restriction\n\n• Continuous-line consistency and finish options\n\n• Full thicknesses, joints, and specs on the PIR page",
+              "image": "/uploads/pir/UNITED.jpeg",
+              "linkLabel": "View PIR panels →",
+              "linkHref": "/products/pir",
+              "imageSide": "left",
+              "imageAspect": "wide"
+            }
+          },
+          {
+            "id": "intro-pu",
+            "type": "mediaText",
+            "columns": 2,
+            "data": {
+              "eyebrow": "PU / PUR",
+              "title": "Polyurethane panels",
+              "body": "Rigid PU foam panels for refrigeration and cold storage — high insulation in a modest thickness, with clip-lock / cam-lock joints and SIRIM-listed, Bomba-approved quality.\n\n• 50–250 mm cores, 1150 mm width, custom length\n\n• Clip-lock, cam-lock and semi cam-lock joints\n\n• SIRIM QAS listed · Bomba approved · CFC-free",
+              "image": "/uploads/pu/apps/install-blue-warehouse.jpg",
+              "linkLabel": "View PU panels →",
+              "linkHref": "/products/pu",
+              "imageSide": "right",
+              "imageAspect": "wide"
+            }
+          },
+          {
+            "id": "intro-rockwool",
+            "type": "mediaText",
+            "columns": 2,
+            "data": {
+              "eyebrow": "RockWool",
+              "title": "Mineral-wool panels",
+              "body": "RockWool core panels from Malaysia’s first fully automated RockWool line — a fire-conscious option beside our PIR and PU systems.\n\n• Mineral-wool (stone fibre) core\n\n• Built for fire-conscious cold rooms and envelopes\n\n• Same in-house manufacturing discipline as our foam lines",
+              "image": "/uploads/About/FactoryLook.png",
+              "linkLabel": "View RockWool panels →",
+              "linkHref": "/products/rockwool",
+              "imageSide": "left",
+              "imageAspect": "wide"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "page": "products/pir",
+      "key": "document",
+      "data": {
+        "title": "Polyisocyanurate (PIR) Panels",
+        "chrome": "default",
+        "sections": [
+          {
+            "id": "hero_0omujb2s",
+            "type": "hero",
+            "data": {
+              "brand": "United Panel · PIR",
+              "headline": "Polyisocyanurate (PIR) Panels",
+              "lead": "Quality premium PIR panels from ASEAN’s first and only PIR Double Belt Continuous Line — FM Global (FM) approved Class 1 without height restrictions, with published product range, finishes and typical physical properties.",
+              "tagline": "ASEAN’s First & Only PIR Double Belt Continuous Line",
+              "primaryCtaLabel": "Request a Quote",
+              "primaryCtaHref": "#contact",
+              "secondaryCtaLabel": "View specifications",
+              "secondaryCtaHref": "#specs",
+              "backgroundImage": "/uploads/pir/install-wall.jpg"
+            }
+          },
+          {
+            "id": "proof_x31x3xnb",
+            "type": "proof",
+            "data": {
+              "items": [
+                {
+                  "id": "1",
+                  "index": "01",
+                  "title": "ASEAN Double Belt Continuous Line",
+                  "text": "The first and only PIR Double Belt Continuous Line in ASEAN for cold store panels."
+                },
+                {
+                  "id": "2",
+                  "index": "02",
+                  "title": "FM Global (FM) approved",
+                  "text": "Class 1 to FM Approvals Standard 4880 / 4881 for walls, roof/ceiling and exterior wall systems — valid without height restrictions."
+                },
+                {
+                  "id": "3",
+                  "index": "03",
+                  "title": "Fire classified & cladding tested",
+                  "text": "TÜV Reaction to Fire Classification B-s1,d0, and UR PIR insulated panels have passed BS 8414-2 for external cladding systems."
+                }
+              ]
+            }
+          },
+          {
+            "id": "overview_ofhj0tc7",
+            "type": "mediaText",
+            "columns": 2,
+            "data": {
+              "eyebrow": "Overview",
+              "title": "ASEAN’s first Double Belt Continuous Line",
+              "body": "Over the past 30 years, we have been recognised as one of the most established panel manufacturers in our industry. Our continuous effort in keeping up with our market’s current technology extends to our manufacturing capabilities. All of our PIR panels are manufactured in our own premises to ensure that tight control and stringent quality standards are met.",
+              "body2": "We are the first PIR Double Belt Continuous production line in the ASEAN region for insulation purposes. A PIR continuous production line is ideal for high-volume production of insulating panels, and our specialised team is able to cater for this complex turnkey manufacturing system.",
+              "image": "/uploads/pir/facility.jpg",
+              "images": [
+                "/uploads/pir/facility.jpg",
+                "/uploads/pir/production-line.jpg",
+                "/uploads/pir/coldroom-install.jpg",
+                "/uploads/pir/project-site.jpg"
+              ],
+              "linkLabel": "About FM Global approval →",
+              "linkHref": "/about/certified/fm-global",
+              "imageSide": "left",
+              "imageAspect": "landscape",
+              "slideshowIntervalSec": 3
+            }
+          },
+          {
+            "id": "features_gda4lwzs",
+            "type": "featureList",
+            "data": {
+              "eyebrow": "Advantages",
+              "title": "What PIR panels offer",
+              "lead": "PIR has the best insulation rating of all widely-used thermal insulation materials due to the low heat-conductivity. In addition to its thermal performance, PIR panels offer:",
+              "items": [
+                "Superior fire resistance — reduced flammability compared with other panel cores",
+                "Moisture resistant — closed-cell foam properties",
+                "Stronger parallel compression strength — better dimensional stability",
+                "More savings — lower energy costs for both heating and cooling",
+                "Faster delivery time — foam has a faster reaction rate",
+                "No restrictions on length in a single panel — produced on a continuous line",
+                "Environmental benefits — PIR cores contain no CFCs or HCFCs",
+                "ASEAN’s first PIR Double Belt Continuous Line for insulation, with in-house manufacture under stringent quality control",
+                "Ideal for high-volume production — specialised team support for complex turnkey manufacturing"
+              ]
+            }
+          },
+          {
+            "id": "finishes_x5ogh2j1",
+            "type": "cardGrid",
+            "columns": 3,
+            "data": {
+              "eyebrow": "Surface finishes",
+              "title": "Ribbed, Micro Lining and Flat",
+              "lead": "Choose the outer profile that suits the façade or room finish.",
+              "items": [
+                {
+                  "id": "fin0_bhrbd3o6",
+                  "title": "Ribbed",
+                  "text": "UR PIR panel with ribbed surface finish",
+                  "image": "/uploads/pir/finish-ribbed.png"
+                },
+                {
+                  "id": "fin1_xw97cacq",
+                  "title": "Micro Lining",
+                  "text": "UR PIR panel with micro lining surface finish",
+                  "image": "/uploads/pir/finish-micro-lining.png"
+                },
+                {
+                  "id": "fin2_n0o6htvm",
+                  "title": "Flat",
+                  "text": "UR PIR panel with flat surface finish",
+                  "image": "/uploads/pir/finish-flat.png"
+                }
+              ]
+            }
+          },
+          {
+            "id": "apps_o47vw84a",
+            "type": "featureList",
+            "data": {
+              "eyebrow": "Applications",
+              "title": "Where PIR panels are used",
+              "lead": "Suitable for insulated wall, ceiling and exterior cladding systems — including cold storage and industrial envelopes. PIR panels are suitable for both temperature-controlled and hygiene-safe environments for a temperature range between +20°C to −40°C.",
+              "items": [
+                "Insulated walls and ceilings",
+                "Exterior wall cladding systems",
+                "Cold storage and freezer rooms",
+                "Food processing facilities",
+                "Warehouses and industrial buildings",
+                "Clean rooms and controlled environments"
+              ],
+              "images": [
+                {
+                  "id": "ag0_jrxtzhet",
+                  "src": "/uploads/pir/install-wall.jpg",
+                  "alt": "UR PIR panels during cold room wall installation"
+                },
+                {
+                  "id": "ag1_ji2szspi",
+                  "src": "/uploads/pir/UNITED.jpeg",
+                  "alt": "UR PIR For New RockWool Production Line"
+                },
+                {
+                  "id": "ag2_eytehkyf",
+                  "src": "/uploads/pir/cladding-project.jpg",
+                  "alt": "PIR panel cladding on a multi-storey industrial project"
+                },
+                {
+                  "id": "ag3_zry3nic6",
+                  "src": "/uploads/pir/install-tall.jpg",
+                  "alt": "Large-scale UR PIR panel wall installation"
+                },
+                {
+                  "id": "ag4_bo9zvxyf",
+                  "src": "/uploads/pir/app-industrial-facade.jpg",
+                  "alt": "Industrial facility clad with UR PIR panels"
+                },
+                {
+                  "id": "ag5_po84l77x",
+                  "src": "/uploads/pir/app-warehouse.jpg",
+                  "alt": "Warehouse with PIR panel exterior cladding"
+                },
+                {
+                  "id": "ag6_7ropl8ue",
+                  "src": "/uploads/pir/app-cladding-wall.jpg",
+                  "alt": "Close view of PIR panel exterior cladding"
+                },
+                {
+                  "id": "ag7_nw44hh1a",
+                  "src": "/uploads/pir/app-crane-install.jpg",
+                  "alt": "Crane installing a long UR PIR wall panel"
+                },
+                {
+                  "id": "ag8_bicwuans",
+                  "src": "/uploads/pir/app-highbay-interior.jpg",
+                  "alt": "High-bay interior PIR panel installation"
+                },
+                {
+                  "id": "ag9_bl1dbv0d",
+                  "src": "/uploads/pir/app-processing-corridor.jpg",
+                  "alt": "PIR panel walls in a processing corridor"
+                },
+                {
+                  "id": "ag10_tz3jilam",
+                  "src": "/uploads/pir/app-coldroom-interior.jpg",
+                  "alt": "Finished cold room with white PIR panels"
+                },
+                {
+                  "id": "ag11_3eyro08j",
+                  "src": "/uploads/pir/app-coldroom-install.jpg",
+                  "alt": "Cold room PIR panel installation in progress"
+                }
+              ]
+            },
+            "columns": 2
+          },
+          {
+            "id": "joint",
+            "type": "jointDetails",
+            "data": {
+              "eyebrow": "Joint detail",
+              "title": "UR PIR Panel Joint",
+              "summary": "Interlocking tongue & groove joints by thickness, plus typical installation joint details. Expand to view the full diagrams.",
+              "body": "UR PIR panels use an interlocking tongue-and-groove joint. The male and female profiles lock together for a continuous insulated wall or ceiling line with a clean, sealed connection between panels.",
+              "image": "/uploads/pir/joints/panel-joint.png",
+              "imageAlt": "PIR Panel Joint — interlocking tongue and groove diagram",
+              "toggleLabel": "Show joint details",
+              "hideLabel": "Hide joint details",
+              "pages": [
+                {
+                  "id": "jp0_79lvife0",
+                  "title": "Typical panel profile and joints",
+                  "lead": "Male, female and after-joint profiles for 50–200 mm panel thicknesses.",
+                  "src": "/uploads/pir/joints/typical-profiles.jpg",
+                  "alt": "Joint Details — typical panel profile and joints for 50mm to 200mm"
+                },
+                {
+                  "id": "jp1_c6075wj0",
+                  "title": "Installation joint details",
+                  "lead": "Wall-to-wall, corner, floor, ceiling suspension, nylon hanger, and concrete wall connections.",
+                  "src": "/uploads/pir/joints/installation-details.jpg",
+                  "alt": "PIR installation joint details — wall, ceiling, floor and concrete connections"
+                }
+              ]
+            }
+          },
+          {
+            "id": "specs_4sqq2q6e",
+            "type": "specsTable",
+            "data": {
+              "eyebrow": "Product range & data",
+              "title": "Specifications (PIR)",
+              "lead": "Product Range & Data. Insulation panels are manufactured in-house and delivered to projects’ sites for ready installation.",
+              "rows": [
+                {
+                  "label": "Dimension",
+                  "value": "1150 mm × any desired length"
+                },
+                {
+                  "label": "Thickness",
+                  "value": "50 mm, 75 mm, 100 mm, 125 mm, 150 mm, 180 mm, 200 mm"
+                },
+                {
+                  "label": "Joint",
+                  "value": "UR PIR Panel Joint — interlocking tongue & groove (male / female)"
+                },
+                {
+                  "label": "Skins — PPGI",
+                  "value": "0.36 mm, 0.40 mm, 0.45 mm, 0.50 mm, 0.60 mm, 0.70 mm"
+                },
+                {
+                  "label": "Skins — PVC laminated steel",
+                  "value": "0.56 mm, 0.60 mm, 0.65 mm, 0.70 mm, 0.80 mm"
+                },
+                {
+                  "label": "Surface finishes",
+                  "value": "Ribbed · Micro Lining · Flat"
+                }
+              ]
+            }
+          },
+          {
+            "id": "props_841g6pig",
+            "type": "dataTable",
+            "data": {
+              "eyebrow": "Material data",
+              "title": "Typical physical properties (PIR)",
+              "lead": "Typical physical properties table.",
+              "headers": [
+                "Property",
+                "Test method",
+                "Unit",
+                "Result*"
+              ],
+              "rows": [
+                [
+                  "Core density",
+                  "DIN EN ISO 845",
+                  "kg/m³",
+                  "40.1"
+                ],
+                [
+                  "Thermal conductivity",
+                  "DIN EN 12667",
+                  "mW/m·K",
+                  "20.35"
+                ],
+                [
+                  "Compression stress",
+                  "DIN EN 826 / ISO 844",
+                  "N/mm²",
+                  "0.153"
+                ],
+                [
+                  "Dimensional stability (−30°C) — length",
+                  "DIN ISO 2796",
+                  "%",
+                  "−0.1"
+                ],
+                [
+                  "Dimensional stability (−30°C) — width",
+                  "DIN ISO 2796",
+                  "%",
+                  "0.0"
+                ],
+                [
+                  "Dimensional stability (−30°C) — height",
+                  "DIN ISO 2796",
+                  "%",
+                  "0.0"
+                ],
+                [
+                  "Water absorption",
+                  "—",
+                  "Vol.-%",
+                  "1.5"
+                ],
+                [
+                  "Closed cell content",
+                  "DIN ISO 4590",
+                  "%",
+                  "93"
+                ],
+                [
+                  "Flammability",
+                  "DIN 4120",
+                  "B2",
+                  "5 cm flame height"
+                ]
+              ]
+            },
+            "note": "*Based on sample submitted subjected to standard tests deviation."
+          },
+          {
+            "id": "roofing_gzcmwn8n",
+            "type": "specsTable",
+            "data": {
+              "eyebrow": "Roof panels",
+              "title": "UR PIR roof panels",
+              "lead": "Roof panel profiles with 1000 mm cover width.",
+              "rows": [
+                {
+                  "label": "UR PIR ROOF Panel 25 mm",
+                  "value": "Cover width 1000 mm · core 25 mm · overall height 59 mm · rib 38 mm"
+                },
+                {
+                  "label": "UR PIR ROOF Panel 40 mm",
+                  "value": "Cover width 1000 mm · core 40 mm · overall height 74 mm · rib 38 mm"
+                }
+              ]
+            }
+          },
+          {
+            "id": "certs_vx2wo30j",
+            "type": "cardGrid",
+            "columns": 3,
+            "data": {
+              "eyebrow": "Product certification list",
+              "title": "Certified quality",
+              "lead": "UR PIR panel is FM Global (FM) approved and TÜV classified B-s1,d0, with ISO, SIRIM QAS International (including BS 8414-2 cladding fire testing) and Bomba recognition.",
+              "items": [
+                {
+                  "id": "fm",
+                  "title": "FM Global (FM) Approval",
+                  "text": "Class 1 fire rating to FM Approvals Standard 4880 / 4881 — valid without height restrictions. Includes the UBC-26 room test: fire contained with no propagation; core charring < 6.4 mm.",
+                  "image": "/uploads/pir/certs/fm.png",
+                  "href": "/about/certified/fm-global"
+                },
+                {
+                  "id": "tuv",
+                  "title": "TÜV Fire Classification",
+                  "text": "Tested and classified by TÜV Singapore — Reaction to Fire Classification B-s1,d0, in relation to reaction to fire behaviour, smoke production and flaming droplets.",
+                  "image": "/uploads/pir/certs/tuv.jpg",
+                  "href": "/about/certified/tuv"
+                },
+                {
+                  "id": "quality",
+                  "title": "ISO, SIRIM & Bomba",
+                  "text": "ISO 9001:2015 (Certification No. 17975-A), SIRIM QAS International — including BS 8414-2 external cladding fire testing — and Jabatan Bomba dan Penyelamat Malaysia recognition.",
+                  "image": "/uploads/pir/certs/sirim.jpg",
+                  "href": "/about/certified/quality-recognition"
+                }
+              ]
+            }
+          },
+          {
+            "id": "related_zpxs0tjv",
+            "type": "cardGrid",
+            "columns": 2,
+            "data": {
+              "eyebrow": "Related",
+              "title": "Other panel systems",
+              "items": [
+                {
+                  "id": "rel0_32rnipzo",
+                  "title": "PU Panels",
+                  "text": "Customisable polyurethane panels for interior and exterior cold storage use.",
+                  "image": "https://www.ur.com.my/userfiles/image/pro-pu-panel-01.jpg",
+                  "href": "/products/pu"
+                },
+                {
+                  "id": "rel1_7vq8asgy",
+                  "title": "RockWool Panels",
+                  "text": "Mineral-wool core panels from Malaysia’s first fully automated RockWool line.",
+                  "image": "/uploads/rockwool/RockWool Panels.jpeg",
+                  "href": "/products/rockwool"
+                }
+              ]
+            }
+          },
+          {
+            "id": "contact_j5o71jip",
+            "type": "contactCta",
+            "data": {
+              "eyebrow": "Next step",
+              "title": "Enquire about PIR panels",
+              "body": "Share thickness, project type, and location. Our team will follow up with suitable PIR options and lead times.",
+              "email": "sales@ur.com.my",
+              "phone": "+607 355 8000",
+              "whatsapp": "+607 355 8000",
+              "ctaLabel": "Contact Us",
+              "ctaHref": "/contact"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "page": "products/pu",
+      "key": "document",
+      "data": {
+        "title": "Polyurethane (PU) Insulation Panels",
+        "chrome": "default",
+        "sections": [
+          {
+            "id": "hero_pwurq314",
+            "type": "hero",
+            "data": {
+              "brand": "United Panel · PU",
+              "headline": "Polyurethane (PU) Insulation Panels",
+              "lead": "Highly customisable UR PU panels with a range of core thicknesses, finishes and joint systems — assembled vertically or horizontally for interior and exterior cold storage.",
+              "tagline": "One-stop solution for your cold storage needs",
+              "backgroundImage": "/uploads/pu/apps/install-blue-warehouse.jpg",
+              "buttons": []
+            }
+          },
+          {
+            "id": "proof_xiskm9zc",
+            "type": "proof",
+            "data": {
+              "items": [
+                {
+                  "id": "1",
+                  "index": "01",
+                  "title": "High insulation, modest thickness",
+                  "text": "PU foam delivers the same insulation as much thicker brick, wool or polystyrene — air and water cannot circulate inside the core."
+                },
+                {
+                  "id": "2",
+                  "index": "02",
+                  "title": "Clip, cam and semi cam-lock",
+                  "text": "Tongue-and-groove clip-lock, cam-lock and semi cam-lock joints for clean wall and ceiling assembly."
+                },
+                {
+                  "id": "3",
+                  "index": "03",
+                  "title": "SIRIM listed · Bomba approved",
+                  "text": "UR PU is a certified and listed product by SIRIM QAS International, and tested and approved by Bomba Malaysia for commercial and industrial use."
+                }
+              ]
+            }
+          },
+          {
+            "id": "overview_ejli71ka",
+            "type": "mediaText",
+            "columns": 2,
+            "data": {
+              "eyebrow": "Overview",
+              "title": "Custom panels for real projects",
+              "body": "Polyurethane panels are highly customisable. We have a range of core thicknesses, support finishings and panel joints to choose from. The rigid polyurethane foam is favoured for insulation panels because of its mechanical, chemical, biological and moisture properties.",
+              "body2": "Panels can be assembled by vertical or horizontal disposition and are suitable for interior and exterior applications — for restaurants, cold rooms, warehouses and industrial refrigeration fit-outs.",
+              "image": "/uploads/pu/apps/site-01.jpg",
+              "images": [
+                {
+                  "id": "ov0_dgx7sjs6",
+                  "src": "/uploads/pu/apps/site-01.jpg",
+                  "alt": "Overview photo"
+                },
+                {
+                  "id": "ov1_9pf21wc4",
+                  "src": "/uploads/pu/apps/site-02.jpg",
+                  "alt": "Overview photo"
+                },
+                {
+                  "id": "ov2_qb2yi4dg",
+                  "src": "/uploads/pu/apps/install-blue-warehouse.jpg",
+                  "alt": "Overview photo"
+                },
+                {
+                  "id": "ov3_a151flkp",
+                  "src": "/uploads/pu/apps/app-5c.jpg",
+                  "alt": "Overview photo"
+                },
+                {
+                  "id": "ov4_j5giw536",
+                  "src": "/uploads/pu/apps/warehouse-11b.jpg",
+                  "alt": "Overview photo"
+                },
+                {
+                  "id": "ov5_sjn2jaw9",
+                  "src": "/uploads/pu/03-assembly.jpg",
+                  "alt": "Overview photo"
+                }
+              ],
+              "imageSide": "left"
+            }
+          },
+          {
+            "id": "features_de2g2q9u",
+            "type": "featureList",
+            "data": {
+              "eyebrow": "Advantages of PU foam",
+              "title": "What UR PU panels offer",
+              "lead": "Excellent insulating efficiency, easy installation and maintenance, aesthetically pleasing finishes, and durable construction for daily cold-room use.",
+              "items": [
+                "Food grade compliance",
+                "Moisture and corrosion resistance",
+                "Superior thermal performance — high insulation even with a modest material thickness",
+                "High density mechanical strength — suitable for wall and roof applications",
+                "Fire retardant — in a fire the foam does not drip or run, minimising flammable mass",
+                "CFC free",
+                "Air- and water-tight core — installation in all weather conditions",
+                "Clip-lock, cam-lock and semi cam-lock tongue-and-groove joints"
+              ]
+            }
+          },
+          {
+            "id": "apps_8ifxv9gf",
+            "type": "featureList",
+            "data": {
+              "eyebrow": "Applications",
+              "title": "Where PU panels are used",
+              "lead": "Suitable for interior and exterior insulated walls, ceilings and cold-store envelopes.",
+              "items": [
+                "Chiller and freezer rooms for fresh / frozen food",
+                "Controlled atmosphere rooms",
+                "Food processing rooms",
+                "Production rooms",
+                "Clean rooms",
+                "Pharmaceutical storage rooms",
+                "Warehouses",
+                "Cross-docking facilities"
+              ],
+              "images": [
+                {
+                  "id": "ag0_d55w336d",
+                  "src": "/uploads/pu/apps/app-5c.jpg",
+                  "alt": "PU panel corridor in a cold storage facility"
+                },
+                {
+                  "id": "ag1_jbr7l5re",
+                  "src": "/uploads/pu/apps/warehouse-11b.jpg",
+                  "alt": "White PU panel walls and ceiling at loading docks"
+                },
+                {
+                  "id": "ag2_q6v2amz1",
+                  "src": "/uploads/pu/apps/install-blue-warehouse.jpg",
+                  "alt": "Installing tall UR PU wall panels in a warehouse"
+                },
+                {
+                  "id": "ag3_5c6vcjov",
+                  "src": "/uploads/pu/01-finished.jpg",
+                  "alt": "Finished PU panel interior"
+                },
+                {
+                  "id": "ag4_ehewrdq6",
+                  "src": "/uploads/pu/apps/site-02.jpg",
+                  "alt": "UR PU panels showing foam core and metal skins"
+                }
+              ]
+            }
+          },
+          {
+            "id": "joint",
+            "type": "jointDetails",
+            "data": {
+              "eyebrow": "Joint detail",
+              "title": "UR PU Panel Joint",
+              "summary": "Clip-lock, cam-lock and semi cam-lock tongue & groove joints, plus typical wall, ceiling and floor installation details. Expand to view the full diagrams.",
+              "body": "UR PU panels use interlocking tongue-and-groove joints. Clip-lock, cam-lock and semi cam-lock systems lock together for a continuous insulated wall or ceiling line, sealed with non-setting butyl, polysulphide or silicone as specified.",
+              "image": "/uploads/pu/joints/clip-joint-01.png",
+              "imageAlt": "PU panel clip joint — interlocking tongue and groove",
+              "toggleLabel": "Show joint details",
+              "hideLabel": "Hide joint details",
+              "pages": [
+                {
+                  "id": "jp0_22rbc5qq",
+                  "title": "Polyurethane panel clip joints",
+                  "lead": "Tongue-and-groove clip joint profiles shown with product range and typical site photos.",
+                  "src": "/uploads/pu/joints/product-range-page.jpg",
+                  "alt": "PU insulation panels, specifications and clip joints"
+                },
+                {
+                  "id": "jp1_dng4yyhv",
+                  "title": "Installation joint details",
+                  "lead": "Ceiling-to-ceiling, door sectional, and wall-to-ceiling connections with 38 × 38 mm aluminium angles and N-mastic.",
+                  "src": "/uploads/pu/joints/installation-details-1.jpg",
+                  "alt": "PU installation joints — ceiling, door sectional and wall-to-ceiling details"
+                },
+                {
+                  "id": "jp2_do8hxdhq",
+                  "title": "Corners, walls and ceiling hangers",
+                  "lead": "Wall-to-wall corners, wall joints, large suspension and nylon hanger ceiling details.",
+                  "src": "/uploads/pu/joints/installation-details-2.jpg",
+                  "alt": "PU wall corner, wall joint, large suspension and nylon hanger details"
+                }
+              ]
+            }
+          },
+          {
+            "id": "specs_ycsc8kd0",
+            "type": "specsTable",
+            "data": {
+              "eyebrow": "Product range & data",
+              "title": "Specifications (PU)",
+              "lead": "Insulation panels are manufactured in-house and delivered to project sites for ready installation.",
+              "rows": [
+                {
+                  "label": "Dimension",
+                  "value": "1150 mm × desired length"
+                },
+                {
+                  "label": "Thickness",
+                  "value": "50 mm / 75 mm / 100 mm / 125 mm / 200 mm / 250 mm"
+                },
+                {
+                  "label": "Weight",
+                  "value": "Varies in accordance to thickness"
+                },
+                {
+                  "label": "Skins — steel",
+                  "value": "0.36 mm / 0.45 mm / 0.5 mm / 0.6 mm / 0.7 mm thick, 180 g/m² nominal zinc coating. Paint of polyester or silicone modified polyester. Colour: white (other colours and finishes available)."
+                },
+                {
+                  "label": "Skins — aluminium & stainless steel",
+                  "value": "Subject to quantities available"
+                },
+                {
+                  "label": "Joints",
+                  "value": "Clip-lock (tongue & groove) · Cam-lock system (tongue & groove) · Semi cam-lock system (tongue & groove)"
+                },
+                {
+                  "label": "Sealants",
+                  "value": "Non-setting butyl / polysulphide / silicone"
+                }
+              ]
+            }
+          },
+          {
+            "id": "props_qtn24zd9",
+            "type": "dataTable",
+            "data": {
+              "eyebrow": "Panel characteristics",
+              "title": "Typical physical properties (PU)",
+              "lead": "Typical physical properties of the rigid polyurethane foam used in UR PU panels.",
+              "headers": [
+                "Property",
+                "Test method",
+                "Unit",
+                "Result*"
+              ],
+              "rows": [
+                [
+                  "Core density",
+                  "ISO EN 845",
+                  "kg/m³",
+                  "42 – 44"
+                ],
+                [
+                  "Thermal conductivity",
+                  "DIN 52612",
+                  "W/m·K",
+                  "0.021"
+                ],
+                [
+                  "Compressive stress",
+                  "DIN 53421",
+                  "N/mm²",
+                  "0.16"
+                ],
+                [
+                  "Dimensional stability (−30°C / +80°C)",
+                  "DIN 53431",
+                  "%",
+                  "Max 0.1 / Max 0.2"
+                ],
+                [
+                  "Water absorption",
+                  "DIN 53428",
+                  "Volume change (%)",
+                  "< 2"
+                ],
+                [
+                  "Closed cell content",
+                  "ISO 4590",
+                  "%",
+                  "> 90"
+                ],
+                [
+                  "Flexural strength",
+                  "DIN 53423",
+                  "N/mm²",
+                  "0.26"
+                ],
+                [
+                  "Bending",
+                  "DIN 53423",
+                  "mm",
+                  "10"
+                ],
+                [
+                  "Elongation at break",
+                  "—",
+                  "%",
+                  "5 – 10"
+                ],
+                [
+                  "Water vapour transmission",
+                  "—",
+                  "Perm-in",
+                  "1.8 – 3.8"
+                ],
+                [
+                  "Operating temperature",
+                  "—",
+                  "°C",
+                  "−40 to +80"
+                ]
+              ],
+              "note": "*Based on sample, subject to standard tests deviations. UR panels have been certified by SIRIM QAS International and approved by the Malaysia fire authorities (BOMBA)."
+            }
+          },
+          {
+            "id": "compare_v3168nm5",
+            "type": "dataTable",
+            "data": {
+              "eyebrow": "Insulation performance",
+              "title": "Equivalent thickness for the same degree of insulation",
+              "lead": "PU panels keep insulation high even with a modest material thickness. Air and water cannot penetrate and circulate within the panel walls.",
+              "headers": [
+                "Material",
+                "Thickness required"
+              ],
+              "rows": [
+                [
+                  "Common bricks",
+                  "860 mm"
+                ],
+                [
+                  "Concrete bricks",
+                  "380 mm"
+                ],
+                [
+                  "Softwood",
+                  "140 mm"
+                ],
+                [
+                  "Fibreboard",
+                  "65 mm"
+                ],
+                [
+                  "Cork",
+                  "50 mm"
+                ],
+                [
+                  "Mineral wool",
+                  "46 mm"
+                ],
+                [
+                  "Polystyrene (PS)",
+                  "40 mm"
+                ],
+                [
+                  "Polyurethane (PU)",
+                  "25 mm"
+                ]
+              ]
+            }
+          },
+          {
+            "id": "certs_z2pz2rlx",
+            "type": "cardGrid",
+            "columns": 3,
+            "data": {
+              "eyebrow": "Certified, recognised and approved",
+              "title": "Certified quality",
+              "lead": "UR PU panel is a certified and listed product by SIRIM QAS International. PU insulation panels have also been tested and approved by Bomba Malaysia for commercial and industrial use. Manufacturing is ISO 9001:2015 certified, CFC-free, and eligible skins carry a corrosion-free finish warranty.",
+              "variant": "certs",
+              "items": [
+                {
+                  "id": "sirim",
+                  "title": "SIRIM QAS International",
+                  "text": "Certified and listed product — a recognised body for quality excellence.",
+                  "image": "/uploads/pir/certs/sirim.jpg",
+                  "href": "/about/certified/quality-recognition"
+                },
+                {
+                  "id": "bomba",
+                  "title": "Bomba Malaysia",
+                  "text": "Tested and approved by the Fire and Rescue Department of Malaysia for commercial and industrial use.",
+                  "image": "/uploads/pir/certs/card-bomba.jpg",
+                  "href": "/about/certified/quality-recognition"
+                },
+                {
+                  "id": "warranty",
+                  "title": "20-year corrosion-free warranty",
+                  "text": "Eligible corrosion-free steel skins — polyester or silicone-modified polyester on 180 g/m² zinc-coated steel. Ask us which coatings apply to your project.",
+                  "image": "/uploads/pu/certs/warranty-20-year.png",
+                  "href": "/contact"
+                }
+              ]
+            }
+          },
+          {
+            "id": "related_6e64uqep",
+            "type": "cardGrid",
+            "columns": 2,
+            "data": {
+              "eyebrow": "Related",
+              "title": "Other panel systems",
+              "items": [
+                {
+                  "id": "rel0_es3x59oq",
+                  "title": "PIR Panels",
+                  "text": "FM Approved continuous-line PIR for fire-critical cold stores.",
+                  "image": "/uploads/pir/UNITED.jpeg",
+                  "href": "/products/pir"
+                },
+                {
+                  "id": "rel1_d0mrz0ms",
+                  "title": "RockWool Panels",
+                  "text": "Mineral-wool core panels for fire-conscious envelopes.",
+                  "image": "/uploads/rockwool/RockWool Panels.jpeg",
+                  "href": "/products/rockwool"
+                }
+              ]
+            }
+          },
+          {
+            "id": "contact_zud9tcld",
+            "type": "contactCta",
+            "data": {
+              "eyebrow": "Next step",
+              "title": "Enquire about PU panels",
+              "body": "Tell us thickness, joint type, finish and project location — we’ll recommend the right PU panel configuration.",
+              "fields": [
+                {
+                  "id": "cf_kytuzyno",
+                  "label": "Email",
+                  "value": "sales@ur.com.my"
+                },
+                {
+                  "id": "cf_g4pcg8z5",
+                  "label": "Phone",
+                  "value": "+607 355 8000"
+                },
+                {
+                  "id": "cf_n3n83bp1",
+                  "label": "WhatsApp",
+                  "value": "+607 355 8000"
+                }
+              ],
+              "ctaLabel": "Contact Us",
+              "ctaHref": "/contact"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "page": "products/rockwool",
+      "key": "document",
+      "data": {
+        "title": "RockWool Panels",
+        "chrome": "default",
+        "sections": [
+          {
+            "id": "rw-hero",
+            "type": "hero",
+            "data": {
+              "brand": "United Panel · RockWool",
+              "headline": "Malaysia’s First Fully Automated RockWool Line",
+              "lead": "Fire-resilient cold room panels, produced with precision automation — built for performance you can trust.",
+              "backgroundImage": "https://www.ur.com.my/userfiles/image/WIW3.png",
+              "buttons": [
+                {
+                  "id": "rw-btn-1",
+                  "label": "Request a Quote",
+                  "href": "/contact",
+                  "style": "primary",
+                  "action": "link"
+                },
+                {
+                  "id": "rw-btn-2",
+                  "label": "View product details",
+                  "href": "#rw-product",
+                  "style": "ghost",
+                  "action": "section"
+                }
+              ]
+            }
+          },
+          {
+            "id": "rw-proof",
+            "type": "proof",
+            "data": {
+              "items": [
+                {
+                  "id": "rw1",
+                  "index": "01",
+                  "title": "Fully Automated",
+                  "text": "Consistent quality from Malaysia’s first fully automated RockWool production line."
+                },
+                {
+                  "id": "rw2",
+                  "index": "02",
+                  "title": "Fire Resilience",
+                  "text": "RockWool mineral core engineered for stronger fire performance in cold room applications."
+                },
+                {
+                  "id": "rw3",
+                  "index": "03",
+                  "title": "Cold Room Ready",
+                  "text": "Insulated panel solutions designed for cold storage, freezers, and food facilities."
+                }
+              ]
+            }
+          },
+          {
+            "id": "rw-material",
+            "type": "mediaText",
+            "columns": 2,
+            "data": {
+              "eyebrow": "The Material",
+              "title": "What is RockWool?",
+              "body": "RockWool is a mineral wool insulation made from natural stone fibres. In cold room panels, it provides stable thermal insulation with a core valued for its non-combustible character, durability, and reliable performance in temperature-controlled environments.",
+              "image": "/uploads/1787217130678-cbf217db0a2f.jpeg",
+              "imageSide": "right"
+            }
+          },
+          {
+            "id": "rw-attributes",
+            "type": "cardGrid",
+            "columns": 2,
+            "data": {
+              "eyebrow": "Core attributes",
+              "title": "What RockWool is good at",
+              "items": [
+                {
+                  "id": "attr1",
+                  "title": "Fire Performance",
+                  "text": "Mineral fibre core supports stronger fire resilience for industrial and cold storage environments."
+                },
+                {
+                  "id": "attr2",
+                  "title": "Thermal Stability",
+                  "text": "Reliable insulation behaviour to help protect temperature-controlled spaces."
+                },
+                {
+                  "id": "attr3",
+                  "title": "Dimensional Integrity",
+                  "text": "A robust core that holds form under demanding operating conditions."
+                },
+                {
+                  "id": "attr4",
+                  "title": "Acoustic Comfort",
+                  "text": "Natural fibre structure contributes to quieter, more controlled facilities."
+                }
+              ]
+            }
+          },
+          {
+            "id": "rw-capability",
+            "type": "featureList",
+            "data": {
+              "eyebrow": "Our Capability",
+              "title": "Automation that sets a new benchmark",
+              "lead": "United Panel brings RockWool panel production into a fully automated line — the first of its kind in Malaysia. The result is repeatable quality, tighter process control, and panels built for professional cold room projects.",
+              "items": [
+                "Local manufacturing capability you can visit and verify",
+                "High-level process control for consistent panel output",
+                "Cold room expertise backed by United Panel’s panel heritage",
+                "Technical details available on request — not published in full"
+              ]
+            },
+            "buttons": [
+              {
+                "id": "rw-cap-btn",
+                "label": "Discuss your project →",
+                "href": "/contact",
+                "style": "ghost",
+                "action": "link"
+              }
+            ]
+          },
+          {
+            "id": "rw-product",
+            "type": "mediaText",
+            "columns": 2,
+            "data": {
+              "eyebrow": "The Product",
+              "title": "What a RockWool panel is",
+              "body": "A finished insulated sandwich panel: metal facings bonded around a dense RockWool stone-fibre core. Built for walls and partitions that need thermal control with strong fire-conscious performance.",
+              "body2": "Clients receive a ready panel product — not raw insulation alone. The RockWool core sits between protective metal skins, ready for cold rooms, food facilities, data-centre envelopes, and industrial walls.",
+              "image": "/uploads/rockwool/RockWool Panels.jpeg",
+              "imageSide": "right",
+              "linkLabel": "Request specifications →",
+              "linkHref": "/contact"
+            }
+          },
+          {
+            "id": "rw-product-points",
+            "type": "featureList",
+            "data": {
+              "eyebrow": "Built as a complete panel system",
+              "title": "Why teams specify RockWool panels",
+              "items": [
+                "Fire-conscious core — mineral wool valued for non-combustible character in demanding buildings",
+                "Stable thermal insulation — helps maintain controlled temperatures in storage and facility environments",
+                "Automated Malaysian production — manufactured on United Panel’s fully automated RockWool line",
+                "Project-matched options — thickness, facing finish, and joint details confirmed with our team"
+              ]
+            },
+            "note": "Full technical specifications and thickness ranges are available on enquiry — published figures will be added once approved."
+          },
+          {
+            "id": "rw-specs",
+            "type": "specsTable",
+            "data": {
+              "eyebrow": "Product range & data",
+              "title": "Specifications (RockWool)",
+              "lead": "Directional product data for planning. Exact thickness, facing, joint and performance figures are confirmed per project once approved for publication.",
+              "rows": [
+                {
+                  "label": "Panel type",
+                  "value": "Insulated sandwich panel (metal / RockWool / metal)"
+                },
+                {
+                  "label": "Core",
+                  "value": "RockWool mineral wool (stone fibre)"
+                },
+                {
+                  "label": "Facing",
+                  "value": "Metal skins — finish options confirmed per project"
+                },
+                {
+                  "label": "Thickness range",
+                  "value": "Available on enquiry (project-matched)"
+                },
+                {
+                  "label": "Joint system",
+                  "value": "Confirmed with our team for your use case"
+                },
+                {
+                  "label": "Primary strengths",
+                  "value": "Fire-conscious performance · thermal stability · dimensional integrity"
+                },
+                {
+                  "label": "Typical uses",
+                  "value": "Cold rooms, freezers, food facilities, data centres, industrial envelopes"
+                },
+                {
+                  "label": "Production",
+                  "value": "Malaysia’s first fully automated RockWool production line"
+                },
+                {
+                  "label": "Certificates",
+                  "value": "Pending — fire / quality / standards documents to be listed when issued"
+                }
+              ]
+            },
+            "note": "Stakeholder preview — final claims, thicknesses, and certificates subject to management approval.",
+            "buttons": [
+              {
+                "id": "rw-specs-btn",
+                "label": "Request full datasheet →",
+                "href": "/contact",
+                "style": "primary",
+                "action": "link"
+              }
+            ]
+          },
+          {
+            "id": "rw-certs",
+            "type": "cardGrid",
+            "columns": 3,
+            "data": {
+              "eyebrow": "Assurance",
+              "title": "Certificates & compliance",
+              "lead": "Verified documents will sit here once issued — compact proof for buyers and consultants.",
+              "items": [
+                {
+                  "id": "cert1",
+                  "title": "Fire performance",
+                  "text": "Certificate pending — to be published when issued."
+                },
+                {
+                  "id": "cert2",
+                  "title": "Quality / product",
+                  "text": "Certificate pending — to be published when issued."
+                },
+                {
+                  "id": "cert3",
+                  "title": "Test / standards",
+                  "text": "Certificate pending — to be published when issued."
+                }
+              ]
+            }
+          },
+          {
+            "id": "rw-applications",
+            "type": "cardGrid",
+            "columns": 2,
+            "data": {
+              "eyebrow": "Where It’s Used",
+              "title": "Applications RockWool panels serve",
+              "lead": "From cold storage to mission-critical buildings — RockWool panels are chosen where insulation and fire-conscious construction are both important. Final suitability is confirmed per project.",
+              "items": [
+                {
+                  "id": "app1",
+                  "title": "Cold Rooms",
+                  "text": "Chilled storage walls and partitions for food and logistics.",
+                  "image": "/uploads/rockwool/RockWool Panel 3.jpeg"
+                },
+                {
+                  "id": "app2",
+                  "title": "Freezers & Food Facilities",
+                  "text": "Lower-temperature rooms and hygiene-critical processing spaces."
+                },
+                {
+                  "id": "app3",
+                  "title": "Data Centres",
+                  "text": "External wall and envelope panels where fire performance and thermal control matter."
+                },
+                {
+                  "id": "app4",
+                  "title": "Industrial Buildings",
+                  "text": "Warehouses and facilities needing durable insulated panel construction."
+                }
+              ]
+            }
+          },
+          {
+            "id": "rw-contact",
+            "type": "contactCta",
+            "data": {
+              "eyebrow": "Next Step",
+              "title": "Enquire about RockWool panels",
+              "body": "Share your project needs. Our team will follow up with suitable panel options and specifications — detailed technical data available on request.",
+              "email": "sales@ur.com.my",
+              "phone": "+60 00-000 0000",
+              "whatsapp": "+60 00-000 0000",
+              "ctaLabel": "Contact Us",
+              "ctaHref": "/contact"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "page": "services",
+      "key": "document",
+      "data": {
+        "title": "Services",
+        "chrome": "default",
+        "sections": [
+          {
+            "id": "svc-hero",
+            "type": "richText",
+            "data": {
+              "eyebrow": "3 · Services",
+              "title": "Advisory & project support",
+              "body": "Experienced guidance for cold storage planning, panel selection, and project delivery."
+            }
+          },
+          {
+            "id": "svc-cards",
+            "type": "cardGrid",
+            "columns": 2,
+            "data": {
+              "items": [
+                {
+                  "id": "svc-advisory",
+                  "title": "Advisory Services",
+                  "text": "Comprehensive advisory for cold storage design, panel choice, and project requirements.",
+                  "image": "https://www.ur.com.my/userfiles/image/fronad2.jpg",
+                  "href": "/services"
+                },
+                {
+                  "id": "svc-solutions",
+                  "title": "Cold storage solutions",
+                  "text": "End-to-end support for walk-in cold rooms, freezers, and industrial refrigeration facilities.",
+                  "image": "https://www.ur.com.my/userfiles/image/bannerpg2.png",
+                  "href": "/services"
+                }
+              ]
+            }
+          },
+          {
+            "id": "svc-cta",
+            "type": "contactCta",
+            "data": {
+              "eyebrow": "Enquire",
+              "title": "Need advisory support?",
+              "body": "Contact our team about cold storage planning and project delivery.",
+              "ctaLabel": "Enquire about services →",
+              "ctaHref": "/contact"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "page": "site",
+      "key": "customPages",
+      "data": {
+        "pages": []
+      }
+    },
+    {
+      "page": "site",
+      "key": "navigation",
+      "data": {
+        "items": [
+          {
+            "label": "Home",
+            "href": "/"
+          },
+          {
+            "label": "About Us",
+            "href": "/about",
+            "children": [
+              {
+                "label": "Company Profile",
+                "href": "/about/company-profile"
+              },
+              {
+                "label": "Vision & Mission",
+                "href": "/about/vision-mission"
+              },
+              {
+                "label": "Research & Development",
+                "href": "/about/research-development"
+              },
+              {
+                "label": "Certified, Recognized and Approved",
+                "href": "/about/certified"
+              },
+              {
+                "label": "FM Global Approval",
+                "href": "/about/certified/fm-global"
+              },
+              {
+                "label": "TÜV Fire Classification",
+                "href": "/about/certified/tuv"
+              },
+              {
+                "label": "ISO, SIRIM & Bomba",
+                "href": "/about/certified/quality-recognition"
+              }
+            ]
+          },
+          {
+            "label": "Products",
+            "href": "/products",
+            "children": [
+              {
+                "label": "All products",
+                "href": "/products"
+              },
+              {
+                "label": "PIR Panels",
+                "href": "/products/pir"
+              },
+              {
+                "label": "PU Panels",
+                "href": "/products/pu"
+              },
+              {
+                "label": "RockWool Panels",
+                "href": "/products/rockwool"
+              }
+            ]
+          },
+          {
+            "label": "Services",
+            "href": "/services"
+          },
+          {
+            "label": "Refrigeration Parts",
+            "href": "/parts"
+          },
+          {
+            "label": "Contact Us",
+            "href": "/contact"
+          }
+        ]
+      }
+    }
+  ]
+}

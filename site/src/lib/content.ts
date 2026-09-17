@@ -4,7 +4,7 @@ import { HOME_SECTION_KEYS } from "./types";
 import { defaultHomeContent } from "./defaults";
 import { defaultPirContent, type PirContent } from "./pir";
 import { DEFAULT_SITE_NAV, normalizeNavItems, cloneNav } from "./nav";
-import type { PageDocument } from "./page-document";
+import type { PageDocument, PageSection } from "./page-document";
 import { repairApplicationSlideshow, repairCertCardGrids, repairSectionNotes } from "./page-document";
 import { getDefaultPageDocument } from "./page-defaults";
 import {
@@ -18,6 +18,7 @@ import {
 import { panelProductToDocument } from "./panel-to-document";
 import { defaultPirContent as defaultPirPanel } from "./panels";
 import { newId } from "./page-document";
+import { importCmsSnapshot, scheduleCmsSnapshotExport } from "./cms-sync";
 
 const NAV_PAGE = "site";
 const NAV_KEY = "navigation";
@@ -44,6 +45,7 @@ export async function saveSiteNav(items: NavItem[]) {
     create: { page: NAV_PAGE, key: NAV_KEY, data: payload },
     update: { data: payload },
   });
+  scheduleCmsSnapshotExport();
   return normalized;
 }
 
@@ -101,6 +103,7 @@ async function saveCustomPagesList(pages: SitePage[]) {
     },
     update: { data: JSON.stringify({ pages: customOnly }) },
   });
+  scheduleCmsSnapshotExport();
 }
 
 /** Create a blank CMS page admins can edit and link from the menu */
@@ -164,6 +167,7 @@ export async function saveSection<K extends HomeSectionKey>(key: K, data: HomeCo
     create: { page: "home", key, data: JSON.stringify(data) },
     update: { data: JSON.stringify(data) },
   });
+  scheduleCmsSnapshotExport();
 }
 
 export async function getPirContent(): Promise<typeof defaultPirContent> {
@@ -180,10 +184,87 @@ export async function savePirContent(data: PirContent) {
     create: { page: "pir", key: "page", data: JSON.stringify(data) },
     update: { data: JSON.stringify(data) },
   });
+  scheduleCmsSnapshotExport();
 }
 
 function normalizeDocument(doc: PageDocument): PageDocument {
   return repairCertCardGrids(repairSectionNotes(repairApplicationSlideshow(doc)));
+}
+
+
+/** Stable-ish fingerprint so we can detect a default block missing from a saved page */
+function defaultSectionKey(section: PageSection): string {
+  const data = section.data as {
+    eyebrow?: string;
+    title?: string;
+    headline?: string;
+    brand?: string;
+  };
+  const title = (data.title || data.headline || data.brand || "").trim().toLowerCase();
+  const eyebrow = (data.eyebrow || "").trim().toLowerCase();
+  return `${section.type}|${eyebrow}|${title}`;
+}
+
+/**
+ * Insert any default sections that are missing from a saved document.
+ * Keeps existing admin edits and custom blocks; only adds what defaults have
+ * that the saved page does not (matched by type + eyebrow + title).
+ */
+export function mergeMissingDefaultSections(
+  saved: PageDocument,
+  defaults: PageDocument,
+): { document: PageDocument; added: number } {
+  const sections = [...(saved.sections || [])];
+  const savedKeys = new Set(sections.map(defaultSectionKey));
+  let added = 0;
+
+  for (let di = 0; di < defaults.sections.length; di++) {
+    const def = defaults.sections[di];
+    const key = defaultSectionKey(def);
+    // Require a title so empty stubs are not treated as unique defaults
+    const data = def.data as { title?: string; headline?: string; brand?: string };
+    if (!(data.title || data.headline || data.brand || "").trim()) continue;
+    if (savedKeys.has(key)) continue;
+
+    let insertAt = sections.length;
+    for (let pj = di - 1; pj >= 0; pj--) {
+      const prevKey = defaultSectionKey(defaults.sections[pj]);
+      const prevIdx = sections.findIndex((s) => defaultSectionKey(s) === prevKey);
+      if (prevIdx >= 0) {
+        insertAt = prevIdx + 1;
+        break;
+      }
+    }
+    if (insertAt === sections.length) {
+      for (let nj = di + 1; nj < defaults.sections.length; nj++) {
+        const nextKey = defaultSectionKey(defaults.sections[nj]);
+        const nextIdx = sections.findIndex((s) => defaultSectionKey(s) === nextKey);
+        if (nextIdx >= 0) {
+          insertAt = nextIdx;
+          break;
+        }
+      }
+    }
+
+    const clone = structuredClone(def) as PageSection;
+    clone.id = newId(def.type);
+    sections.splice(insertAt, 0, clone);
+    savedKeys.add(key);
+    added += 1;
+  }
+
+  if (!added) return { document: saved, added: 0 };
+  return {
+    document: {
+      ...saved,
+      sections,
+      // keep chrome/about from saved; fill only if missing
+      chrome: saved.chrome ?? defaults.chrome,
+      about: saved.about ?? defaults.about,
+      title: saved.title || defaults.title,
+    },
+    added,
+  };
 }
 
 export async function getPageDocument(pageId: string): Promise<PageDocument> {
@@ -228,6 +309,32 @@ export async function savePageDocument(pageId: string, document: PageDocument) {
     create: { page: pageId, key: "document", data: JSON.stringify(document) },
     update: { data: JSON.stringify(document) },
   });
+  scheduleCmsSnapshotExport();
+}
+
+
+async function syncMissingDefaultSections() {
+  const pages = mergeSitePages(await getCustomPages());
+  for (const page of pages) {
+    const row = await prisma.contentSection.findUnique({
+      where: { page_key: { page: page.id, key: "document" } },
+    });
+    if (!row) continue;
+
+    let saved: PageDocument;
+    try {
+      saved = JSON.parse(row.data) as PageDocument;
+    } catch {
+      continue;
+    }
+    if (!Array.isArray(saved.sections)) continue;
+
+    const defaults = getDefaultPageDocument(page.id);
+    const { document, added } = mergeMissingDefaultSections(saved, defaults);
+    if (added > 0) {
+      await savePageDocument(page.id, normalizeDocument(document));
+    }
+  }
 }
 
 export async function ensureSeeded() {
@@ -264,6 +371,12 @@ export async function ensureSeeded() {
       update: {},
     });
   }
+
+  // Deploy sync: load committed CMS snapshot from git (localhost edits you pushed).
+  await importCmsSnapshot();
+
+  // Then fill any default blocks still missing from code defaults.
+  await syncMissingDefaultSections();
 
   const nav = await prisma.contentSection.findUnique({
     where: { page_key: { page: NAV_PAGE, key: NAV_KEY } },

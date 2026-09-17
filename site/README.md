@@ -58,3 +58,14 @@ Admins **cannot** invent new page features — those stay in code.
 - The static RockWool prototype remains in the parent folder for reference.
 - Later phases: About, Products, RockWool page, Contact, then remaining UR pages.
 - Go-live needs Node.js hosting (not classic ASPX-only IIS).
+
+## Deploying content edits
+
+Page text and layout live in the database locally. To ship localhost admin edits to the server:
+
+1. Save in admin (updates `content/cms-snapshot.json` automatically), or run `npm run content:export`.
+2. Commit `content/cms-snapshot.json` and any new `public/uploads/` files.
+3. Push, pull on the server, and restart (or run `npm run content:import`).
+
+The server loads the snapshot on startup so deployed content matches what you edited locally.
+
