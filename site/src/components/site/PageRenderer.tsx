@@ -6,11 +6,14 @@ import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
 import { AboutShell } from "./AboutShell";
 import { SectionView } from "./SectionView";
+import { AdminEditBar } from "./AdminEditBar";
 
 export function PageRenderer({
+  pageId,
   document,
   navItems = SITE_NAV,
 }: {
+  pageId: string;
   document: PageDocument;
   navItems?: NavItem[];
 }) {
@@ -30,29 +33,40 @@ export function PageRenderer({
     </>
   );
 
+  const editBar = <AdminEditBar pageId={pageId} />;
+
   if (document.chrome === "about" && document.about) {
     return (
-      <AboutShell
-        title={document.title}
-        crumbs={document.about.crumbs}
-        activeHref={document.about.activeHref}
-        image={document.about.image}
-        eyebrow={document.about.eyebrow || "About Us"}
-        brand={document.about.brand}
-        lead={document.about.lead}
-        navItems={navItems}
-      >
-        {main}
-      </AboutShell>
+      <>
+        {editBar}
+        <AboutShell
+          title={document.title}
+          crumbs={document.about.crumbs}
+          activeHref={document.about.activeHref}
+          image={document.about.image}
+          eyebrow={document.about.eyebrow || "About Us"}
+          brand={document.about.brand}
+          lead={document.about.lead}
+          navItems={navItems}
+        >
+          {main}
+        </AboutShell>
+      </>
     );
   }
 
   if (document.chrome === "none") {
-    return <main>{main}</main>;
+    return (
+      <>
+        {editBar}
+        <main>{main}</main>
+      </>
+    );
   }
 
   return (
     <>
+      {editBar}
       <SiteHeader settings={settings} navItems={navItems} />
       <main>{main}</main>
       <SiteFooter footer={footer} />

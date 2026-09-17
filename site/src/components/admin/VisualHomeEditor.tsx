@@ -28,7 +28,8 @@ function EText({
     const el = ref.current;
     if (!el) return;
     if (document.activeElement === el) return;
-    if (el.textContent !== value) el.textContent = value;
+    const current = (el.innerText || "").replace(/\n$/, "");
+    if (current !== value) el.innerText = value;
   }, [value]);
 
   return (
@@ -38,9 +39,14 @@ function EText({
       className={`ve-text ${className || ""}`}
       contentEditable
       suppressContentEditableWarning
-      onBlur={(e) => onChange((e.currentTarget.textContent || "").trim())}
+      onKeyDown={(e) => {
+        if (e.key !== "Enter") return;
+        e.preventDefault();
+        document.execCommand("insertText", false, "\n");
+      }}
+      onBlur={(e) => onChange((e.currentTarget.innerText || "").replace(/\n$/, ""))}
       title="Click to edit text"
-      style={multiline ? { whiteSpace: "pre-wrap" } : undefined}
+      style={{ whiteSpace: "pre-wrap" }}
     />
   );
 }

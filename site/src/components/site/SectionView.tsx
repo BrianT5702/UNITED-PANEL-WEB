@@ -31,10 +31,20 @@ function Paragraphs({ text }: { text: string }) {
   );
 }
 
-function SectionFoot({ note, actions }: { note: string; actions: ReactNode }) {
+function SectionFoot({
+  note,
+  actions,
+  underTable,
+}: {
+  note: string;
+  actions: ReactNode;
+  underTable?: boolean;
+}) {
   return (
     <>
-      {note ? <p className="about-note pb-section-note">{note}</p> : null}
+      {note ? (
+        <p className={`about-note pb-section-note${underTable ? " table-footnote" : ""}`}>{note}</p>
+      ) : null}
       {actions}
     </>
   );
@@ -95,6 +105,7 @@ export function SectionView({
       <SectionButtonsView buttons={actionButtons} />
     );
   const foot = <SectionFoot note={footnote} actions={actions} />;
+  const tableFoot = <SectionFoot note={footnote} actions={actions} underTable />;
 
   switch (section.type) {
     case "hero": {
@@ -113,7 +124,7 @@ export function SectionView({
           </div>
           <div className="hero-content">
             <p className="hero-brand">{d.brand}</p>
-            <h1>{d.headline}</h1>
+            <h1 className="hero-headline">{d.headline}</h1>
             {d.tagline ? <p className="hero-tagline">{d.tagline}</p> : null}
             <p className="hero-lead">{d.lead}</p>
             {footnote ? <p className="about-note pb-section-note hero-section-note">{footnote}</p> : null}
@@ -301,7 +312,7 @@ export function SectionView({
       const d = section.data;
       const images = (d.images || []).filter((img) => img.src);
       const list = (
-        <>
+        <div className="flex flex-col justify-between h-full">
           <div className="section-head">
             {d.eyebrow ? <p className="eyebrow">{d.eyebrow}</p> : null}
             <h2>{d.title}</h2>
@@ -318,17 +329,17 @@ export function SectionView({
               <li key={i}>{item}</li>
             ))}
           </ul>
-        </>
+        </div>
       );
       return (
         <section className={`section section-compact ${nested ? "pb-nested" : ""}`} id={anchorId}>
           {images.length ? (
-            <div className="panel-app-layout">
+            <div className="panel-app-layout items-stretch">
               <div>{list}</div>
               <div
-                className="panel-app-visual capability-visual capability-visual-clear pb-photo-frame"
+                className="panel-app-visual capability-visual capability-visual-clear pb-photo-frame h-full min-h-[320px]"
                 data-photo-shape={d.imageAspect || "default"}
-                style={imageAspectStyle(d.imageAspect)}
+                style={{ ...imageAspectStyle(d.imageAspect), height: "100%", minHeight: "100%" }}
               >
                 <OverviewSlideshow
                   images={images.map((img) => ({
@@ -364,12 +375,14 @@ export function SectionView({
               </div>
             ))}
           </div>
-          {foot}
+          {tableFoot}
         </section>
       );
     }
     case "dataTable": {
       const d = section.data;
+      const highlightIdx = typeof d.highlightRowIndex === "number" ? d.highlightRowIndex : -1;
+
       return (
         <section className={`section section-compact ${nested ? "pb-nested" : ""}`} id={anchorId}>
           <div className="section-head">
@@ -387,17 +400,49 @@ export function SectionView({
                 </tr>
               </thead>
               <tbody>
-                {d.rows.map((row, ri) => (
-                  <tr key={ri}>
-                    {row.map((cell, ci) => (
-                      <td key={ci}>{cell}</td>
-                    ))}
-                  </tr>
-                ))}
+                {d.rows.map((row, ri) => {
+                  const isHighlighted = ri === highlightIdx;
+
+                  return (
+                    <tr
+                      key={ri}
+                      className={
+                        isHighlighted
+                          ? "bg-red-50/80 font-semibold border-l-4 border-l-red-600 text-red-950"
+                          : ""
+                      }
+                      style={
+                        isHighlighted
+                          ? {
+                              backgroundColor: "rgba(239, 68, 68, 0.08)",
+                              fontWeight: 600,
+                              borderLeft: "4px solid #dc2626",
+                            }
+                          : undefined
+                      }
+                    >
+                      {row.map((cell, ci) => (
+                        <td
+                          key={ci}
+                          style={
+                            isHighlighted
+                              ? {
+                                  color: "#991b1b",
+                                  fontWeight: 600,
+                                }
+                              : undefined
+                          }
+                        >
+                          {cell}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
-          {foot}
+          {tableFoot}
         </section>
       );
     }

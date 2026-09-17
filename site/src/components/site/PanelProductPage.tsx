@@ -265,7 +265,7 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
               </table>
             </div>
             {content.physicalProperties.note ? (
-              <p className="about-note">{content.physicalProperties.note}</p>
+              <p className="about-note table-footnote">{content.physicalProperties.note}</p>
             ) : null}
           </section>
         ) : null}
@@ -285,7 +285,7 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
                 </div>
               ))}
             </div>
-            {content.roofing.note ? <p className="about-note">{content.roofing.note}</p> : null}
+            {content.roofing.note ? <p className="about-note table-footnote">{content.roofing.note}</p> : null}
           </section>
         ) : null}
 

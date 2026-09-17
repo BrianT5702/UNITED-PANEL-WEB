@@ -323,6 +323,7 @@ export type DataTableSectionData = {
   headers: string[];
   rows: string[][];
   note?: string;
+  highlightRowIndex?: number | null;
 };
 
 export type GalleryLayoutId = "grid" | "slideshow" | "logos" | "pages";
@@ -562,6 +563,39 @@ export const ADVANCED_SECTION_TYPES: SectionType[] = [
   "jointDetails",
   "stats",
   "tabs",
+];
+
+/** Grouped add-block picker for non-technical editors */
+export const SECTION_TYPE_GROUPS: {
+  id: string;
+  label: string;
+  hint: string;
+  types: SectionType[];
+}[] = [
+  {
+    id: "text",
+    label: "Text & banners",
+    hint: "Headlines, writing, callouts, stats",
+    types: ["hero", "richText", "proof", "callout", "stats"],
+  },
+  {
+    id: "photos",
+    label: "Photos & cards",
+    hint: "Pictures, galleries, and clickable cards",
+    types: ["mediaText", "cardGrid", "gallery", "featureList"],
+  },
+  {
+    id: "tables",
+    label: "Tables & lists",
+    hint: "Specs and spreadsheet-style tables",
+    types: ["specsTable", "dataTable"],
+  },
+  {
+    id: "layout",
+    label: "Layout & contact",
+    hint: "Tabs, joint diagrams, contact box",
+    types: ["tabs", "jointDetails", "contactCta"],
+  },
 ];
 
 /** Stable HTML id for in-page button jumps */
@@ -844,7 +878,13 @@ export function resizeDataTable(
   const nextRows = Array.from({ length: rows }, (_, r) =>
     Array.from({ length: cols }, (_, c) => data.rows[r]?.[c] ?? ""),
   );
-  return { ...data, headers, rows: nextRows };
+  const highlight =
+    typeof data.highlightRowIndex === "number" &&
+    data.highlightRowIndex >= 0 &&
+    data.highlightRowIndex < nextRows.length
+      ? data.highlightRowIndex
+      : null;
+  return { ...data, headers, rows: nextRows, highlightRowIndex: highlight };
 }
 
 export function gridClass(columns?: SectionColumns): string {

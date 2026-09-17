@@ -55,6 +55,22 @@ export const ADMIN_GUIDE_CHAPTERS: GuideChapter[] = [
     ],
   },
   {
+    id: "open-editor",
+    title: "Opening the editor",
+    blocks: [
+      {
+        heading: "Edit this page",
+        body: "After you log in at /admin, visit any public page. A dark bar appears at the top with Edit this page. Visitors never see that bar.",
+        effect: "One click opens the visual editor for the page you are looking at.",
+      },
+      {
+        heading: "Log in",
+        body: "Go to /admin, or on the public site click the company logo at the top-left five times quickly (a hidden staff shortcut). Enter the password your company gave you.",
+        effect: "After login you land in the editor. The public site then shows the editing bar for you only. Ordinary visitors almost never find the five-click shortcut.",
+      },
+    ],
+  },
+  {
     id: "photos",
     title: "Photos and logos",
     blocks: [
@@ -65,7 +81,7 @@ export const ADMIN_GUIDE_CHAPTERS: GuideChapter[] = [
       },
       {
         heading: "Drag to reframe",
-        body: "On most photos you can click and drag to choose which part stays in the frame. Scroll or use zoom if the control is shown.",
+        body: "Drag inside the photo to choose which part stays in the frame. Use the − / + buttons to zoom. Reset centres the crop again.",
         effect: "This crops the view, it does not stretch the file. Useful when a photo is off-centre.",
       },
       {
@@ -122,8 +138,8 @@ export const ADMIN_GUIDE_CHAPTERS: GuideChapter[] = [
     blocks: [
       {
         heading: "Page banner",
-        body: "The large top of a page: brand line, headline, and optional background photo.",
-        effect: "First thing visitors see. Keep the headline short.",
+        body: "The large top of a page: brand line, headline, and optional background photo. Adding one always places it at the top of the page.",
+        effect: "First thing visitors see. Other blocks move down when you add a banner.",
       },
       {
         heading: "Key highlights",
@@ -154,7 +170,7 @@ export const ADMIN_GUIDE_CHAPTERS: GuideChapter[] = [
       },
       {
         heading: "Table",
-        body: "Spreadsheet-style grid (property, test method, result). Add columns and rows as needed.",
+        body: "Spreadsheet-style grid (property, test method, result). Add columns and rows as needed. Optionally highlight one row so it stands out on the public page.",
       },
       {
         heading: "Photo gallery",

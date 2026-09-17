@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { NavItem, SiteSettings } from "@/lib/types";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
+
+const STAFF_CLICKS = 5;
+const STAFF_CLICK_WINDOW_MS = 900;
 
 export function SiteHeader({
   settings,
@@ -16,6 +19,8 @@ export function SiteHeader({
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
+  const staffClicks = useRef(0);
+  const staffTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const sync = () => {
@@ -38,17 +43,50 @@ export function SiteHeader({
     };
   }, [open]);
 
+  useEffect(() => {
+    return () => {
+      if (staffTimer.current) clearTimeout(staffTimer.current);
+    };
+  }, []);
+
   const closeMenu = () => {
     setOpen(false);
     setExpanded(null);
   };
+
+  /** One normal click → home. Five quick clicks → staff login (/admin). */
+  function onBrandClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    e.preventDefault();
+    staffClicks.current += 1;
+    if (staffTimer.current) clearTimeout(staffTimer.current);
+
+    if (staffClicks.current >= STAFF_CLICKS) {
+      staffClicks.current = 0;
+      window.location.assign("/admin");
+      return;
+    }
+
+    staffTimer.current = setTimeout(() => {
+      const count = staffClicks.current;
+      staffClicks.current = 0;
+      if (count > 0 && count < STAFF_CLICKS) {
+        window.location.assign(brandHref);
+      }
+    }, STAFF_CLICK_WINDOW_MS);
+  }
 
   return (
     <header className={`site-header${scrolled ? " is-scrolled" : ""}${open ? " is-nav-open" : ""}`}>
       {open ? (
         <button type="button" className="nav-backdrop" aria-label="Close menu" onClick={closeMenu} />
       ) : null}
-      <a className="brand" href={brandHref} aria-label={`${settings.siteName} home`}>
+      <a
+        className="brand"
+        href={brandHref}
+        aria-label={`${settings.siteName} home`}
+        onClick={onBrandClick}
+        title={settings.siteName}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img className="brand-logo" src={settings.logoUrl} alt={settings.siteName} />
       </a>

@@ -40,7 +40,12 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
       </head>
-      <body className={`${dmSans.variable} ${syne.variable}`}>{children}</body>
+      <body
+        className={`${dmSans.variable} ${syne.variable}`}
+        suppressHydrationWarning
+      >
+        {children}
+      </body>
     </html>
   );
 }

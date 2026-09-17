@@ -22,12 +22,13 @@ export function EText({
   onChange,
   className,
   as: Tag = "div",
-  multiline,
+  multiline = true,
 }: {
   value: string;
   onChange: (v: string) => void;
   className?: string;
   as?: "div" | "h1" | "h2" | "h3" | "p" | "span" | "strong";
+  /** Defaults to true — Enter inserts a new line; no character length limit */
   multiline?: boolean;
 }) {
   const ref = useRef<HTMLElement | null>(null);
@@ -36,7 +37,8 @@ export function EText({
     const el = ref.current;
     if (!el) return;
     if (document.activeElement === el) return;
-    if (el.textContent !== value) el.textContent = value;
+    const current = (el.innerText || "").replace(/\n$/, "");
+    if (current !== value) el.innerText = value;
   }, [value]);
 
   return (
@@ -46,8 +48,19 @@ export function EText({
       className={`ve-text ${className || ""}`}
       contentEditable
       suppressContentEditableWarning
-      onBlur={(e) => onChange((e.currentTarget.textContent || "").trim())}
-      title="Click to edit text"
+      onKeyDown={(e) => {
+        if (!multiline) return;
+        if (e.key !== "Enter") return;
+        e.preventDefault();
+        // Keep a real newline in the stored text (not a new block element)
+        document.execCommand("insertText", false, "\n");
+      }}
+      onBlur={(e) => {
+        const raw = (e.currentTarget.innerText || "").replace(/\u00a0/g, " ");
+        // Keep internal line breaks; only tidy the very end
+        onChange(raw.replace(/\n$/, ""));
+      }}
+      title={multiline ? "Click to edit — Enter for a new line" : "Click to edit text"}
       style={multiline ? { whiteSpace: "pre-wrap" } : undefined}
     />
   );
@@ -198,16 +211,22 @@ export function EImage({
       role={canReframe ? "group" : "button"}
       tabIndex={0}
       onKeyDown={(e) => {
+        if (canReframe && (e.key === "-" || e.key === "_")) {
+          e.preventDefault();
+          nudgeZoom(-IMAGE_ZOOM_STEP);
+          return;
+        }
+        if (canReframe && (e.key === "+" || e.key === "=")) {
+          e.preventDefault();
+          nudgeZoom(IMAGE_ZOOM_STEP);
+          return;
+        }
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           openPicker();
         }
       }}
-      title={
-        canReframe
-          ? "Drag to reframe · use − / + to zoom"
-          : "Click to add / change photo"
-      }
+      aria-label={canReframe ? "Photo frame — drag to move, use − / + to zoom" : label}
     >
       {value ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -221,6 +240,11 @@ export function EImage({
       ) : (
         <span>{uploading ? "Uploading…" : label}</span>
       )}
+      {canReframe && !dragging ? (
+        <span className="ve-reframe-hint-float" aria-hidden="true">
+          Drag to move
+        </span>
+      ) : null}
       <div className="ve-image-chrome">
         {canReframe ? (
           <div className="ve-zoom-controls" onPointerDown={(e) => e.stopPropagation()}>
@@ -228,6 +252,7 @@ export function EImage({
               type="button"
               className="ve-zoom-btn"
               title="Zoom out"
+              aria-label="Zoom out"
               disabled={zoom <= IMAGE_ZOOM_MIN}
               onClick={(e) => {
                 e.stopPropagation();
@@ -236,13 +261,12 @@ export function EImage({
             >
               −
             </button>
-            <span className="ve-zoom-label" title="Zoom level">
-              {Math.round(zoom * 100)}%
-            </span>
+            <span className="ve-zoom-label">{Math.round(zoom * 100)}%</span>
             <button
               type="button"
               className="ve-zoom-btn"
               title="Zoom in"
+              aria-label="Zoom in"
               disabled={zoom >= IMAGE_ZOOM_MAX}
               onClick={(e) => {
                 e.stopPropagation();
@@ -250,6 +274,18 @@ export function EImage({
               }}
             >
               +
+            </button>
+            <button
+              type="button"
+              className="ve-zoom-btn ve-zoom-reset"
+              title="Reset crop"
+              aria-label="Reset crop"
+              onClick={(e) => {
+                e.stopPropagation();
+                commitFocus({ x: 50, y: 50, zoom: 1 });
+              }}
+            >
+              Reset
             </button>
           </div>
         ) : (
@@ -263,7 +299,7 @@ export function EImage({
             openPicker();
           }}
         >
-          {uploading ? "Uploading…" : "Change photo"}
+          {uploading ? "Uploading…" : value ? "Change" : "Add photo"}
         </button>
       </div>
       <input

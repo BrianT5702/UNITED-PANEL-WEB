@@ -155,6 +155,49 @@ p:last-child {
   max-width: none;
   margin-bottom: clamp(1.25rem, 2.5vw, 1.85rem);
 }
+/* Manual line breaks from the admin editor */
+.section-head h2,
+.section-lead,
+.section-lead p,
+.proof-item h2,
+.proof-item p,
+.product-card-body h3,
+.product-card-body p,
+.panel-cert-body h3,
+.panel-cert-body p,
+.home-contact-teaser h2,
+.home-contact-teaser > div > p {
+  white-space: pre-wrap;
+}
+
+
+/* Tighter when cards / grids follow the heading in the same block */
+.section-head:has(+ .home-gateway-grid),
+.section-head:has(+ .product-grid),
+.section-head:has(+ .offer-grid),
+.section-head:has(+ .panel-cert-grid),
+.section-head:has(+ .home-contact-teaser) {
+  margin-bottom: clamp(0.75rem, 1.5vw, 1.05rem);
+}
+
+/* Heading-only sections (no image below) — no empty band before the next block */
+.section-compact:has(> .section-head:only-child) {
+  padding-bottom: 0.25rem;
+}
+.section-compact:has(> .section-head:only-child) > .section-head {
+  margin-bottom: 0;
+}
+
+/* Contact Us page: stack heading + details tightly (no image slot) */
+#contact-hero.section-compact {
+  padding-bottom: 0.25rem;
+}
+#contact-hero .section-head {
+  margin-bottom: 0;
+}
+#contact.section-compact {
+  padding-top: clamp(0.65rem, 1.4vw, 1rem);
+}
 
 .section-lead {
   font-size: 1.08rem;
@@ -623,8 +666,8 @@ html[data-theme="light"] .hero-content .btn-ghost:hover {
 .hero-content {
   position: relative;
   z-index: 1;
-  width: min(56rem, 100%);
-  max-width: 56rem;
+  width: 100%;
+  max-width: none;
   animation: riseIn 1s var(--ease) both;
   /* Hero always sits on dark media — keep readable light type in both themes */
   --text: #f3f5f7;
@@ -636,6 +679,31 @@ html[data-theme="light"] .hero-content .btn-ghost:hover {
   text-align: left;
 }
 
+/* Page banner text — no length/width caps; Enter line-breaks allowed */
+.hero-content,
+.about-hero-inner {
+  width: 100%;
+  max-width: none;
+}
+.hero-content .ve-text,
+.hero-content h1,
+.hero-content .hero-headline,
+.hero-content .hero-brand,
+.hero-content .hero-tagline,
+.hero-content .hero-lead,
+.about-hero-inner .ve-text,
+.about-hero-inner h1,
+.about-hero-inner .hero-brand,
+.about-hero-inner .about-hero-lead,
+.ve-block.hero .hero-content .ve-text {
+  max-width: none !important;
+  width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+
 .hero-brand {
   font-family: var(--font-display);
   font-size: clamp(1.05rem, 1.8vw, 1.25rem);
@@ -643,18 +711,24 @@ html[data-theme="light"] .hero-content .btn-ghost:hover {
   color: var(--text);
   margin: 0 0 1rem;
   line-height: 1.4;
+  white-space: pre-wrap;
 }
 
-.hero-content h1 {
+.hero-content h1,
+.hero-content .hero-headline {
   margin: 0 0 1.05rem;
   line-height: 1.18;
-  max-width: min(34ch, 100%);
+  max-width: none;
+  width: 100%;
+  white-space: pre-wrap;
   font-size: clamp(2.1rem, 4.4vw, 3.35rem);
 }
 
 .hero-tagline {
   margin: 0 0 1.25rem;
-  max-width: min(48ch, 100%);
+  max-width: none;
+  width: 100%;
+  white-space: pre-wrap;
   font-family: var(--font-display);
   font-size: clamp(1.12rem, 2vw, 1.35rem);
   font-weight: 700;
@@ -665,7 +739,9 @@ html[data-theme="light"] .hero-content .btn-ghost:hover {
 
 .hero-lead {
   font-size: clamp(1.05rem, 1.65vw, 1.18rem);
-  max-width: min(58ch, 100%);
+  max-width: none;
+  width: 100%;
+  white-space: pre-wrap;
   margin: 0;
   color: var(--muted);
   line-height: 1.7;
@@ -1111,10 +1187,29 @@ main > .page-hero:first-child {
   font-size: clamp(1.35rem, 2.4vw, 1.75rem);
 }
 
+.home-contact-teaser > div {
+  width: 100%;
+  min-width: 0;
+}
+
 .home-contact-teaser p {
   margin: 0;
-  max-width: 50ch;
+  max-width: none;
+  width: 100%;
 }
+
+/* Contact page — keep intro and details on full content width */
+#contact-hero .section-lead,
+#contact-hero .section-lead p {
+  max-width: none;
+  width: 100%;
+}
+
+#contact .pb-section-actions,
+#contact-cta .pb-section-actions {
+  margin-top: 1rem;
+}
+
 
 .product-intro-layout {
   display: grid;
@@ -2051,14 +2146,16 @@ a.panel-cert-card:hover {
 
 .contact-meta {
   list-style: none;
-  margin: 1.5rem 0 0;
+  margin: 1.25rem 0 0;
   padding: 0;
+  width: 100%;
 }
 
 .contact-meta li {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: 1rem;
   padding: 0.7rem 0;
   border-top: 1px solid var(--line);
   color: var(--text);
@@ -2069,6 +2166,19 @@ a.panel-cert-card:hover {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--steel);
+  white-space: nowrap;
+}
+
+.contact-meta li {
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .contact-meta li {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+    white-space: normal;
+  }
 }
 
 .ve-contact-meta-edit input {
@@ -2744,7 +2854,7 @@ a.panel-cert-card:hover {
 .about-hero-inner {
   position: relative;
   z-index: 1;
-  max-width: min(56rem, 100%);
+  max-width: none;
   margin: 0;
   padding: calc(var(--header-h) + clamp(1.75rem, 4vw, 2.75rem)) clamp(1.25rem, 3vw, 2.5rem) 1.85rem;
   width: 100%;
@@ -2767,12 +2877,16 @@ a.panel-cert-card:hover {
 .about-hero h1 {
   margin: 0 0 1.05rem;
   line-height: 1.18;
-  max-width: min(34ch, 100%);
+  max-width: none;
+  width: 100%;
+  white-space: pre-wrap;
   font-size: clamp(2.1rem, 4.4vw, 3.35rem);
 }
 
 .about-hero-lead {
-  max-width: min(58ch, 100%);
+  max-width: none;
+  width: 100%;
+  white-space: pre-wrap;
   margin: 0;
   font-size: clamp(1.05rem, 1.65vw, 1.18rem);
   line-height: 1.7;
@@ -4515,6 +4629,8 @@ html[data-theme="light"] .brand-logo {
   border-radius: 2px;
   cursor: text;
   min-width: 1ch;
+  max-width: none;
+  white-space: pre-wrap;
 }
 
 .ve-text:hover,
@@ -4648,6 +4764,150 @@ html[data-theme="light"] .brand-logo {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Small non-blocking tip — only on hover, never covers the whole photo */
+.ve-reframe-hint-float {
+  position: absolute;
+  left: 50%;
+  bottom: 2.6rem;
+  z-index: 2;
+  transform: translateX(-50%);
+  max-width: calc(100% - 1rem);
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+}
+.ve-image-reframe:hover .ve-reframe-hint-float,
+.ve-image-reframe:focus-within .ve-reframe-hint-float {
+  opacity: 1;
+}
+.ve-image-reframe.is-dragging .ve-reframe-hint-float {
+  opacity: 0;
+}
+.ve-zoom-reset {
+  width: auto !important;
+  padding: 0 0.4rem !important;
+  font-size: 0.62rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Unified light toolbar for block options (cards, etc.) */
+.ve-block-toolbar {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0.35rem 0 1rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  background: #f4f4f5;
+}
+.ve-block-toolbar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 0.85rem;
+}
+.ve-block-toolbar .ve-aspect-picker {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.ve-toolbar-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: #71717a;
+}
+.ve-seg {
+  display: inline-flex;
+  padding: 0.15rem;
+  border-radius: 6px;
+  background: #fff;
+  border: 1px solid #e4e4e7;
+  gap: 0.15rem;
+}
+.ve-seg-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #52525b;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.35rem 0.7rem;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.ve-seg-btn:hover {
+  background: #f4f4f5;
+  color: #18181b;
+}
+.ve-seg-btn.is-active {
+  background: var(--accent, #c45c26);
+  color: #fff;
+}
+
+/* Card chrome above the photo — keeps Remove/arrows off the image */
+.ve-card-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+  padding: 0 0.1rem;
+}
+.ve-card-index {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #71717a;
+}
+.ve-card-actions-inline {
+  position: static;
+  max-width: none;
+}
+.ve-card-actions-inline .ve-move,
+.ve-card-actions-inline .ve-remove {
+  background: #fff;
+  color: #3f3f46;
+  border: 1px solid #d4d4d8;
+}
+.ve-card-actions-inline .ve-move:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.ve-card-actions-inline .ve-remove {
+  color: #b91c1c;
+  border-color: rgba(185, 28, 28, 0.35);
+}
+
+.ve-aspect-picker.is-compact .ve-aspect-options {
+  gap: 0.3rem;
+}
+.ve-aspect-picker.is-compact .ve-aspect-opt {
+  min-width: 3.4rem;
+  padding: 0.3rem 0.35rem;
+}
+.ve-aspect-picker.is-compact .ve-aspect-shape-wrap {
+  width: 1.85rem;
+  height: 1.85rem;
+}
+.ve-aspect-picker.is-compact .ve-aspect-name {
+  font-size: 0.68rem;
 }
 
 .ve-hero-bg {
@@ -5204,6 +5464,12 @@ html[data-theme="light"] .brand-logo {
   margin: 0.35rem auto;
   padding: 0 var(--page-pad);
 }
+.ve-insert-slot.is-prominent {
+  position: relative;
+  z-index: 2;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
 
 .ve-insert-btn {
   appearance: none;
@@ -5245,6 +5511,9 @@ html[data-theme="light"] .brand-logo {
   padding: 0.35rem 0.75rem;
 }
 .ve-insert-picker {
+  position: relative;
+  z-index: 30;
+  scroll-margin-top: calc(var(--header-h, 114px) + 12px);
   padding: 1rem 1.1rem 0.9rem;
   border: 1px solid #e5e5e5;
   border-radius: 8px;
@@ -5381,6 +5650,46 @@ html[data-theme="light"] .brand-logo {
   border-radius: 4px;
   background: #fff;
 }
+
+.ve-table-size-bar select {
+  min-width: 7.5rem;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #18181b;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid #d4d4d8;
+  border-radius: 4px;
+  background: #fff;
+}
+.ve-table-row-actions {
+  display: inline-flex;
+  gap: 0.25rem;
+  flex-shrink: 0;
+  min-width: 4.5rem;
+  justify-content: flex-end;
+}
+.ve-table-header-row .ve-table-row-actions {
+  visibility: hidden;
+}
+.ve-table-row.is-highlighted {
+  background: rgba(239, 68, 68, 0.08);
+  border-radius: 4px;
+  outline: 1px solid rgba(220, 38, 38, 0.35);
+  padding: 0.15rem;
+  margin: -0.15rem;
+}
+.ve-table-row.is-highlighted input {
+  border-color: rgba(220, 38, 38, 0.45);
+  color: #991b1b;
+  font-weight: 600;
+}
+.ve-highlight-btn.is-active {
+  color: #b91c1c;
+  border-color: rgba(185, 28, 28, 0.45);
+  background: rgba(239, 68, 68, 0.1);
+}
+
 .ve-table-size-meta {
   font-size: 0.85rem;
   color: #71717a;
@@ -5448,7 +5757,19 @@ html[data-theme="light"] .brand-logo {
 }
 .pb-section-note {
   margin-top: 0.85rem;
-  max-width: 60ch;
+  max-width: none;
+  width: 100%;
+}
+
+/* Table footnotes: full width, single line (no wrapping) */
+.table-footnote,
+.data-table-wrap + .pb-section-note,
+.product-data-table-wrap + .about-note,
+.spec-table + .pb-section-note {
+  max-width: none;
+  width: 100%;
+  white-space: nowrap;
+  overflow-x: auto;
 }
 .hero-section-note {
   margin-top: 1rem;
@@ -6452,4 +6773,282 @@ html[data-theme="light"] .brand-logo {
   .ve-root-site.has-howto {
     --howto-h: 72px;
   }
+}
+
+
+/* —— Admin-only edit bar (public site, session required) —— */
+.admin-edit-bar {
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  background: #18181b;
+  color: #fafafa;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+.admin-edit-bar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.55rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem 1rem;
+}
+.admin-edit-bar-copy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.65rem;
+}
+.admin-edit-bar-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fdba74;
+}
+.admin-edit-bar-hint {
+  font-size: 0.8rem;
+  color: rgba(250, 250, 250, 0.72);
+}
+.admin-edit-bar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+.admin-edit-bar-btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fafafa;
+  text-decoration: none;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 650;
+  padding: 0.38rem 0.7rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.admin-edit-bar-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.admin-edit-bar-btn.is-primary {
+  background: var(--accent, #c45c26);
+  border-color: transparent;
+  color: #fff;
+}
+.admin-edit-bar-btn.is-primary:hover {
+  filter: brightness(1.06);
+}
+.admin-edit-bar-btn.is-quiet {
+  border-color: transparent;
+  background: transparent;
+  color: rgba(250, 250, 250, 0.7);
+}
+.admin-edit-bar-btn.is-quiet:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* —— Visual grouped add-block picker —— */
+.ve-insert-picker-visual {
+  max-width: 920px;
+}
+.ve-section-groups {
+  display: grid;
+  gap: 1rem;
+  margin: 0.35rem 0 0.85rem;
+}
+.ve-section-group {
+  border: 1px solid #e4e4e7;
+  border-radius: 10px;
+  background: #fff;
+  padding: 0.75rem 0.85rem 0.9rem;
+}
+.ve-section-group-head {
+  margin: 0 0 0.65rem;
+}
+.ve-section-group-head h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 780;
+  color: #18181b;
+}
+.ve-section-group-head p {
+  margin: 0.15rem 0 0;
+  font-size: 0.78rem;
+  color: #71717a;
+}
+.ve-section-picker-visual {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 0.55rem;
+}
+.ve-section-choice-visual {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 0.65rem;
+  align-items: center;
+  text-align: left;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  background: #fafafa;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.ve-section-choice-visual:hover,
+.ve-section-choice-visual:focus {
+  border-color: rgba(196, 92, 38, 0.55);
+  background: #fff7ed;
+  outline: none;
+}
+.ve-section-choice-copy {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+.ve-section-choice-copy strong {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #18181b;
+}
+.ve-section-choice-copy span {
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: #71717a;
+}
+.ve-block-preview {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 48px;
+  border-radius: 6px;
+  background: #f4f4f5;
+  border: 1px solid #e4e4e7;
+  overflow: hidden;
+}
+.ve-block-preview-inner {
+  display: block;
+  width: 46px;
+  height: 34px;
+  border-radius: 3px;
+  background:
+    linear-gradient(90deg, #d4d4d8 0 40%, transparent 40%),
+    linear-gradient(#e4e4e7, #e4e4e7);
+  background-size: 100% 4px, 100% 100%;
+  background-position: 0 6px, 0 0;
+  background-repeat: no-repeat;
+}
+.ve-block-preview--hero .ve-block-preview-inner {
+  background:
+    linear-gradient(180deg, #78716c 0 55%, #fafafa 55%),
+    linear-gradient(#fff, #fff);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+}
+.ve-block-preview--hero .ve-block-preview-inner::after {
+  content: "";
+  display: block;
+  width: 55%;
+  height: 3px;
+  margin: 8px 0 0 4px;
+  background: #fdba74;
+  border-radius: 2px;
+}
+.ve-block-preview--richText .ve-block-preview-inner {
+  background:
+    linear-gradient(#a1a1aa, #a1a1aa) 0 6px / 70% 4px no-repeat,
+    linear-gradient(#d4d4d8, #d4d4d8) 0 14px / 90% 3px no-repeat,
+    linear-gradient(#d4d4d8, #d4d4d8) 0 20px / 80% 3px no-repeat,
+    #fff;
+}
+.ve-block-preview--mediaText .ve-block-preview-inner {
+  background:
+    linear-gradient(#fdba74, #fdba74) 0 0 / 42% 100% no-repeat,
+    linear-gradient(#d4d4d8, #d4d4d8) 48% 8px / 48% 4px no-repeat,
+    linear-gradient(#e4e4e7, #e4e4e7) 48% 16px / 48% 3px no-repeat,
+    #fff;
+}
+.ve-block-preview--cardGrid .ve-block-preview-inner {
+  background:
+    linear-gradient(#fed7aa, #fed7aa) 0 0 / 30% 100% no-repeat,
+    linear-gradient(#fed7aa, #fed7aa) 35% 0 / 30% 100% no-repeat,
+    linear-gradient(#fed7aa, #fed7aa) 70% 0 / 30% 100% no-repeat,
+    #fff;
+}
+.ve-block-preview--gallery .ve-block-preview-inner {
+  background:
+    linear-gradient(#a8a29e, #a8a29e) 0 4px / 28% 70% no-repeat,
+    linear-gradient(#a8a29e, #a8a29e) 36% 4px / 28% 70% no-repeat,
+    linear-gradient(#a8a29e, #a8a29e) 72% 4px / 28% 70% no-repeat,
+    #fff;
+}
+.ve-block-preview--featureList .ve-block-preview-inner {
+  background:
+    linear-gradient(#d4d4d8, #d4d4d8) 0 6px / 40% 3px no-repeat,
+    linear-gradient(#d4d4d8, #d4d4d8) 0 14px / 36% 3px no-repeat,
+    linear-gradient(#d4d4d8, #d4d4d8) 0 22px / 32% 3px no-repeat,
+    linear-gradient(#fdba74, #fdba74) 55% 0 / 45% 100% no-repeat,
+    #fff;
+}
+.ve-block-preview--proof .ve-block-preview-inner {
+  background:
+    linear-gradient(#e7e5e4, #e7e5e4) 0 0 / 30% 100% no-repeat,
+    linear-gradient(#e7e5e4, #e7e5e4) 35% 0 / 30% 100% no-repeat,
+    linear-gradient(#e7e5e4, #e7e5e4) 70% 0 / 30% 100% no-repeat,
+    #fff;
+}
+.ve-block-preview--callout .ve-block-preview-inner {
+  background: #ffedd5;
+  box-shadow: inset 0 0 0 2px #fdba74;
+}
+.ve-block-preview--stats .ve-block-preview-inner {
+  background:
+    linear-gradient(#c45c26, #c45c26) 4px 8px / 12px 12px no-repeat,
+    linear-gradient(#c45c26, #c45c26) 28px 8px / 12px 12px no-repeat,
+    #fff;
+}
+.ve-block-preview--specsTable .ve-block-preview-inner,
+.ve-block-preview--dataTable .ve-block-preview-inner {
+  background:
+    linear-gradient(#d4d4d8, #d4d4d8) 0 4px / 100% 4px no-repeat,
+    linear-gradient(#e4e4e7, #e4e4e7) 0 12px / 100% 3px no-repeat,
+    linear-gradient(#e4e4e7, #e4e4e7) 0 20px / 100% 3px no-repeat,
+    linear-gradient(#e4e4e7, #e4e4e7) 0 28px / 100% 3px no-repeat,
+    #fff;
+}
+.ve-block-preview--dataTable .ve-block-preview-inner {
+  background:
+    linear-gradient(#78716c, #78716c) 0 0 / 100% 6px no-repeat,
+    linear-gradient(#e4e4e7, #e4e4e7) 0 10px / 100% 3px no-repeat,
+    linear-gradient(#ffedd5, #ffedd5) 0 17px / 100% 8px no-repeat,
+    linear-gradient(#e4e4e7, #e4e4e7) 0 28px / 100% 3px no-repeat,
+    #fff;
+}
+.ve-block-preview--tabs .ve-block-preview-inner {
+  background:
+    linear-gradient(#c45c26, #c45c26) 2px 2px / 14px 5px no-repeat,
+    linear-gradient(#d4d4d8, #d4d4d8) 20px 2px / 14px 5px no-repeat,
+    linear-gradient(#d4d4d8, #d4d4d8) 38px 2px / 14px 5px no-repeat,
+    linear-gradient(#f4f4f5, #f4f4f5) 0 12px / 100% 22px no-repeat,
+    #fff;
+}
+.ve-block-preview--jointDetails .ve-block-preview-inner {
+  background:
+    linear-gradient(#e4e4e7, #e4e4e7) 0 4px / 100% 8px no-repeat,
+    linear-gradient(#e4e4e7, #e4e4e7) 0 16px / 100% 8px no-repeat,
+    #fff;
+}
+.ve-block-preview--contactCta .ve-block-preview-inner {
+  background:
+    linear-gradient(#c45c26, #c45c26) 50% 70% / 40% 6px no-repeat,
+    linear-gradient(#d4d4d8, #d4d4d8) 20% 10px / 60% 4px no-repeat,
+    #fff7ed;
 }

@@ -12,8 +12,7 @@ import type {
 } from "@/lib/page-document";
 import {
   ADDABLE_SECTION_TYPES,
-  ADVANCED_SECTION_TYPES,
-  COMMON_SECTION_TYPES,
+  SECTION_TYPE_GROUPS,
   SECTION_TYPE_HELP,
   SECTION_TYPE_LABELS,
   clampTableSize,
@@ -230,12 +229,13 @@ function EditableSection({
             <div className="hero-veil" />
           </div>
           <div className="hero-content">
-            <EText as="p" className="hero-brand" value={d.brand} onChange={(brand) => setData({ ...d, brand })} />
-            <EText as="h1" value={d.headline} onChange={(headline) => setData({ ...d, headline })} />
+            <EText as="p" className="hero-brand" multiline value={d.brand} onChange={(brand) => setData({ ...d, brand })} />
+            <EText as="h1" multiline value={d.headline} onChange={(headline) => setData({ ...d, headline })} />
             {d.tagline !== undefined ? (
               <EText
                 as="p"
                 className="hero-tagline"
+                multiline
                 value={d.tagline || ""}
                 onChange={(tagline) => setData({ ...d, tagline })}
               />
@@ -608,31 +608,41 @@ function EditableSection({
               </button>
             </div>
           )}
-          <div className="ve-tool-group" style={{ marginBottom: "0.75rem" }}>
-            <span className="ve-placement-label">Card style</span>
-            <button
-              type="button"
-              className={`ve-tool-btn ${(d.variant || "default") === "default" ? "is-active" : ""}`}
-              onClick={() => setData({ ...d, variant: "default" })}
-            >
-              Photo cards
-            </button>
-            <button
-              type="button"
-              className={`ve-tool-btn ${d.variant === "certs" ? "is-active" : ""}`}
-              onClick={() => setData({ ...d, variant: "certs" })}
-            >
-              Cert / logo cards
-            </button>
-          </div>
-          {d.variant !== "certs" ? (
-            <div className="ve-tool-group" style={{ marginBottom: "0.75rem" }}>
+          <div className="ve-block-toolbar">
+            <div className="ve-block-toolbar-row">
+              <span className="ve-placement-label">Card style</span>
+              <div className="ve-seg">
+                <button
+                  type="button"
+                  className={`ve-seg-btn ${(d.variant || "default") === "default" ? "is-active" : ""}`}
+                  onClick={() => setData({ ...d, variant: "default" })}
+                >
+                  Photo cards
+                </button>
+                <button
+                  type="button"
+                  className={`ve-seg-btn ${d.variant === "certs" ? "is-active" : ""}`}
+                  onClick={() => setData({ ...d, variant: "certs" })}
+                >
+                  Cert / logo
+                </button>
+              </div>
+            </div>
+            {d.variant !== "certs" ? (
               <ImageAspectPicker
+                compact
                 value={d.imageAspect}
                 onChange={(imageAspect) => setData({ ...d, imageAspect })}
               />
-            </div>
-          ) : null}
+            ) : (
+              <p className="ve-toolbar-hint">Logo cards keep marks sharp without photo cropping.</p>
+            )}
+            {d.variant !== "certs" ? (
+              <p className="ve-toolbar-hint">
+                Drag a photo to reframe. Use − / + to zoom. Change replaces the file.
+              </p>
+            ) : null}
+          </div>
           <div
             className={
               d.variant === "certs"
@@ -647,20 +657,35 @@ function EditableSection({
                 className={d.variant === "certs" ? "panel-cert-card ve-card" : "product-card ve-card"}
                 key={item.id}
               >
-                <div className="ve-card-actions">
-                  <button type="button" className="ve-move" onClick={() => setData({ ...d, items: reorder(d.items, index, index - 1) })}>
-                    ←
-                  </button>
-                  <button type="button" className="ve-move" onClick={() => setData({ ...d, items: reorder(d.items, index, index + 1) })}>
-                    →
-                  </button>
-                  <button
-                    type="button"
-                    className="ve-remove"
-                    onClick={() => setData({ ...d, items: d.items.filter((_, i) => i !== index) })}
-                  >
-                    Remove
-                  </button>
+                <div className="ve-card-toolbar">
+                  <span className="ve-card-index">Card {index + 1}</span>
+                  <div className="ve-card-actions ve-card-actions-inline">
+                    <button
+                      type="button"
+                      className="ve-move"
+                      title="Move left"
+                      disabled={index === 0}
+                      onClick={() => setData({ ...d, items: reorder(d.items, index, index - 1) })}
+                    >
+                      ←
+                    </button>
+                    <button
+                      type="button"
+                      className="ve-move"
+                      title="Move right"
+                      disabled={index >= d.items.length - 1}
+                      onClick={() => setData({ ...d, items: reorder(d.items, index, index + 1) })}
+                    >
+                      →
+                    </button>
+                    <button
+                      type="button"
+                      className="ve-remove"
+                      onClick={() => setData({ ...d, items: d.items.filter((_, i) => i !== index) })}
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
                 {d.variant === "certs" ? (
                   <div className="panel-cert-logo">
@@ -960,6 +985,12 @@ function EditableSection({
     }
     case "dataTable": {
       const d = section.data;
+      const highlightIdx =
+        typeof d.highlightRowIndex === "number" &&
+        d.highlightRowIndex >= 0 &&
+        d.highlightRowIndex < d.rows.length
+          ? d.highlightRowIndex
+          : null;
       body = (
         <section className={`section section-compact ve-block ${nested ? "pb-nested" : ""}`}>
           <div className="section-head">
@@ -996,13 +1027,36 @@ function EditableSection({
                 }
               />
             </label>
+            <label>
+              Highlight row
+              <select
+                value={highlightIdx === null ? "" : String(highlightIdx)}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setData({
+                    ...d,
+                    highlightRowIndex: v === "" ? null : Number(v),
+                  });
+                }}
+              >
+                <option value="">None</option>
+                {d.rows.map((_, i) => (
+                  <option key={i} value={i}>
+                    Row {i + 1}
+                  </option>
+                ))}
+              </select>
+            </label>
             <span className="ve-table-size-meta">
               {d.headers.length} × {d.rows.length}
             </span>
           </div>
-          <p className="ve-hint">Edit cells below. Headers and rows are plain text.</p>
+          <p className="ve-hint">
+            Edit cells below. Optionally highlight one row — it shows with emphasis on the public
+            page.
+          </p>
           <div className="ve-table-edit">
-            <div className="ve-table-row">
+            <div className="ve-table-row ve-table-header-row">
               {d.headers.map((h, i) => (
                 <input
                   key={i}
@@ -1014,29 +1068,61 @@ function EditableSection({
                   }}
                 />
               ))}
+              <span className="ve-table-row-actions" aria-hidden="true" />
             </div>
-            {d.rows.map((row, ri) => (
-              <div className="ve-table-row" key={ri}>
-                {row.map((cell, ci) => (
-                  <input
-                    key={ci}
-                    value={cell}
-                    onChange={(e) => {
-                      const rows = d.rows.map((r) => [...r]);
-                      rows[ri][ci] = e.target.value;
-                      setData({ ...d, rows });
-                    }}
-                  />
-                ))}
-                <button
-                  type="button"
-                  className="ve-mini-btn"
-                  onClick={() => setData({ ...d, rows: d.rows.filter((_, i) => i !== ri) })}
+            {d.rows.map((row, ri) => {
+              const isHighlighted = highlightIdx === ri;
+              return (
+                <div
+                  className={`ve-table-row${isHighlighted ? " is-highlighted" : ""}`}
+                  key={ri}
                 >
-                  ×
-                </button>
-              </div>
-            ))}
+                  {row.map((cell, ci) => (
+                    <input
+                      key={ci}
+                      value={cell}
+                      onChange={(e) => {
+                        const rows = d.rows.map((r) => [...r]);
+                        rows[ri][ci] = e.target.value;
+                        setData({ ...d, rows });
+                      }}
+                    />
+                  ))}
+                  <div className="ve-table-row-actions">
+                    <button
+                      type="button"
+                      className={`ve-mini-btn ve-highlight-btn${isHighlighted ? " is-active" : ""}`}
+                      title={isHighlighted ? "Remove highlight" : "Highlight this row"}
+                      aria-pressed={isHighlighted}
+                      onClick={() =>
+                        setData({
+                          ...d,
+                          highlightRowIndex: isHighlighted ? null : ri,
+                        })
+                      }
+                    >
+                      {isHighlighted ? "★" : "☆"}
+                    </button>
+                    <button
+                      type="button"
+                      className="ve-mini-btn"
+                      title="Delete row"
+                      onClick={() => {
+                        const rows = d.rows.filter((_, i) => i !== ri);
+                        let nextHighlight: number | null = highlightIdx;
+                        if (highlightIdx === ri) nextHighlight = null;
+                        else if (highlightIdx !== null && highlightIdx > ri) {
+                          nextHighlight = highlightIdx - 1;
+                        }
+                        setData({ ...d, rows, highlightRowIndex: nextHighlight });
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
           <button
             type="button"
@@ -1556,14 +1642,10 @@ function SectionList({
   const [pendingTable, setPendingTable] = useState<"dataTable" | "specsTable" | null>(null);
   const [tableCols, setTableCols] = useState(3);
   const [tableRows, setTableRows] = useState(3);
-  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const allowed = allowTabs
     ? ADDABLE_SECTION_TYPES
     : ADDABLE_SECTION_TYPES.filter((t) => t !== "tabs");
-  const common = COMMON_SECTION_TYPES.filter((t) => allowed.includes(t));
-  const advanced = ADVANCED_SECTION_TYPES.filter((t) => allowed.includes(t));
-
   function patch(index: number, section: PageSection) {
     const next = [...sections];
     next[index] = section;
@@ -1578,11 +1660,12 @@ function SectionList({
       return;
     }
     const next = [...sections];
-    next.splice(at, 0, createEmptySection(type));
+    // Page banners always go first so they sit at the top of the page
+    const insertAt = type === "hero" ? 0 : at;
+    next.splice(insertAt, 0, createEmptySection(type));
     onChange(next);
     setInsertAt(null);
     setPendingTable(null);
-    setShowAdvanced(false);
   }
 
   function confirmTableInsert(at: number) {
@@ -1595,22 +1678,53 @@ function SectionList({
     onChange(next);
     setInsertAt(null);
     setPendingTable(null);
-    setShowAdvanced(false);
+  }
+
+  function BlockPreview({ type }: { type: SectionType }) {
+    return (
+      <span className={`ve-block-preview ve-block-preview--${type}`} aria-hidden="true">
+        <span className="ve-block-preview-inner" />
+      </span>
+    );
   }
 
   function TypeChoices({ list, at }: { list: SectionType[]; at: number }) {
     return (
-      <div className="ve-section-picker">
+      <div className="ve-section-picker ve-section-picker-visual">
         {list.map((type: SectionType) => (
           <button
             key={type}
             type="button"
-            className="ve-section-choice"
+            className="ve-section-choice ve-section-choice-visual"
             onClick={() => insertSection(type, at)}
           >
-            <strong>{SECTION_TYPE_LABELS[type]}</strong>
-            <span>{SECTION_TYPE_HELP[type]}</span>
+            <BlockPreview type={type} />
+            <span className="ve-section-choice-copy">
+              <strong>{SECTION_TYPE_LABELS[type]}</strong>
+              <span>{SECTION_TYPE_HELP[type]}</span>
+            </span>
           </button>
+        ))}
+      </div>
+    );
+  }
+
+  function GroupedTypeChoices({ at }: { at: number }) {
+    const groups = SECTION_TYPE_GROUPS.map((group) => ({
+      ...group,
+      types: group.types.filter((t) => allowed.includes(t)),
+    })).filter((group) => group.types.length > 0);
+
+    return (
+      <div className="ve-section-groups">
+        {groups.map((group) => (
+          <section key={group.id} className="ve-section-group">
+            <header className="ve-section-group-head">
+              <h3>{group.label}</h3>
+              <p>{group.hint}</p>
+            </header>
+            <TypeChoices list={group.types} at={at} />
+          </section>
         ))}
       </div>
     );
@@ -1631,10 +1745,16 @@ function SectionList({
           <button
             type="button"
             className="ve-insert-btn"
-            onClick={() => {
+            onClick={(e) => {
               setPendingTable(null);
-              setShowAdvanced(false);
               setInsertAt(at);
+              // Keep the picker clear of the sticky admin bar
+              requestAnimationFrame(() => {
+                (e.currentTarget.closest(".ve-insert-slot") as HTMLElement | null)?.scrollIntoView({
+                  block: "center",
+                  behavior: "smooth",
+                });
+              });
             }}
           >
             {label}
@@ -1699,27 +1819,15 @@ function SectionList({
     }
 
     return (
-      <div className="ve-add-section ve-insert-picker">
-        <p className="ve-insert-hint">Choose a block to add</p>
-        <TypeChoices list={common} at={at} />
-        {advanced.length > 0 ? (
-          <div className="ve-section-more">
-            <button
-              type="button"
-              className="ve-mini-btn"
-              onClick={() => setShowAdvanced((v) => !v)}
-            >
-              {showAdvanced ? "Hide more options" : "More options (tables, tabs, joint…)"}
-            </button>
-            {showAdvanced ? <TypeChoices list={advanced} at={at} /> : null}
-          </div>
-        ) : null}
+      <div className="ve-add-section ve-insert-picker ve-insert-picker-visual">
+        <p className="ve-insert-hint">Choose a block to add — grouped with a small preview of each type</p>
+        <GroupedTypeChoices at={at} />
         <button
           type="button"
           className="ve-mini-btn"
           onClick={() => {
             setInsertAt(null);
-            setShowAdvanced(false);
+                    setPendingTable(null);
           }}
         >
           Cancel
