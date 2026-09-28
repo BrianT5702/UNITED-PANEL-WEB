@@ -3,7 +3,8 @@ import type { HomeContent } from "./types";
 export const defaultHomeContent: HomeContent = {
   settings: {
     logoUrl: "https://www.ur.com.my/images/logo-2.png",
-    siteName: "United Panel-System",
+    siteName: "UNITED PANEL-SYSTEM(M) SDN BHD",
+    brandTagline: "ASEAN’s First & Only PIR Double Belt Continuous Line",
   },
   nav: {
     items: [
@@ -25,14 +26,26 @@ export const defaultHomeContent: HomeContent = {
         label: "Products",
         href: "/products",
         children: [
-          { label: "All products", href: "/products" },
-          { label: "PIR Panels", href: "/products/pir" },
-          { label: "PU Panels", href: "/products/pu" },
-          { label: "RockWool Panels", href: "/products/rockwool" },
-        ],
+      { label: "All Product", href: "/products" },
+      { label: "PIR Panels", href: "/products/pir" },
+      { label: "Roof Panels", href: "/products/roof" },
+      { label: "PU Panels", href: "/products/pu" },
+      { label: "Applications", href: "/products/applications" },
+      { label: "Refrigeration Systems", href: "/products/refrigeration-systems" },
+      { label: "Insulated Doors", href: "/products/insulated-doors" },
+      { label: "RockWool Panels", href: "/products/rockwool" },
+    ],
       },
       { label: "Services", href: "/services" },
-      { label: "Refrigeration Parts", href: "/parts" },
+      {
+        label: "Refrigeration Parts",
+        href: "/parts",
+        children: [{ label: "Partners", href: "/partners" }],
+      },
+      { label: "News", href: "/news" },
+      { label: "Career", href: "/career" },
+      { label: "Virtual Tour", href: "/virtual-tour" },
+      { label: "Catalogues", href: "/catalogues" },
       { label: "Contact Us", href: "/contact" },
     ],
   },

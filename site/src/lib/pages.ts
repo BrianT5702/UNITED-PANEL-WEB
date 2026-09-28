@@ -35,10 +35,19 @@ export const SITE_PAGES: SitePage[] = [
   { id: "products", label: "Products", path: "/products", group: "Products" },
   { id: "products/pir", label: "PIR Panels", path: "/products/pir", group: "Products" },
   { id: "products/pu", label: "PU Panels", path: "/products/pu", group: "Products" },
+  { id: "products/roof", label: "Roof Panels", path: "/products/roof", group: "Products" },
+  { id: "products/ps", label: "PS Panels", path: "/products/ps", group: "Products" },
+  { id: "products/applications", label: "Applications", path: "/products/applications", group: "Products" },
+  { id: "products/refrigeration-systems", label: "Refrigeration Systems", path: "/products/refrigeration-systems", group: "Products" },
+  { id: "products/insulated-doors", label: "Insulated Doors", path: "/products/insulated-doors", group: "Products" },
   { id: "products/rockwool", label: "RockWool", path: "/products/rockwool", group: "Products" },
 
   { id: "parts", label: "Refrigeration Parts", path: "/parts", group: "Other" },
+  { id: "partners", label: "Partners", path: "/partners", group: "Other" },
   { id: "services", label: "Services", path: "/services", group: "Other" },
+  { id: "news", label: "News", path: "/news", group: "Other" },
+  { id: "career", label: "Career", path: "/career", group: "Other" },
+  { id: "virtual-tour", label: "Virtual Tour", path: "/virtual-tour", group: "Other" },
   { id: "contact", label: "Contact", path: "/contact", group: "Other" },
 ];
 
@@ -54,8 +63,14 @@ const RESERVED_TOP_SEGMENTS = new Set([
   "about",
   "products",
   "parts",
+  "partners",
   "services",
+  "news",
+  "career",
+  "virtual-tour",
+  "catalogues",
   "contact",
+  "r",
 ]);
 
 export function getSitePage(id: string, pages: SitePage[] = SITE_PAGES): SitePage | undefined {

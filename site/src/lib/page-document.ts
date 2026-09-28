@@ -4,7 +4,7 @@ export function newId(prefix = "id") {
   return `${prefix}_${Math.random().toString(36).slice(2, 10)}`;
 }
 
-export type SectionColumns = 1 | 2 | 3;
+export type SectionColumns = 1 | 2 | 3 | 4;
 
 /** What a button does when clicked */
 export type HeroButtonAction = "link" | "section";
@@ -30,6 +30,10 @@ export type HeroSectionData = {
   lead: string;
   tagline?: string;
   backgroundImage: string;
+  /** Visible crop point when the banner photo is larger than the frame */
+  imageFocus?: ImageFocus;
+  /** Banner darkening 0–100 (missing = 100 / full veil) */
+  veilStrength?: number;
   /** full = viewport hero; short = compact banner (default) */
   size?: "full" | "short";
   buttons?: HeroButton[];
@@ -202,7 +206,39 @@ export function normalizeImageFocus(focus?: ImageFocus | null): ImageFocus {
   };
 }
 
-/** object-position + optional scale for editor/live crop */
+/**
+ * Cover-crop display size + offset matching CSS object-fit:cover + object-position.
+ * Editor reframe uses this for explicit left/top so tall photos pan on Y at 100% zoom.
+ * Same math as object-position percentages: left = (frameW - dispW) * (x/100).
+ */
+export function imageCoverRect(
+  natW: number,
+  natH: number,
+  frameW: number,
+  frameH: number,
+  focus?: ImageFocus | null,
+): { dispW: number; dispH: number; left: number; top: number; overflowX: number; overflowY: number } | null {
+  if (natW <= 0 || natH <= 0 || frameW <= 0 || frameH <= 0) return null;
+  const f = normalizeImageFocus(focus);
+  const z = normalizeImageZoom(f.zoom);
+  const cover = Math.max(frameW / natW, frameH / natH) * z;
+  const dispW = natW * cover;
+  const dispH = natH * cover;
+  return {
+    dispW,
+    dispH,
+    left: (frameW - dispW) * (f.x / 100),
+    top: (frameH - dispH) * (f.y / 100),
+    overflowX: Math.max(0, (dispW - frameW) / frameW),
+    overflowY: Math.max(0, (dispH - frameH) / frameH),
+  };
+}
+
+/**
+ * Live / non-reframe crop: object-position from focus (same % math as imageCoverRect left/top).
+ * Apply scale + transform-origin only when zoom > 1 so 100% pans via pure object-position.
+ * Live decorative scale(1.02) remains when zoom === 1 because we omit transform entirely.
+ */
 export function imageFocusStyle(focus?: ImageFocus | null): {
   objectPosition: string;
   transform?: string;
@@ -210,14 +246,15 @@ export function imageFocusStyle(focus?: ImageFocus | null): {
 } {
   const f = normalizeImageFocus(focus);
   const zoom = normalizeImageZoom(f.zoom);
+  if (zoom > IMAGE_ZOOM_MIN) {
+    return {
+      objectPosition: `${f.x}% ${f.y}%`,
+      transform: `scale(${zoom})`,
+      transformOrigin: `${f.x}% ${f.y}%`,
+    };
+  }
   return {
     objectPosition: `${f.x}% ${f.y}%`,
-    ...(zoom > IMAGE_ZOOM_MIN
-      ? {
-          transform: `scale(${zoom})`,
-          transformOrigin: `${f.x}% ${f.y}%`,
-        }
-      : {}),
   };
 }
 
@@ -232,6 +269,17 @@ export function normalizeSlideshowIntervalSec(sec?: number | null): number {
 
 export function resolveSlideshowIntervalMs(sec?: number | null): number {
   return Math.round(normalizeSlideshowIntervalSec(sec) * 1000);
+}
+
+
+/** Banner darkening 0–100; missing / invalid → 100 (full veil). */
+export function normalizeVeilStrength(strength?: number | null): number {
+  if (strength == null || Number.isNaN(Number(strength))) return 100;
+  return Math.min(100, Math.max(0, Math.round(Number(strength))));
+}
+
+export function veilOpacity(strength?: number | null): number {
+  return normalizeVeilStrength(strength) / 100;
 }
 
 export type RichTextSectionData = {
@@ -295,6 +343,8 @@ export type CardGridSectionData = {
    * default = photo product cards
    */
   variant?: "default" | "certs";
+  /** Whether card images open in the lightbox (defaults to true) */
+  enlarge?: boolean;
 };
 
 export type FeatureListSectionData = {
@@ -326,7 +376,8 @@ export type DataTableSectionData = {
   highlightRowIndex?: number | null;
 };
 
-export type GalleryLayoutId = "grid" | "slideshow" | "logos" | "pages";
+/** logoSlides = slideshow of wide images (e.g. several brand logos per slide), shown whole */
+export type GalleryLayoutId = "grid" | "slideshow" | "logos" | "pages" | "logoSlides";
 
 export type GallerySectionData = {
   eyebrow?: string;
@@ -338,6 +389,8 @@ export type GallerySectionData = {
   /** Where logos sit in the tile (left / middle / right, plus corners) */
   imageAlign?: ImageAlignId;
   slideshowIntervalSec?: number;
+  /** Logo slideshow: advance on its own (default true) */
+  slideshowAutoplay?: boolean;
 };
 
 export type JointDetailPage = {
@@ -481,6 +534,10 @@ export type PageDocument = {
     crumbs: { label: string; href?: string }[];
     activeHref: string;
     image?: string;
+    /** Visible crop point for the about banner photo */
+    imageFocus?: ImageFocus;
+    /** Banner darkening 0–100 (missing = 100 / full veil) */
+    veilStrength?: number;
     /** Small label above the page title (default: About Us) */
     eyebrow?: string;
     /** Optional brand line above the eyebrow (home-hero style) */
@@ -494,36 +551,36 @@ export type PageDocument = {
 export const SECTION_TYPE_LABELS: Record<SectionType, string> = {
   hero: "Page banner",
   proof: "Key highlights",
-  richText: "Heading & text",
-  mediaText: "Text with photo",
-  cardGrid: "Cards / links",
-  featureList: "List + photo slideshow",
-  specsTable: "Label–value list",
+  richText: "Text section",
+  mediaText: "Photo with text",
+  cardGrid: "Cards",
+  featureList: "Checklist",
+  specsTable: "Spec list",
   dataTable: "Table",
   gallery: "Photo gallery",
-  jointDetails: "Expandable joint details",
+  jointDetails: "Expandable details",
   contactCta: "Contact box",
   callout: "Highlight note",
-  stats: "Number stats",
-  tabs: "Tabbed sections",
+  stats: "Big numbers",
+  tabs: "Tabs",
 };
 
 /** Short plain-language help for the add-section picker */
 export const SECTION_TYPE_HELP: Record<SectionType, string> = {
-  hero: "Big top banner with headline, text, and buttons",
-  proof: "Three short highlights in a row (01, 02, 03…)",
-  richText: "A title and paragraph of writing",
-  mediaText: "Title & text beside one photo or a rotating slideshow — swap sides",
-  cardGrid: "Rows of cards with photo, title, and link",
-  featureList: "Bullet points beside a rotating photo slideshow (like Applications)",
-  specsTable: "Rows like “Thickness → 100 mm”",
-  dataTable: "Spreadsheet-style table — you’ll pick columns & rows",
-  gallery: "A row of photos (or switch to slideshow)",
-  jointDetails: "Collapsed joint diagrams visitors expand to view",
-  contactCta: "Ask visitors to email / call / contact you",
-  callout: "One important sentence to stand out",
-  stats: "Big numbers with short labels (e.g. 1978 · Established)",
-  tabs: "Switch between tabs (Overview, Specs, etc.)",
+  hero: "Large top of the page with a headline and optional photo — use once at the top.",
+  proof: "A few numbered points in a row — good for selling points, not long stories.",
+  richText: "A heading and a paragraph — the everyday writing block.",
+  mediaText: "A photo (or slideshow) next to a title and text — swap which side the photo sits on.",
+  cardGrid: "Tiles with a photo, title, short text, and optional link — browseable cards.",
+  featureList: "A checklist of bullet points, optionally beside rotating photos.",
+  specsTable: "Simple rows like “Thickness → 100 mm” for product specs.",
+  dataTable: "A spreadsheet-style grid with columns and rows you can resize.",
+  gallery: "A row of photos — switch to slideshow, logos, or document pages if needed.",
+  jointDetails: "A closed box visitors open to see diagrams or extra detail.",
+  contactCta: "Email, phone, WhatsApp, and a button that goes to Contact.",
+  callout: "One important sentence in a standout box.",
+  stats: "Large figures with short labels (year, location, capacity).",
+  tabs: "Several inner pages in one block — Overview vs Specs, for example.",
 };
 
 export const ADDABLE_SECTION_TYPES: SectionType[] = [
@@ -575,7 +632,7 @@ export const SECTION_TYPE_GROUPS: {
   {
     id: "text",
     label: "Text & banners",
-    hint: "Headlines, writing, callouts, stats",
+    hint: "Banners, writing, highlights, and big numbers",
     types: ["hero", "richText", "proof", "callout", "stats"],
   },
   {
@@ -587,13 +644,13 @@ export const SECTION_TYPE_GROUPS: {
   {
     id: "tables",
     label: "Tables & lists",
-    hint: "Specs and spreadsheet-style tables",
+    hint: "Spec lists and spreadsheet-style tables",
     types: ["specsTable", "dataTable"],
   },
   {
     id: "layout",
     label: "Layout & contact",
-    hint: "Tabs, joint diagrams, contact box",
+    hint: "Tabs, expandable details, contact box",
     types: ["tabs", "jointDetails", "contactCta"],
   },
 ];
@@ -646,8 +703,8 @@ export function createEmptySection(type: SectionType): PageSection {
         type,
         data: {
           brand: "United Panel-System",
-          headline: "New headline",
-          lead: "Supporting text for this section.",
+          headline: "Type heading here",
+          lead: "Type a short introduction here",
           backgroundImage: "",
           buttons: [],
         },
@@ -656,11 +713,12 @@ export function createEmptySection(type: SectionType): PageSection {
       return {
         id,
         type,
+        columns: 3,
         data: {
           items: [
-            { id: newId("p"), index: "01", title: "Point one", text: "Description" },
-            { id: newId("p"), index: "02", title: "Point two", text: "Description" },
-            { id: newId("p"), index: "03", title: "Point three", text: "Description" },
+            { id: newId("p"), index: "01", title: "Type title here", text: "Type a short description" },
+            { id: newId("p"), index: "02", title: "Type title here", text: "Type a short description" },
+            { id: newId("p"), index: "03", title: "Type title here", text: "Type a short description" },
           ],
         },
       };
@@ -668,7 +726,7 @@ export function createEmptySection(type: SectionType): PageSection {
       return {
         id,
         type,
-        data: { eyebrow: "Section", title: "New section", body: "Add your content here." },
+        data: { eyebrow: "Section label", title: "Type heading here", body: "Type your text here." },
       };
     case "mediaText":
       return {
@@ -677,8 +735,8 @@ export function createEmptySection(type: SectionType): PageSection {
         columns: 2,
         data: {
           eyebrow: "Overview",
-          title: "Image and text",
-          body: "Describe this block.",
+          title: "Type heading here",
+          body: "Type your text here.",
           image: "",
           imageSide: "left",
         },
@@ -689,13 +747,13 @@ export function createEmptySection(type: SectionType): PageSection {
         type,
         columns: 3,
         data: {
-          eyebrow: "Explore",
-          title: "Cards",
+          eyebrow: "Section label",
+          title: "Type heading here",
           lead: "",
           items: [
-            { id: newId("c"), title: "Card one", text: "Description", href: "#" },
-            { id: newId("c"), title: "Card two", text: "Description", href: "#" },
-            { id: newId("c"), title: "Card three", text: "Description", href: "#" },
+            { id: newId("c"), title: "Type card title", text: "Type a short description", href: "#" },
+            { id: newId("c"), title: "Type card title", text: "Type a short description", href: "#" },
+            { id: newId("c"), title: "Type card title", text: "Type a short description", href: "#" },
           ],
         },
       };
@@ -704,9 +762,9 @@ export function createEmptySection(type: SectionType): PageSection {
         id,
         type,
         data: {
-          eyebrow: "Advantages",
-          title: "Features",
-          items: ["Feature one", "Feature two", "Feature three"],
+          eyebrow: "Section label",
+          title: "Type heading here",
+          items: ["Type a checklist item", "Type a checklist item", "Type a checklist item"],
         },
       };
     case "specsTable":
@@ -715,11 +773,11 @@ export function createEmptySection(type: SectionType): PageSection {
         type,
         data: {
           eyebrow: "Specifications",
-          title: "Specifications",
+          title: "Type heading here",
           lead: "",
           rows: [
-            { label: "Property", value: "Value" },
-            { label: "Property", value: "Value" },
+            { label: "Type label", value: "Type value" },
+            { label: "Type label", value: "Type value" },
           ],
         },
       };
@@ -729,11 +787,11 @@ export function createEmptySection(type: SectionType): PageSection {
         type,
         data: {
           eyebrow: "Properties",
-          title: "Data table",
-          headers: ["Column A", "Column B", "Column C"],
+          title: "Type heading here",
+          headers: ["Column 1", "Column 2", "Column 3"],
           rows: [
-            ["A1", "B1", "C1"],
-            ["A2", "B2", "C2"],
+            ["Type here", "Type here", "Type here"],
+            ["Type here", "Type here", "Type here"],
           ],
         },
       };
@@ -742,7 +800,7 @@ export function createEmptySection(type: SectionType): PageSection {
         id,
         type,
         columns: 3,
-        data: { title: "Gallery", items: [] },
+        data: { title: "Type gallery title", items: [] },
       };
     case "jointDetails":
       return {
@@ -750,9 +808,9 @@ export function createEmptySection(type: SectionType): PageSection {
         type,
         data: {
           eyebrow: "Joint detail",
-          title: "Panel joint",
-          summary: "Expand to view joint diagrams and installation details.",
-          body: "Describe how the panels lock together.",
+          title: "Type heading here",
+          summary: "Click to expand and see more detail.",
+          body: "Type the detail text here.",
           image: "",
           imageAlt: "Panel joint diagram",
           toggleLabel: "Show joint details",
@@ -767,7 +825,7 @@ export function createEmptySection(type: SectionType): PageSection {
         data: {
           eyebrow: "Next step",
           title: "Contact us",
-          body: "Tell us about your project.",
+          body: "Type a short invitation to get in touch.",
           ctaLabel: "Contact Us",
           ctaHref: "/contact",
           fields: [
@@ -778,7 +836,7 @@ export function createEmptySection(type: SectionType): PageSection {
         },
       };
     case "callout":
-      return { id, type, data: { body: "A short callout or note." } };
+      return { id, type, data: { body: "Type an important note here." } };
     case "stats":
       return {
         id,
@@ -795,27 +853,27 @@ export function createEmptySection(type: SectionType): PageSection {
         id,
         type,
         data: {
-          title: "Details",
+          title: "Type tabs title",
           tabs: [
             {
               id: newId("tab"),
-              label: "Tab one",
+              label: "Tab 1",
               sections: [
                 {
                   id: newId("richText"),
                   type: "richText",
-                  data: { title: "Tab one content", body: "Edit this tab." },
+                  data: { title: "Type heading here", body: "Type your text here." },
                 },
               ],
             },
             {
               id: newId("tab"),
-              label: "Tab two",
+              label: "Tab 2",
               sections: [
                 {
                   id: newId("richText"),
                   type: "richText",
-                  data: { title: "Tab two content", body: "Edit this tab." },
+                  data: { title: "Type heading here", body: "Type your text here." },
                 },
               ],
             },
@@ -838,7 +896,7 @@ export function clampTableSize(n: number, fallback: number): number {
 export function createDataTableSection(columnCount = 3, rowCount = 2): PageSection {
   const cols = clampTableSize(columnCount, 3);
   const rows = clampTableSize(rowCount, 2);
-  const headers = Array.from({ length: cols }, (_, i) => `Column ${i + 1}`);
+  const headers = Array.from({ length: cols }, (_, i) => `Type column ${i + 1}`);
   const body = Array.from({ length: rows }, () => Array.from({ length: cols }, () => ""));
   return {
     id: newId("dataTable"),
@@ -890,7 +948,48 @@ export function resizeDataTable(
 export function gridClass(columns?: SectionColumns): string {
   if (columns === 2) return "pb-cols pb-cols-2";
   if (columns === 3) return "pb-cols pb-cols-3";
+  if (columns === 4) return "pb-cols pb-cols-4";
   return "pb-cols pb-cols-1";
+}
+
+/**
+ * Grid + card classes for a Cards (cardGrid) block. Shared by the live page and
+ * the visual editor so both always lay out the same way.
+ * - Logo cards: certification grid (3 in a row keeps its special 7-logo layout)
+ * - 2 in a row: large photo "gateway" cards, or text "hub" cards when no card has a photo
+ * - 1 / 3 / 4 in a row: standard photo cards in that many columns (fewer on tablet/phone)
+ */
+export function cardGridLayout(
+  columns: SectionColumns | undefined,
+  variant: string | undefined,
+  hasImages: boolean,
+): { kind: "certs" | "gateway" | "hub" | "cards"; grid: string; card: string; body: string } {
+  const cols = columns === 1 || columns === 2 || columns === 3 || columns === 4 ? columns : 1;
+  if (variant === "certs") {
+    return {
+      kind: "certs",
+      grid: cols === 3 ? "panel-cert-grid" : `panel-cert-grid cert-cols-${cols}`,
+      card: "panel-cert-card",
+      body: "panel-cert-body",
+    };
+  }
+  if (cols === 2) {
+    return hasImages
+      ? { kind: "gateway", grid: "home-gateway-grid", card: "home-gateway-card", body: "home-gateway-body" }
+      : { kind: "hub", grid: "about-hub-grid", card: "about-hub-card", body: "about-hub-body" };
+  }
+  return {
+    kind: "cards",
+    grid: `product-grid card-cols-${cols}`,
+    card: "product-card",
+    body: "product-card-body",
+  };
+}
+
+/** CSS class for Key highlights (proof) column count */
+export function proofColumnsClass(columns?: SectionColumns): string {
+  const n = columns === 1 || columns === 2 || columns === 3 || columns === 4 ? columns : 3;
+  return `proof-cols-${n}`;
 }
 
 /** Photo URLs for a text+photo section (slideshow or single) */
@@ -914,6 +1013,44 @@ export function mediaTextPhotos(
   }
   if (fromSlides.length > 0) return fromSlides;
   return data.image ? [{ src: data.image, focus: data.imageFocus }] : [];
+}
+
+/**
+ * Text sections are heading + paragraph only — drop legacy photo fields from saved data.
+ */
+export function stripRichTextImages(doc: PageDocument): PageDocument {
+  let changed = false;
+
+  function clean(section: PageSection): PageSection {
+    if (section.type === "richText") {
+      const d = section.data;
+      if (d.image || d.imageAspect || d.imageFocus) {
+        changed = true;
+        const next = { ...d };
+        delete next.image;
+        delete next.imageAspect;
+        delete next.imageFocus;
+        return { ...section, data: next };
+      }
+      return section;
+    }
+    if (section.type === "tabs") {
+      return {
+        ...section,
+        data: {
+          ...section.data,
+          tabs: section.data.tabs.map((tab) => ({
+            ...tab,
+            sections: tab.sections.map(clean),
+          })),
+        },
+      };
+    }
+    return section;
+  }
+
+  const sections = doc.sections.map(clean);
+  return changed ? { ...doc, sections } : doc;
 }
 
 /**

@@ -1,0 +1,657 @@
+{
+  "note": "Partners page before the logo slideshow update",
+  "db": {
+    "title": "Partners",
+    "chrome": "default",
+    "sections": [
+      {
+        "id": "partners-intro",
+        "type": "richText",
+        "data": {
+          "eyebrow": "Distributorships",
+          "title": "Brand partners you can trust",
+          "body": "United Panel maintains reliable partner relationships as an authorised distributor for world-renowned refrigeration brands. Products supplied are authentic, certified originals — supporting cold storage builds with genuine components."
+        }
+      },
+      {
+        "id": "partners-exclusive",
+        "type": "gallery",
+        "data": {
+          "eyebrow": "Exclusive distributorships",
+          "title": "Bitzer · LU-VE",
+          "layout": "logos",
+          "imageAspect": "landscape",
+          "imageAlign": "center",
+          "items": [
+            {
+              "id": "ex1",
+              "src": "/uploads/partners/ep-bitzer.png",
+              "alt": "Bitzer — exclusive distributorship"
+            },
+            {
+              "id": "ex2",
+              "src": "/uploads/partners/ep-lu-ve.png",
+              "alt": "LU-VE — exclusive distributorship"
+            }
+          ]
+        }
+      },
+      {
+        "id": "gallery_0j88au77",
+        "type": "gallery",
+        "data": {
+          "eyebrow": "Authorised distributorships",
+          "title": "Brands we supply",
+          "layout": "logoSlides",
+          "slideshowAutoplay": true,
+          "slideshowIntervalSec": 5,
+          "items": [
+            {
+              "id": "logo-slide-1",
+              "src": "/uploads/partners/slides/authorised-1.png",
+              "alt": "BASF · Hailiang · SAMPO · CSC Steel · Grant Ice Systems · FERMOD · Every Control Group"
+            },
+            {
+              "id": "logo-slide-2",
+              "src": "/uploads/partners/slides/authorised-2.png",
+              "alt": "Danfoss · EMERSON Climate Technologies · EBMPAPST · WeiGuang Motor & Fans · Airmender · Alco Controls · MTH"
+            },
+            {
+              "id": "logo-slide-3",
+              "src": "/uploads/partners/slides/authorised-3.png",
+              "alt": "FLEXELEC · Saginomiya · Maneurop · Castel · KK · Scotsman Ice System · Guntner"
+            },
+            {
+              "id": "logo-slide-4",
+              "src": "/uploads/partners/slides/authorised-4.png",
+              "alt": "Embraco · Harris · HUB · DAN Doors · KASON · ASPERA · SUNISO"
+            },
+            {
+              "id": "logo-slide-5",
+              "src": "/uploads/partners/slides/authorised-5.png",
+              "alt": "GEMLINE · BERNZOMATIC · TMI · DORIN · AC & R · Bristol Compressors · Tecumseh"
+            },
+            {
+              "id": "logo-slide-6",
+              "src": "/uploads/partners/slides/authorised-6.png",
+              "alt": "KEMBLA · PARAGON · Anaconda · Grupo Repro · Packless · GOMAX"
+            }
+          ]
+        }
+      },
+      {
+        "id": "partners-authorised",
+        "type": "gallery",
+        "data": {
+          "eyebrow": "Authorised distributorships",
+          "title": "Brand logo wall",
+          "layout": "logos",
+          "imageAspect": "square",
+          "imageAlign": "center",
+          "items": [
+            {
+              "id": "auth-1",
+              "src": "/uploads/partners/ap-01.png",
+              "alt": "Authorised partner logo ap-01"
+            },
+            {
+              "id": "auth-2",
+              "src": "/uploads/partners/ap-02.png",
+              "alt": "Authorised partner logo ap-02"
+            },
+            {
+              "id": "auth-3",
+              "src": "/uploads/partners/ap-03.png",
+              "alt": "Authorised partner logo ap-03"
+            },
+            {
+              "id": "auth-4",
+              "src": "/uploads/partners/ap-04.png",
+              "alt": "Authorised partner logo ap-04"
+            },
+            {
+              "id": "auth-5",
+              "src": "/uploads/partners/ap-05.png",
+              "alt": "Authorised partner logo ap-05"
+            },
+            {
+              "id": "auth-6",
+              "src": "/uploads/partners/ap-06.png",
+              "alt": "Authorised partner logo ap-06"
+            },
+            {
+              "id": "auth-7",
+              "src": "/uploads/partners/ap-07.png",
+              "alt": "Authorised partner logo ap-07"
+            },
+            {
+              "id": "auth-8",
+              "src": "/uploads/partners/ap-08.png",
+              "alt": "Authorised partner logo ap-08"
+            },
+            {
+              "id": "auth-9",
+              "src": "/uploads/partners/ap-09.png",
+              "alt": "Authorised partner logo ap-09"
+            },
+            {
+              "id": "auth-10",
+              "src": "/uploads/partners/ap-10.png",
+              "alt": "Authorised partner logo ap-10"
+            },
+            {
+              "id": "auth-11",
+              "src": "/uploads/partners/ap-11.png",
+              "alt": "Authorised partner logo ap-11"
+            },
+            {
+              "id": "auth-12",
+              "src": "/uploads/partners/ap-12.png",
+              "alt": "Authorised partner logo ap-12"
+            },
+            {
+              "id": "auth-13",
+              "src": "/uploads/partners/csc.png",
+              "alt": "Authorised partner logo csc"
+            },
+            {
+              "id": "auth-14",
+              "src": "/uploads/partners/partmer-ap-01.png",
+              "alt": "Authorised partner logo partmer-ap-01"
+            },
+            {
+              "id": "auth-15",
+              "src": "/uploads/partners/partmer-ap-03.png",
+              "alt": "Authorised partner logo partmer-ap-03"
+            },
+            {
+              "id": "auth-16",
+              "src": "/uploads/partners/partmer-ap-11.png",
+              "alt": "Authorised partner logo partmer-ap-11"
+            },
+            {
+              "id": "auth-17",
+              "src": "/uploads/partners/partmer-ap-12.png",
+              "alt": "Authorised partner logo partmer-ap-12"
+            },
+            {
+              "id": "auth-18",
+              "src": "/uploads/partners/partmer-ap-14.png",
+              "alt": "Authorised partner logo partmer-ap-14"
+            },
+            {
+              "id": "auth-19",
+              "src": "/uploads/partners/partmer-ap-15.png",
+              "alt": "Authorised partner logo partmer-ap-15"
+            },
+            {
+              "id": "auth-20",
+              "src": "/uploads/partners/partmer-ap-16.png",
+              "alt": "Authorised partner logo partmer-ap-16"
+            },
+            {
+              "id": "auth-21",
+              "src": "/uploads/partners/partmer-ap-19.png",
+              "alt": "Authorised partner logo partmer-ap-19"
+            },
+            {
+              "id": "auth-22",
+              "src": "/uploads/partners/partmer-ap-20.png",
+              "alt": "Authorised partner logo partmer-ap-20"
+            },
+            {
+              "id": "auth-23",
+              "src": "/uploads/partners/partmer-ap-23.png",
+              "alt": "Authorised partner logo partmer-ap-23"
+            },
+            {
+              "id": "auth-24",
+              "src": "/uploads/partners/partmer-ap-24.png",
+              "alt": "Authorised partner logo partmer-ap-24"
+            },
+            {
+              "id": "auth-25",
+              "src": "/uploads/partners/partmer-ap-25.png",
+              "alt": "Authorised partner logo partmer-ap-25"
+            },
+            {
+              "id": "auth-26",
+              "src": "/uploads/partners/partmer-ap-26.png",
+              "alt": "Authorised partner logo partmer-ap-26"
+            },
+            {
+              "id": "auth-27",
+              "src": "/uploads/partners/partmer-ap-27.png",
+              "alt": "Authorised partner logo partmer-ap-27"
+            },
+            {
+              "id": "auth-28",
+              "src": "/uploads/partners/partmer-ap-28.png",
+              "alt": "Authorised partner logo partmer-ap-28"
+            },
+            {
+              "id": "auth-29",
+              "src": "/uploads/partners/partmer-ap-29.png",
+              "alt": "Authorised partner logo partmer-ap-29"
+            },
+            {
+              "id": "auth-30",
+              "src": "/uploads/partners/partmer-ap-30.png",
+              "alt": "Authorised partner logo partmer-ap-30"
+            },
+            {
+              "id": "auth-31",
+              "src": "/uploads/partners/partmer-ap-31.png",
+              "alt": "Authorised partner logo partmer-ap-31"
+            },
+            {
+              "id": "auth-32",
+              "src": "/uploads/partners/partmer-ap-32.png",
+              "alt": "Authorised partner logo partmer-ap-32"
+            },
+            {
+              "id": "auth-33",
+              "src": "/uploads/partners/partmer-ap-33.png",
+              "alt": "Authorised partner logo partmer-ap-33"
+            },
+            {
+              "id": "auth-34",
+              "src": "/uploads/partners/partmer-ap-34.png",
+              "alt": "Authorised partner logo partmer-ap-34"
+            },
+            {
+              "id": "auth-35",
+              "src": "/uploads/partners/partmer-ap-35.png",
+              "alt": "Authorised partner logo partmer-ap-35"
+            },
+            {
+              "id": "auth-36",
+              "src": "/uploads/partners/partmer-ap-36.png",
+              "alt": "Authorised partner logo partmer-ap-36"
+            },
+            {
+              "id": "auth-37",
+              "src": "/uploads/partners/partmer-ap-37.png",
+              "alt": "Authorised partner logo partmer-ap-37"
+            },
+            {
+              "id": "auth-38",
+              "src": "/uploads/partners/partmer-ap-38.png",
+              "alt": "Authorised partner logo partmer-ap-38"
+            },
+            {
+              "id": "auth-39",
+              "src": "/uploads/partners/partmer-ap-39.png",
+              "alt": "Authorised partner logo partmer-ap-39"
+            },
+            {
+              "id": "auth-40",
+              "src": "/uploads/partners/partmer-ap-40.png",
+              "alt": "Authorised partner logo partmer-ap-40"
+            },
+            {
+              "id": "auth-41",
+              "src": "/uploads/partners/partmer-ap-41.png",
+              "alt": "Authorised partner logo partmer-ap-41"
+            },
+            {
+              "id": "auth-42",
+              "src": "/uploads/partners/partmer-ap-42.png",
+              "alt": "Authorised partner logo partmer-ap-42"
+            }
+          ]
+        }
+      },
+      {
+        "id": "partners-callout",
+        "type": "callout",
+        "data": {
+          "title": "Many other brands available",
+          "body": "The slideshow shows a selection of authorised lines. Contact us for the full brand list, including BASF, Hailiang, SAMPO, CSC Steel, Grant Ice Systems, FERMOD, Every Control, Danfoss, Emerson Climate Technologies, and more."
+        },
+        "note": "Authenticity and certification verified through our distributorship agreements."
+      },
+      {
+        "id": "partners-cta",
+        "type": "contactCta",
+        "data": {
+          "eyebrow": "Enquire",
+          "title": "Need a brand or part?",
+          "body": "Tell us which components you need — browse Refrigeration Parts or contact our team about authorised availability.",
+          "email": "sales@ur.com.my",
+          "phone": "+60 00-000 0000",
+          "whatsapp": "+60 00-000 0000",
+          "ctaLabel": "Enquire about parts →",
+          "ctaHref": "/parts"
+        }
+      }
+    ]
+  },
+  "snapshot": {
+    "title": "Partners",
+    "chrome": "default",
+    "sections": [
+      {
+        "id": "partners-intro",
+        "type": "richText",
+        "data": {
+          "eyebrow": "Distributorships",
+          "title": "Brand partners you can trust",
+          "body": "United Panel maintains reliable partner relationships as an authorised distributor for world-renowned refrigeration brands. Products supplied are authentic, certified originals — supporting cold storage builds with genuine components."
+        }
+      },
+      {
+        "id": "partners-exclusive",
+        "type": "gallery",
+        "data": {
+          "eyebrow": "Exclusive distributorships",
+          "title": "Bitzer · LU-VE",
+          "layout": "logos",
+          "imageAspect": "landscape",
+          "imageAlign": "center",
+          "items": [
+            {
+              "id": "ex1",
+              "src": "/uploads/partners/ep-bitzer.png",
+              "alt": "Bitzer — exclusive distributorship"
+            },
+            {
+              "id": "ex2",
+              "src": "/uploads/partners/ep-lu-ve.png",
+              "alt": "LU-VE — exclusive distributorship"
+            }
+          ]
+        }
+      },
+      {
+        "id": "gallery_0j88au77",
+        "type": "gallery",
+        "data": {
+          "eyebrow": "Authorised distributorships",
+          "title": "Brands we supply",
+          "layout": "logoSlides",
+          "slideshowAutoplay": true,
+          "slideshowIntervalSec": 5,
+          "items": [
+            {
+              "id": "logo-slide-1",
+              "src": "/uploads/partners/slides/authorised-1.png",
+              "alt": "BASF · Hailiang · SAMPO · CSC Steel · Grant Ice Systems · FERMOD · Every Control Group"
+            },
+            {
+              "id": "logo-slide-2",
+              "src": "/uploads/partners/slides/authorised-2.png",
+              "alt": "Danfoss · EMERSON Climate Technologies · EBMPAPST · WeiGuang Motor & Fans · Airmender · Alco Controls · MTH"
+            },
+            {
+              "id": "logo-slide-3",
+              "src": "/uploads/partners/slides/authorised-3.png",
+              "alt": "FLEXELEC · Saginomiya · Maneurop · Castel · KK · Scotsman Ice System · Guntner"
+            },
+            {
+              "id": "logo-slide-4",
+              "src": "/uploads/partners/slides/authorised-4.png",
+              "alt": "Embraco · Harris · HUB · DAN Doors · KASON · ASPERA · SUNISO"
+            },
+            {
+              "id": "logo-slide-5",
+              "src": "/uploads/partners/slides/authorised-5.png",
+              "alt": "GEMLINE · BERNZOMATIC · TMI · DORIN · AC & R · Bristol Compressors · Tecumseh"
+            },
+            {
+              "id": "logo-slide-6",
+              "src": "/uploads/partners/slides/authorised-6.png",
+              "alt": "KEMBLA · PARAGON · Anaconda · Grupo Repro · Packless · GOMAX"
+            }
+          ]
+        }
+      },
+      {
+        "id": "partners-authorised",
+        "type": "gallery",
+        "data": {
+          "eyebrow": "Authorised distributorships",
+          "title": "Brand logo wall",
+          "layout": "logos",
+          "imageAspect": "square",
+          "imageAlign": "center",
+          "items": [
+            {
+              "id": "auth-1",
+              "src": "/uploads/partners/ap-01.png",
+              "alt": "Authorised partner logo ap-01"
+            },
+            {
+              "id": "auth-2",
+              "src": "/uploads/partners/ap-02.png",
+              "alt": "Authorised partner logo ap-02"
+            },
+            {
+              "id": "auth-3",
+              "src": "/uploads/partners/ap-03.png",
+              "alt": "Authorised partner logo ap-03"
+            },
+            {
+              "id": "auth-4",
+              "src": "/uploads/partners/ap-04.png",
+              "alt": "Authorised partner logo ap-04"
+            },
+            {
+              "id": "auth-5",
+              "src": "/uploads/partners/ap-05.png",
+              "alt": "Authorised partner logo ap-05"
+            },
+            {
+              "id": "auth-6",
+              "src": "/uploads/partners/ap-06.png",
+              "alt": "Authorised partner logo ap-06"
+            },
+            {
+              "id": "auth-7",
+              "src": "/uploads/partners/ap-07.png",
+              "alt": "Authorised partner logo ap-07"
+            },
+            {
+              "id": "auth-8",
+              "src": "/uploads/partners/ap-08.png",
+              "alt": "Authorised partner logo ap-08"
+            },
+            {
+              "id": "auth-9",
+              "src": "/uploads/partners/ap-09.png",
+              "alt": "Authorised partner logo ap-09"
+            },
+            {
+              "id": "auth-10",
+              "src": "/uploads/partners/ap-10.png",
+              "alt": "Authorised partner logo ap-10"
+            },
+            {
+              "id": "auth-11",
+              "src": "/uploads/partners/ap-11.png",
+              "alt": "Authorised partner logo ap-11"
+            },
+            {
+              "id": "auth-12",
+              "src": "/uploads/partners/ap-12.png",
+              "alt": "Authorised partner logo ap-12"
+            },
+            {
+              "id": "auth-13",
+              "src": "/uploads/partners/csc.png",
+              "alt": "Authorised partner logo csc"
+            },
+            {
+              "id": "auth-14",
+              "src": "/uploads/partners/partmer-ap-01.png",
+              "alt": "Authorised partner logo partmer-ap-01"
+            },
+            {
+              "id": "auth-15",
+              "src": "/uploads/partners/partmer-ap-03.png",
+              "alt": "Authorised partner logo partmer-ap-03"
+            },
+            {
+              "id": "auth-16",
+              "src": "/uploads/partners/partmer-ap-11.png",
+              "alt": "Authorised partner logo partmer-ap-11"
+            },
+            {
+              "id": "auth-17",
+              "src": "/uploads/partners/partmer-ap-12.png",
+              "alt": "Authorised partner logo partmer-ap-12"
+            },
+            {
+              "id": "auth-18",
+              "src": "/uploads/partners/partmer-ap-14.png",
+              "alt": "Authorised partner logo partmer-ap-14"
+            },
+            {
+              "id": "auth-19",
+              "src": "/uploads/partners/partmer-ap-15.png",
+              "alt": "Authorised partner logo partmer-ap-15"
+            },
+            {
+              "id": "auth-20",
+              "src": "/uploads/partners/partmer-ap-16.png",
+              "alt": "Authorised partner logo partmer-ap-16"
+            },
+            {
+              "id": "auth-21",
+              "src": "/uploads/partners/partmer-ap-19.png",
+              "alt": "Authorised partner logo partmer-ap-19"
+            },
+            {
+              "id": "auth-22",
+              "src": "/uploads/partners/partmer-ap-20.png",
+              "alt": "Authorised partner logo partmer-ap-20"
+            },
+            {
+              "id": "auth-23",
+              "src": "/uploads/partners/partmer-ap-23.png",
+              "alt": "Authorised partner logo partmer-ap-23"
+            },
+            {
+              "id": "auth-24",
+              "src": "/uploads/partners/partmer-ap-24.png",
+              "alt": "Authorised partner logo partmer-ap-24"
+            },
+            {
+              "id": "auth-25",
+              "src": "/uploads/partners/partmer-ap-25.png",
+              "alt": "Authorised partner logo partmer-ap-25"
+            },
+            {
+              "id": "auth-26",
+              "src": "/uploads/partners/partmer-ap-26.png",
+              "alt": "Authorised partner logo partmer-ap-26"
+            },
+            {
+              "id": "auth-27",
+              "src": "/uploads/partners/partmer-ap-27.png",
+              "alt": "Authorised partner logo partmer-ap-27"
+            },
+            {
+              "id": "auth-28",
+              "src": "/uploads/partners/partmer-ap-28.png",
+              "alt": "Authorised partner logo partmer-ap-28"
+            },
+            {
+              "id": "auth-29",
+              "src": "/uploads/partners/partmer-ap-29.png",
+              "alt": "Authorised partner logo partmer-ap-29"
+            },
+            {
+              "id": "auth-30",
+              "src": "/uploads/partners/partmer-ap-30.png",
+              "alt": "Authorised partner logo partmer-ap-30"
+            },
+            {
+              "id": "auth-31",
+              "src": "/uploads/partners/partmer-ap-31.png",
+              "alt": "Authorised partner logo partmer-ap-31"
+            },
+            {
+              "id": "auth-32",
+              "src": "/uploads/partners/partmer-ap-32.png",
+              "alt": "Authorised partner logo partmer-ap-32"
+            },
+            {
+              "id": "auth-33",
+              "src": "/uploads/partners/partmer-ap-33.png",
+              "alt": "Authorised partner logo partmer-ap-33"
+            },
+            {
+              "id": "auth-34",
+              "src": "/uploads/partners/partmer-ap-34.png",
+              "alt": "Authorised partner logo partmer-ap-34"
+            },
+            {
+              "id": "auth-35",
+              "src": "/uploads/partners/partmer-ap-35.png",
+              "alt": "Authorised partner logo partmer-ap-35"
+            },
+            {
+              "id": "auth-36",
+              "src": "/uploads/partners/partmer-ap-36.png",
+              "alt": "Authorised partner logo partmer-ap-36"
+            },
+            {
+              "id": "auth-37",
+              "src": "/uploads/partners/partmer-ap-37.png",
+              "alt": "Authorised partner logo partmer-ap-37"
+            },
+            {
+              "id": "auth-38",
+              "src": "/uploads/partners/partmer-ap-38.png",
+              "alt": "Authorised partner logo partmer-ap-38"
+            },
+            {
+              "id": "auth-39",
+              "src": "/uploads/partners/partmer-ap-39.png",
+              "alt": "Authorised partner logo partmer-ap-39"
+            },
+            {
+              "id": "auth-40",
+              "src": "/uploads/partners/partmer-ap-40.png",
+              "alt": "Authorised partner logo partmer-ap-40"
+            },
+            {
+              "id": "auth-41",
+              "src": "/uploads/partners/partmer-ap-41.png",
+              "alt": "Authorised partner logo partmer-ap-41"
+            },
+            {
+              "id": "auth-42",
+              "src": "/uploads/partners/partmer-ap-42.png",
+              "alt": "Authorised partner logo partmer-ap-42"
+            }
+          ]
+        }
+      },
+      {
+        "id": "partners-callout",
+        "type": "callout",
+        "data": {
+          "title": "Many other brands available",
+          "body": "The slideshow shows a selection of authorised lines. Contact us for the full brand list, including BASF, Hailiang, SAMPO, CSC Steel, Grant Ice Systems, FERMOD, Every Control, Danfoss, Emerson Climate Technologies, and more."
+        },
+        "note": "Authenticity and certification verified through our distributorship agreements."
+      },
+      {
+        "id": "partners-cta",
+        "type": "contactCta",
+        "data": {
+          "eyebrow": "Enquire",
+          "title": "Need a brand or part?",
+          "body": "Tell us which components you need — browse Refrigeration Parts or contact our team about authorised availability.",
+          "email": "sales@ur.com.my",
+          "phone": "+60 00-000 0000",
+          "whatsapp": "+60 00-000 0000",
+          "ctaLabel": "Enquire about parts →",
+          "ctaHref": "/parts"
+        }
+      }
+    ]
+  }
+}

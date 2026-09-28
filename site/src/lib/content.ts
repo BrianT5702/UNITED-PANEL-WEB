@@ -5,7 +5,7 @@ import { defaultHomeContent } from "./defaults";
 import { defaultPirContent, type PirContent } from "./pir";
 import { DEFAULT_SITE_NAV, normalizeNavItems, cloneNav } from "./nav";
 import type { PageDocument, PageSection } from "./page-document";
-import { repairApplicationSlideshow, repairCertCardGrids, repairSectionNotes } from "./page-document";
+import { repairApplicationSlideshow, repairCertCardGrids, repairSectionNotes, stripRichTextImages } from "./page-document";
 import { getDefaultPageDocument } from "./page-defaults";
 import {
   SITE_PAGES,
@@ -24,17 +24,85 @@ const NAV_PAGE = "site";
 const NAV_KEY = "navigation";
 const CUSTOM_PAGES_KEY = "customPages";
 
+
+const CATALOGUES_NAV: NavItem = { label: "Catalogues", href: "/catalogues" };
+
+/** Append Catalogues before Contact Us if missing — keeps custom menus intact */
+export function ensureCataloguesNavItem(items: NavItem[]): NavItem[] {
+  const has = items.some(
+    (i) => i.href === "/catalogues" || i.label.toLowerCase() === "catalogues",
+  );
+  if (has) return items;
+  const next = cloneNav(items);
+  const contactIdx = next.findIndex(
+    (i) => i.href === "/contact" || i.label.toLowerCase().includes("contact"),
+  );
+  if (contactIdx >= 0) {
+    next.splice(contactIdx, 0, { ...CATALOGUES_NAV });
+  } else {
+    next.push({ ...CATALOGUES_NAV });
+  }
+  return next;
+}
+
+
 export async function getSiteNav(): Promise<NavItem[]> {
   const row = await prisma.contentSection.findUnique({
     where: { page_key: { page: NAV_PAGE, key: NAV_KEY } },
   });
-  if (!row) return cloneNav(DEFAULT_SITE_NAV);
+  if (!row) return ensureCataloguesNavItem(cloneNav(DEFAULT_SITE_NAV));
   try {
     const parsed = JSON.parse(row.data) as { items?: unknown };
-    return normalizeNavItems(parsed?.items ?? parsed);
+    return ensureCataloguesNavItem(normalizeNavItems(parsed?.items ?? parsed));
   } catch {
-    return cloneNav(DEFAULT_SITE_NAV);
+    return ensureCataloguesNavItem(cloneNav(DEFAULT_SITE_NAV));
   }
+}
+
+// —— "Show Catalogues page on website" (stored in ContentSection, no schema change) ——
+
+const CATALOGUES_SETTINGS_KEY = "cataloguesPage";
+
+/** Whether visitors can see /catalogues (and its menu item). Defaults to visible. */
+export async function getCataloguesPagePublic(): Promise<boolean> {
+  const row = await prisma.contentSection.findUnique({
+    where: { page_key: { page: NAV_PAGE, key: CATALOGUES_SETTINGS_KEY } },
+  });
+  if (!row) return true;
+  try {
+    return (JSON.parse(row.data) as { public?: unknown }).public !== false;
+  } catch {
+    return true;
+  }
+}
+
+export async function setCataloguesPagePublic(isPublic: boolean) {
+  const payload = JSON.stringify({ public: Boolean(isPublic) });
+  await prisma.contentSection.upsert({
+    where: { page_key: { page: NAV_PAGE, key: CATALOGUES_SETTINGS_KEY } },
+    create: { page: NAV_PAGE, key: CATALOGUES_SETTINGS_KEY, data: payload },
+    update: { data: payload },
+  });
+  scheduleCmsSnapshotExport();
+  return Boolean(isPublic);
+}
+
+function isCataloguesLink(i: { label: string; href: string }) {
+  return i.href === "/catalogues" || i.href.startsWith("/catalogues?") || i.href.startsWith("/catalogues#");
+}
+
+/**
+ * Menu for the public website: same as getSiteNav(), minus "Catalogues" while
+ * the Catalogues page is switched off. (Admin editors keep using getSiteNav().)
+ */
+export async function getPublicSiteNav(): Promise<NavItem[]> {
+  const [items, cataloguesPublic] = await Promise.all([getSiteNav(), getCataloguesPagePublic()]);
+  if (cataloguesPublic) return items;
+  return items
+    .filter((i) => !isCataloguesLink(i))
+    .map((i) =>
+      i.children ? { ...i, children: i.children.filter((c) => !isCataloguesLink(c)) } : i,
+    );
 }
 
 export async function saveSiteNav(items: NavItem[]) {
@@ -188,7 +256,7 @@ export async function savePirContent(data: PirContent) {
 }
 
 function normalizeDocument(doc: PageDocument): PageDocument {
-  return repairCertCardGrids(repairSectionNotes(repairApplicationSlideshow(doc)));
+  return stripRichTextImages(repairCertCardGrids(repairSectionNotes(repairApplicationSlideshow(doc))));
 }
 
 
@@ -213,6 +281,8 @@ function defaultSectionKey(section: PageSection): string {
 export function mergeMissingDefaultSections(
   saved: PageDocument,
   defaults: PageDocument,
+  /** Only consider these default keys (blocks the page has never had yet) */
+  onlyKeys?: Set<string>,
 ): { document: PageDocument; added: number } {
   const sections = [...(saved.sections || [])];
   const savedKeys = new Set(sections.map(defaultSectionKey));
@@ -224,6 +294,7 @@ export function mergeMissingDefaultSections(
     // Require a title so empty stubs are not treated as unique defaults
     const data = def.data as { title?: string; headline?: string; brand?: string };
     if (!(data.title || data.headline || data.brand || "").trim()) continue;
+    if (onlyKeys && !onlyKeys.has(key)) continue;
     if (savedKeys.has(key)) continue;
 
     let insertAt = sections.length;
@@ -304,16 +375,54 @@ export async function getPageDocument(pageId: string): Promise<PageDocument> {
 }
 
 export async function savePageDocument(pageId: string, document: PageDocument) {
+  const cleaned = normalizeDocument(document);
   await prisma.contentSection.upsert({
     where: { page_key: { page: pageId, key: "document" } },
-    create: { page: pageId, key: "document", data: JSON.stringify(document) },
-    update: { data: JSON.stringify(document) },
+    create: { page: pageId, key: "document", data: JSON.stringify(cleaned) },
+    update: { data: JSON.stringify(cleaned) },
   });
   scheduleCmsSnapshotExport();
 }
 
 
+/** Keys of the code-default blocks each page has already been given (site/defaultSectionsSeen). */
+const SEEN_DEFAULTS_PAGE = "site";
+const SEEN_DEFAULTS_KEY = "defaultSectionsSeen";
+type SeenDefaults = { version: 1; pages: Record<string, string[]> };
+
+function eligibleDefaultKeys(defaults: PageDocument): string[] {
+  return defaults.sections
+    .filter((def) => {
+      const data = def.data as { title?: string; headline?: string; brand?: string };
+      return Boolean((data.title || data.headline || data.brand || "").trim());
+    })
+    .map(defaultSectionKey);
+}
+
+/**
+ * Add default blocks that are NEW in the code (a page has never had them) to saved pages.
+ * A default block the admin deleted is remembered as "seen" and never put back — so
+ * deleting any block (e.g. the Career contact box) and saving sticks.
+ * First run records every page's current defaults as seen without adding anything
+ * (the old logic had already filled them in).
+ */
 async function syncMissingDefaultSections() {
+  const seenRow = await prisma.contentSection.findUnique({
+    where: { page_key: { page: SEEN_DEFAULTS_PAGE, key: SEEN_DEFAULTS_KEY } },
+  });
+  let seen: SeenDefaults = { version: 1, pages: {} };
+  if (seenRow) {
+    try {
+      const parsed = JSON.parse(seenRow.data) as Partial<SeenDefaults>;
+      if (parsed && typeof parsed.pages === "object" && parsed.pages) {
+        seen = { version: 1, pages: { ...parsed.pages } };
+      }
+    } catch {
+      /* start fresh */
+    }
+  }
+  let seenChanged = !seenRow;
+
   const pages = mergeSitePages(await getCustomPages());
   for (const page of pages) {
     const row = await prisma.contentSection.findUnique({
@@ -330,10 +439,34 @@ async function syncMissingDefaultSections() {
     if (!Array.isArray(saved.sections)) continue;
 
     const defaults = getDefaultPageDocument(page.id);
-    const { document, added } = mergeMissingDefaultSections(saved, defaults);
+    const defaultKeys = eligibleDefaultKeys(defaults);
+    const known = Array.isArray(seen.pages[page.id]) ? seen.pages[page.id] : null;
+    if (!known) {
+      // First time we track this page: whatever it has now is what the admin wants
+      seen.pages[page.id] = defaultKeys;
+      seenChanged = true;
+      continue;
+    }
+    const knownSet = new Set(known);
+    const fresh = defaultKeys.filter((key) => !knownSet.has(key));
+    if (!fresh.length) continue;
+
+    const { document, added } = mergeMissingDefaultSections(saved, defaults, new Set(fresh));
     if (added > 0) {
       await savePageDocument(page.id, normalizeDocument(document));
     }
+    seen.pages[page.id] = [...known, ...fresh];
+    seenChanged = true;
+  }
+
+  if (seenChanged) {
+    const data = JSON.stringify(seen);
+    await prisma.contentSection.upsert({
+      where: { page_key: { page: SEEN_DEFAULTS_PAGE, key: SEEN_DEFAULTS_KEY } },
+      create: { page: SEEN_DEFAULTS_PAGE, key: SEEN_DEFAULTS_KEY, data },
+      update: { data },
+    });
+    scheduleCmsSnapshotExport();
   }
 }
 
@@ -389,6 +522,22 @@ export async function ensureSeeded() {
         data: JSON.stringify({ items: cloneNav(DEFAULT_SITE_NAV) }),
       },
     });
+  } else {
+    // Soft-append Catalogues if an older saved menu is missing it (do not wipe custom menus)
+    try {
+      const parsed = JSON.parse(nav.data) as { items?: unknown };
+      const current = normalizeNavItems(parsed?.items ?? parsed);
+      const patched = ensureCataloguesNavItem(current);
+      if (patched.length !== current.length) {
+        await prisma.contentSection.update({
+          where: { page_key: { page: NAV_PAGE, key: NAV_KEY } },
+          data: { data: JSON.stringify({ items: patched }) },
+        });
+        scheduleCmsSnapshotExport();
+      }
+    } catch {
+      /* keep existing nav */
+    }
   }
 
   const customPages = await prisma.contentSection.findUnique({

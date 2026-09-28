@@ -1,3 +1,4 @@
+import { createHash } from "crypto";
 import { promises as fs } from "fs";
 import path from "path";
 import { prisma } from "./db";
@@ -20,8 +21,48 @@ export type CmsSnapshot = {
   sections: CmsSnapshotSection[];
 };
 
-let importing = false;
-let exportQueue: Promise<void> = Promise.resolve();
+/**
+ * Private bookkeeping row (never exported / imported): hash of the snapshot file
+ * this database last imported or wrote. The snapshot is only re-imported when the
+ * file really changed (git pull / deploy / hand edit) — not on every page render,
+ * which used to put the file's older content back over a fresh Save.
+ */
+const SYNC_STATE_PAGE = "__cms_sync";
+const SYNC_STATE_KEY = "state";
+
+/** Import and export run one at a time, in order (an export is never dropped). */
+let syncQueue: Promise<unknown> = Promise.resolve();
+function runExclusive<T>(task: () => Promise<T>): Promise<T> {
+  const next = syncQueue.then(task, task);
+  syncQueue = next.catch(() => undefined);
+  return next;
+}
+
+function hashText(text: string): string {
+  return createHash("sha256").update(text).digest("hex");
+}
+
+async function readSyncHash(): Promise<string | null> {
+  const row = await prisma.contentSection.findUnique({
+    where: { page_key: { page: SYNC_STATE_PAGE, key: SYNC_STATE_KEY } },
+  });
+  if (!row) return null;
+  try {
+    const parsed = JSON.parse(row.data) as { snapshotHash?: string };
+    return typeof parsed.snapshotHash === "string" ? parsed.snapshotHash : null;
+  } catch {
+    return null;
+  }
+}
+
+async function writeSyncHash(snapshotHash: string): Promise<void> {
+  const data = JSON.stringify({ snapshotHash, at: new Date().toISOString() });
+  await prisma.contentSection.upsert({
+    where: { page_key: { page: SYNC_STATE_PAGE, key: SYNC_STATE_KEY } },
+    create: { page: SYNC_STATE_PAGE, key: SYNC_STATE_KEY, data },
+    update: { data },
+  });
+}
 
 function parseDataField(raw: string): unknown {
   try {
@@ -45,11 +86,14 @@ function serializeDataField(data: unknown): string {
 }
 
 /** Dump every CMS row from the local DB into content/cms-snapshot.json (git-tracked). */
-export async function exportCmsSnapshot(): Promise<CmsSnapshot | null> {
-  if (importing) return null;
-  if (process.env.CMS_SYNC_EXPORT === "0") return null;
+export function exportCmsSnapshot(): Promise<CmsSnapshot | null> {
+  if (process.env.CMS_SYNC_EXPORT === "0") return Promise.resolve(null);
+  return runExclusive(exportNow);
+}
 
+async function exportNow(): Promise<CmsSnapshot | null> {
   const rows = await prisma.contentSection.findMany({
+    where: { page: { not: SYNC_STATE_PAGE } },
     orderBy: [{ page: "asc" }, { key: "asc" }],
   });
 
@@ -63,31 +107,30 @@ export async function exportCmsSnapshot(): Promise<CmsSnapshot | null> {
     })),
   };
 
+  const text = `${JSON.stringify(snapshot, null, 2)}\n`;
   await fs.mkdir(path.dirname(CMS_SNAPSHOT_PATH), { recursive: true });
-  await fs.writeFile(CMS_SNAPSHOT_PATH, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
+  await fs.writeFile(CMS_SNAPSHOT_PATH, text, "utf8");
+  // Our own file now matches the DB — do not import it back over later Saves
+  await writeSyncHash(hashText(text));
   return snapshot;
 }
 
 /** Queue an export so rapid Saves do not stomp each other. */
 export function scheduleCmsSnapshotExport(): void {
-  if (importing) return;
   if (process.env.CMS_SYNC_EXPORT === "0") return;
-  exportQueue = exportQueue
-    .then(() => exportCmsSnapshot())
-    .then(() => undefined)
-    .catch((err) => {
-      console.error("[cms-sync] export failed", err);
-    });
+  exportCmsSnapshot().catch((err) => {
+    console.error("[cms-sync] export failed", err);
+  });
 }
 
-async function readSnapshotFile(): Promise<CmsSnapshot | null> {
+async function readSnapshotFile(): Promise<{ snapshot: CmsSnapshot; hash: string } | null> {
   try {
     const raw = await fs.readFile(CMS_SNAPSHOT_PATH, "utf8");
     const parsed = JSON.parse(raw) as CmsSnapshot;
     if (!parsed || parsed.version !== CMS_SNAPSHOT_VERSION || !Array.isArray(parsed.sections)) {
       return null;
     }
-    return parsed;
+    return { snapshot: parsed, hash: hashText(raw) };
   } catch {
     return null;
   }
@@ -95,19 +138,24 @@ async function readSnapshotFile(): Promise<CmsSnapshot | null> {
 
 /**
  * Load committed content/cms-snapshot.json into the DB (upsert).
- * Used on server start after git pull so localhost edits deploy with the code.
+ * Runs when the file changed since this DB last imported / exported it
+ * (e.g. after git pull on the server), or always with { force: true }.
  */
-export async function importCmsSnapshot(): Promise<{ updated: number; skipped: boolean }> {
-  const snapshot = await readSnapshotFile();
-  if (!snapshot || snapshot.sections.length === 0) {
-    return { updated: 0, skipped: true };
-  }
+export function importCmsSnapshot(
+  options: { force?: boolean } = {},
+): Promise<{ updated: number; skipped: boolean }> {
+  return runExclusive(async () => {
+    const file = await readSnapshotFile();
+    if (!file || file.snapshot.sections.length === 0) {
+      return { updated: 0, skipped: true };
+    }
+    if (!options.force && (await readSyncHash()) === file.hash) {
+      return { updated: 0, skipped: true };
+    }
 
-  importing = true;
-  try {
     let updated = 0;
-    for (const section of snapshot.sections) {
-      if (!section?.page || !section?.key) continue;
+    for (const section of file.snapshot.sections) {
+      if (!section?.page || !section?.key || section.page === SYNC_STATE_PAGE) continue;
       const data = serializeDataField(section.data);
       await prisma.contentSection.upsert({
         where: { page_key: { page: section.page, key: section.key } },
@@ -116,8 +164,7 @@ export async function importCmsSnapshot(): Promise<{ updated: number; skipped: b
       });
       updated += 1;
     }
+    await writeSyncHash(file.hash);
     return { updated, skipped: false };
-  } finally {
-    importing = false;
-  }
+  });
 }

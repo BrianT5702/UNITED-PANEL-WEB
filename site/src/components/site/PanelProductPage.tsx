@@ -5,11 +5,11 @@ import { LightboxImage } from "@/components/site/LightboxImage";
 import { DetailsCloseButton } from "@/components/site/DetailsCloseButton";
 import type { PanelProductContent } from "@/lib/panels";
 import { SITE_NAV } from "@/lib/nav";
+import { defaultHomeContent } from "@/lib/defaults";
+import { imageFocusStyle, veilOpacity } from "@/lib/page-document";
+import { RichText } from "@/components/site/RichText";
 
-const settings = {
-  logoUrl: "https://www.ur.com.my/images/logo-2.png",
-  siteName: "United Panel-System",
-};
+const settings = defaultHomeContent.settings;
 
 export function PanelProductPage({ content }: { content: PanelProductContent }) {
   const footer = {
@@ -27,17 +27,22 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
           <div className="hero-media" aria-hidden="true">
             {content.heroImage ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img className="hero-photo" src={content.heroImage} alt="" />
+              <img
+                className="hero-photo"
+                src={content.heroImage}
+                alt=""
+                style={imageFocusStyle(content.imageFocus)}
+              />
             ) : (
               <div className="hero-photo-fallback" />
             )}
-            <div className="hero-veil" />
+            <div className="hero-veil" style={{ opacity: veilOpacity(content.veilStrength) }} />
           </div>
           <div className="hero-content">
             <p className="hero-brand">{content.brand}</p>
             <h1>{content.headline}</h1>
             {content.tagline ? <p className="hero-tagline">{content.tagline}</p> : null}
-            <p className="hero-lead">{content.lead}</p>
+            <RichText as="p" className="hero-lead" text={content.lead} />
             <div className="hero-actions">
               <a className="btn btn-primary" href="#contact">
                 {content.primaryCta}
@@ -67,7 +72,7 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
             <div className="proof-item" key={item.id}>
               <span className="proof-index">{item.index}</span>
               <h2>{item.title}</h2>
-              <p>{item.text}</p>
+              <RichText as="p" text={item.text} />
             </div>
           ))}
         </section>
@@ -81,8 +86,11 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
                   startIndex={content.overviewImageStartIndex ?? 0}
                 />
               ) : content.overviewImage ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={content.overviewImage} alt="" />
+                <LightboxImage
+                  src={content.overviewImage}
+                  alt={content.overviewTitle || "Overview"}
+                  caption={content.overviewTitle}
+                />
               ) : (
                 <span>Photo</span>
               )}
@@ -90,8 +98,8 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
             <div>
               <p className="eyebrow">{content.overviewEyebrow}</p>
               <h2>{content.overviewTitle}</h2>
-              <p>{content.overviewBody1}</p>
-              <p>{content.overviewBody2}</p>
+              <RichText as="p" text={content.overviewBody1} />
+              <RichText as="p" text={content.overviewBody2} />
               {content.overviewLinkHref && content.overviewLinkLabel ? (
                 <a className="text-link" href={content.overviewLinkHref}>
                   {content.overviewLinkLabel}
@@ -106,7 +114,7 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
             <p className="eyebrow">{content.featuresEyebrow}</p>
             <h2>{content.featuresTitle}</h2>
             {content.featuresLead ? (
-              <p className="section-lead">{content.featuresLead}</p>
+              <RichText as="p" className="section-lead" text={content.featuresLead} />
             ) : null}
           </div>
           <ul className="pir-feature-list">
@@ -122,14 +130,18 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
               <p className="eyebrow">{content.finishes.eyebrow}</p>
               <h2>{content.finishes.title}</h2>
               {content.finishes.lead ? (
-                <p className="section-lead">{content.finishes.lead}</p>
+                <RichText as="p" className="section-lead" text={content.finishes.lead} />
               ) : null}
             </div>
             <div className="panel-finish-grid">
               {content.finishes.items.map((finish) => (
                 <figure className="panel-finish-card" key={finish.name}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={finish.image} alt={finish.alt} />
+                  <LightboxImage
+                    src={finish.image}
+                    alt={finish.alt || finish.name}
+                    caption={finish.name}
+                    hint={false}
+                  />
                   <figcaption>{finish.name}</figcaption>
                 </figure>
               ))}
@@ -144,7 +156,7 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
                 <div className="section-head">
                   <p className="eyebrow">{content.applications.eyebrow}</p>
                   <h2>{content.applications.title}</h2>
-                  <p className="section-lead">{content.applications.lead}</p>
+                  <RichText as="p" className="section-lead" text={content.applications.lead} />
                 </div>
                 <ul className="panel-app-grid panel-app-grid-two">
                   {content.applications.items.map((item) => (
@@ -171,7 +183,7 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
                 <div className="section-head panel-joint-head">
                   <p className="eyebrow">{content.jointDetails.eyebrow}</p>
                   <h2>{content.jointDetails.title}</h2>
-                  <p className="section-lead">{content.jointDetails.summary}</p>
+                  <RichText as="p" className="section-lead" text={content.jointDetails.summary} />
                 </div>
                 <span className="panel-joint-toggle" role="button" aria-hidden="true">
                   Show joint details
@@ -180,7 +192,7 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
               <div className="panel-joint-body">
                 <div className="panel-joint-main">
                   <div className="panel-joint-copy">
-                    <p>{content.jointDetails.body}</p>
+                    <RichText as="p" text={content.jointDetails.body} />
                   </div>
                   <figure className="panel-joint-figure">
                     <LightboxImage
@@ -223,7 +235,7 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
           <div className="section-head">
             <p className="eyebrow">{content.specsEyebrow}</p>
             <h2>{content.specsTitle}</h2>
-            <p className="section-lead">{content.specsLead}</p>
+            <RichText as="p" className="section-lead" text={content.specsLead} />
           </div>
           <div className="spec-table">
             {content.specs.map((row) => (
@@ -241,7 +253,7 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
               <p className="eyebrow">{content.physicalProperties.eyebrow}</p>
               <h2>{content.physicalProperties.title}</h2>
               {content.physicalProperties.lead ? (
-                <p className="section-lead">{content.physicalProperties.lead}</p>
+                <RichText as="p" className="section-lead" text={content.physicalProperties.lead} />
               ) : null}
             </div>
             <div className="product-data-table-wrap">
@@ -275,7 +287,7 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
             <div className="section-head">
               <p className="eyebrow">{content.roofing.eyebrow}</p>
               <h2>{content.roofing.title}</h2>
-              <p className="section-lead">{content.roofing.body}</p>
+              <RichText as="p" className="section-lead" text={content.roofing.body} />
             </div>
             <div className="spec-table">
               {content.roofing.specs.map((row) => (
@@ -293,31 +305,30 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
           <div className="section-head">
             <p className="eyebrow">{content.certsEyebrow}</p>
             <h2>{content.certsTitle}</h2>
-            <p className="section-lead">{content.certsLead}</p>
+            <RichText as="p" className="section-lead" text={content.certsLead} />
           </div>
           <div className="panel-cert-grid">
             {content.certifications.map((cert) => {
-              const inner = (
+              const bodyContent = (
                 <>
-                  <div className="panel-cert-logo">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={cert.image} alt="" />
-                  </div>
-                  <div className="panel-cert-body">
-                    <h3>{cert.name}</h3>
-                    <p>{cert.detail}</p>
-                    {cert.href ? <span className="product-card-link">Learn more →</span> : null}
-                  </div>
+                  <h3>{cert.name}</h3>
+                  <p>{cert.detail}</p>
+                  {cert.href ? <span className="product-card-link">Learn more →</span> : null}
                 </>
               );
-              return cert.href ? (
-                <a className="panel-cert-card" href={cert.href} key={cert.id}>
-                  {inner}
-                </a>
-              ) : (
-                <div className="panel-cert-card" key={cert.id}>
-                  {inner}
-                </div>
+              return (
+                <article className="panel-cert-card" key={cert.id}>
+                  <div className="panel-cert-logo">
+                    <LightboxImage src={cert.image} alt={cert.name} caption={cert.name} hint={false} />
+                  </div>
+                  {cert.href ? (
+                    <a className="panel-cert-body" href={cert.href}>
+                      {bodyContent}
+                    </a>
+                  ) : (
+                    <div className="panel-cert-body">{bodyContent}</div>
+                  )}
+                </article>
               );
             })}
           </div>
@@ -328,8 +339,7 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
             <div className="panel-gallery">
               {content.gallery.map((shot) => (
                 <figure key={shot.src}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={shot.src} alt={shot.alt} />
+                  <LightboxImage src={shot.src} alt={shot.alt} caption={shot.alt} hint={false} />
                 </figure>
               ))}
             </div>
@@ -343,21 +353,25 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
           </div>
           <div className="offer-grid">
             {content.related.map((item) => (
-              <a className="offer-card" href={item.href} key={item.href}>
+              <article className="offer-card" key={item.href}>
                 <div className="offer-card-image">
                   {item.image ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={item.image} alt="" />
+                    <LightboxImage
+                      src={item.image}
+                      alt={item.title}
+                      caption={item.title}
+                      hint={false}
+                    />
                   ) : (
                     <span>Photo</span>
                   )}
                 </div>
-                <div className="offer-card-body">
+                <a className="offer-card-body" href={item.href}>
                   <h3>{item.title}</h3>
-                  <p>{item.text}</p>
+                  <RichText as="p" text={item.text} />
                   <span className="product-card-link">View →</span>
-                </div>
-              </a>
+                </a>
+              </article>
             ))}
           </div>
         </section>
@@ -367,7 +381,7 @@ export function PanelProductPage({ content }: { content: PanelProductContent }) 
             <div>
               <p className="eyebrow">{content.contactEyebrow}</p>
               <h2>{content.contactTitle}</h2>
-              <p>{content.contactBody}</p>
+              <RichText as="p" text={content.contactBody} />
               <ul className="contact-meta">
                 <li>
                   <span>Email</span>

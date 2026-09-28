@@ -1,11 +1,12 @@
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import type { PirContent } from "@/lib/pir";
+import { LightboxImage } from "@/components/site/LightboxImage";
+import { defaultHomeContent } from "@/lib/defaults";
+import { RichText } from "@/components/site/RichText";
+import { imageFocusStyle, veilOpacity } from "@/lib/page-document";
 
-const settings = {
-  logoUrl: "https://www.ur.com.my/images/logo-2.png",
-  siteName: "United Panel-System",
-};
+const settings = defaultHomeContent.settings;
 
 const footer = {
   companyName: "United Panel-System(M) Sdn Bhd",
@@ -32,19 +33,24 @@ export function PirPage({ content }: { content: PirContent }) {
           <div className="hero-media" aria-hidden="true">
             {content.heroImage ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img className="hero-photo" src={content.heroImage} alt="" />
+              <img
+                className="hero-photo"
+                src={content.heroImage}
+                alt=""
+                style={imageFocusStyle(content.imageFocus)}
+              />
             ) : (
               <div className="hero-photo-fallback" />
             )}
-            <div className="hero-veil" />
+            <div className="hero-veil" style={{ opacity: veilOpacity(content.veilStrength) }} />
             {content.mediaLabel ? (
               <div className="hero-media-label">{content.mediaLabel}</div>
             ) : null}
           </div>
           <div className="hero-content">
-            <p className="hero-brand">{content.brand}</p>
-            <h1>{content.headline}</h1>
-            <p className="hero-lead">{content.lead}</p>
+            <RichText as="p" className="hero-brand" text={content.brand} />
+            <RichText as="h1" text={content.headline} />
+            <RichText as="p" className="hero-lead" text={content.lead} />
             <div className="hero-actions">
               <a className="btn btn-primary" href="#contact">
                 {content.primaryCta}
@@ -68,27 +74,30 @@ export function PirPage({ content }: { content: PirContent }) {
           {content.proof.map((item) => (
             <div className="proof-item" key={item.id}>
               <span className="proof-index">{item.index}</span>
-              <h2>{item.title}</h2>
-              <p>{item.text}</p>
+              <RichText as="h2" text={item.title} />
+              <RichText as="p" text={item.text} />
             </div>
           ))}
         </section>
 
         <section className="section" id="overview">
           <div className="capability">
-            <div className="capability-visual">
+            <div className="capability-visual capability-visual-clear">
               {content.overviewImage ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={content.overviewImage} alt="" />
+                <LightboxImage
+                  src={content.overviewImage}
+                  alt={content.overviewTitle || "Overview"}
+                  caption={content.overviewTitle}
+                />
               ) : (
                 <span>Photo</span>
               )}
             </div>
             <div>
               <p className="eyebrow">{content.overviewEyebrow}</p>
-              <h2>{content.overviewTitle}</h2>
-              <p>{content.overviewBody1}</p>
-              <p>{content.overviewBody2}</p>
+              <RichText as="h2" text={content.overviewTitle} />
+              <RichText as="p" text={content.overviewBody1} />
+              <RichText as="p" text={content.overviewBody2} />
               <a className="text-link" href="https://www.ur.com.my/fm-global-approval-36.aspx">
                 About FM Global approval →
               </a>
@@ -99,7 +108,7 @@ export function PirPage({ content }: { content: PirContent }) {
         <section className="section section-compact" id="features">
           <div className="section-head">
             <p className="eyebrow">{content.featuresEyebrow}</p>
-            <h2>{content.featuresTitle}</h2>
+            <RichText as="h2" text={content.featuresTitle} />
           </div>
           <ul className="pir-feature-list">
             {content.features.map((item) => (
@@ -111,8 +120,8 @@ export function PirPage({ content }: { content: PirContent }) {
         <section className="section section-compact" id="specs">
           <div className="section-head">
             <p className="eyebrow">{content.specsEyebrow}</p>
-            <h2>{content.specsTitle}</h2>
-            <p className="section-lead">{content.specsLead}</p>
+            <RichText as="h2" text={content.specsTitle} />
+            <RichText as="p" className="section-lead" text={content.specsLead} />
           </div>
           <div className="spec-table">
             {content.specs.map((row) => (
@@ -130,17 +139,21 @@ export function PirPage({ content }: { content: PirContent }) {
             <h2>Other panel systems</h2>
           </div>
           <div className="offer-grid">
-            <a className="offer-card" href="/products/pur">
+            <article className="offer-card">
               <div className="offer-card-image">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://www.ur.com.my/userfiles/image/fronad2.jpg" alt="" />
+                <LightboxImage
+                  src="https://www.ur.com.my/userfiles/image/fronad2.jpg"
+                  alt="PUR Panels"
+                  caption="PUR Panels"
+                  hint={false}
+                />
               </div>
-              <div className="offer-card-body">
+              <a className="offer-card-body" href="/products/pur">
                 <h3>PUR Panels</h3>
                 <p>Durable polyurethane panels for cold storage construction.</p>
                 <span className="product-card-link">View →</span>
-              </div>
-            </a>
+              </a>
+            </article>
             <a className="offer-card" href="/products/rockwool">
               <div className="offer-card-image">
                 <span>Photo</span>
@@ -158,8 +171,8 @@ export function PirPage({ content }: { content: PirContent }) {
           <div className="contact-panel">
             <div>
               <p className="eyebrow">{content.contactEyebrow}</p>
-              <h2>{content.contactTitle}</h2>
-              <p>{content.contactBody}</p>
+              <RichText as="h2" text={content.contactTitle} />
+              <RichText as="p" text={content.contactBody} />
               <ul className="contact-meta">
                 <li>
                   <span>Email</span>

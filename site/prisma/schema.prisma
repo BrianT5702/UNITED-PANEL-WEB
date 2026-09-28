@@ -23,3 +23,17 @@ model Session {
   expiresAt DateTime
   createdAt DateTime @default(now())
 }
+
+// Catalogues & brochures — id is permanent (QR /r/[id] forever)
+model CatalogueItem {
+  id          String   @id @default(cuid())
+  title       String
+  kind        String   @default("catalogue")
+  description String?
+  fileUrl     String
+  fileName    String
+  mimeType    String
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

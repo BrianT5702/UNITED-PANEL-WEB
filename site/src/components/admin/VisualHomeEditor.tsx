@@ -1,103 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import type { HomeContent, OfferItem, ProductItem, ProofItem, CertificateItem } from "@/lib/types";
 import { LogoutButton } from "./LogoutButton";
 import { AdminPageSwitcher } from "./AdminPageSwitcher";
+import { EImage, EText } from "./visual/Editable";
+import { VeilStrengthControl } from "./visual/VeilStrengthControl";
+import { veilOpacity } from "@/lib/page-document";
 
 function newId() {
   return `id_${Math.random().toString(36).slice(2, 10)}`;
-}
-
-function EText({
-  value,
-  onChange,
-  className,
-  as: Tag = "div",
-  multiline,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  className?: string;
-  as?: "div" | "h1" | "h2" | "h3" | "p" | "span" | "strong";
-  multiline?: boolean;
-}) {
-  const ref = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (document.activeElement === el) return;
-    const current = (el.innerText || "").replace(/\n$/, "");
-    if (current !== value) el.innerText = value;
-  }, [value]);
-
-  return (
-    <Tag
-      // @ts-expect-error polymorphic ref
-      ref={ref}
-      className={`ve-text ${className || ""}`}
-      contentEditable
-      suppressContentEditableWarning
-      onKeyDown={(e) => {
-        if (e.key !== "Enter") return;
-        e.preventDefault();
-        document.execCommand("insertText", false, "\n");
-      }}
-      onBlur={(e) => onChange((e.currentTarget.innerText || "").replace(/\n$/, ""))}
-      title="Click to edit text"
-      style={{ whiteSpace: "pre-wrap" }}
-    />
-  );
-}
-
-function EImage({
-  value,
-  onChange,
-  className,
-  label = "Click to add / change photo",
-}: {
-  value: string;
-  onChange: (url: string) => void;
-  className?: string;
-  label?: string;
-}) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [uploading, setUploading] = useState(false);
-
-  async function onFile(file: File | null) {
-    if (!file) return;
-    setUploading(true);
-    const body = new FormData();
-    body.append("file", file);
-    const res = await fetch("/api/admin/upload", { method: "POST", body });
-    setUploading(false);
-    if (!res.ok) {
-      alert("Upload failed. Try a JPG or PNG under 8MB.");
-      return;
-    }
-    const data = await res.json();
-    onChange(data.url);
-  }
-
-  return (
-    <button type="button" className={`ve-image ${className || ""}`} onClick={() => inputRef.current?.click()}>
-      {value ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={value} alt="" />
-      ) : (
-        <span>{uploading ? "Uploading…" : label}</span>
-      )}
-      <span className="ve-image-badge">{uploading ? "Uploading…" : "Change photo"}</span>
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/*"
-        hidden
-        onChange={(e) => onFile(e.target.files?.[0] ?? null)}
-      />
-    </button>
-  );
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -217,15 +129,19 @@ export function VisualHomeEditor({ initial }: { initial: HomeContent }) {
 
       <main>
         <section className="hero hero-short ve-block">
-          <SectionLabel>Hero — click text or background photo</SectionLabel>
+          <SectionLabel>Hero — drag photo to move</SectionLabel>
           <div className="hero-media" aria-hidden="true">
             <EImage
               className="ve-hero-bg"
               value={hero.backgroundImage}
               onChange={(backgroundImage) => update("hero", { ...hero, backgroundImage })}
+              focus={hero.imageFocus}
+              onFocusChange={(imageFocus) => update("hero", { ...hero, imageFocus })}
               label="Hero background photo"
+              underChrome={
+                <div className="hero-veil" style={{ opacity: veilOpacity(hero.veilStrength) }} />
+              }
             />
-            <div className="hero-veil" />
           </div>
           <div className="hero-content">
             <EText
@@ -262,6 +178,12 @@ export function VisualHomeEditor({ initial }: { initial: HomeContent }) {
                 />
               </span>
             </div>
+          </div>
+          <div className="ve-hero-tools">
+            <VeilStrengthControl
+              value={hero.veilStrength}
+              onChange={(veilStrength) => update("hero", { ...hero, veilStrength })}
+            />
           </div>
         </section>
 

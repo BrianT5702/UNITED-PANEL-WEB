@@ -7,10 +7,13 @@ export function AdminGuide({
   open,
   onClose,
   variant = "overlay",
+  focusChapter = "start",
 }: {
   open?: boolean;
   onClose?: () => void;
   variant?: "overlay" | "page";
+  /** Chapter id to scroll into view when the overlay opens */
+  focusChapter?: string;
 }) {
   const isOverlay = variant === "overlay";
   const visible = !isOverlay || Boolean(open);
@@ -29,6 +32,16 @@ export function AdminGuide({
       document.body.style.overflow = prev;
     };
   }, [isOverlay, open, onClose]);
+
+  useEffect(() => {
+    if (!isOverlay || !open || !focusChapter) return;
+    // Let the panel mount, then scroll to the chapter
+    const t = window.setTimeout(() => {
+      const target = bodyRef.current?.querySelector(`#guide-${focusChapter}`);
+      target?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+    return () => window.clearTimeout(t);
+  }, [isOverlay, open, focusChapter]);
 
   function jumpTo(id: string) {
     const target = bodyRef.current?.querySelector(`#guide-${id}`);
@@ -95,6 +108,9 @@ export function AdminGuide({
             </a>
             <a className="btn btn-ghost" href="/admin/nav">
               Website menu
+            </a>
+            <a className="btn btn-ghost" href="/admin/catalogues">
+              Catalogues &amp; brochures
             </a>
           </div>
         </header>

@@ -1,3 +1,5 @@
+import type { ImageFocus } from "@/lib/page-document";
+
 export type PanelCert = {
   id: string;
   name: string;
@@ -15,6 +17,10 @@ export type PanelProductContent = {
   primaryCta: string;
   secondaryCta: string;
   heroImage: string;
+  /** Visible crop point for the banner photo */
+  imageFocus?: ImageFocus;
+  /** Banner darkening 0–100 (missing = 100 / full veil) */
+  veilStrength?: number;
   mediaLabel: string;
   proof: { id: string; index: string; title: string; text: string }[];
   overviewEyebrow: string;
@@ -607,7 +613,7 @@ export const defaultPuContent: PanelProductContent = {
       name: "Bomba Malaysia",
       detail:
         "Tested and approved by the Fire and Rescue Department of Malaysia for commercial and industrial use.",
-      image: "/uploads/pir/certs/card-bomba.jpg",
+      image: "/uploads/pir/certs/bomba.png",
       href: "/about/certified/quality-recognition",
     },
     {

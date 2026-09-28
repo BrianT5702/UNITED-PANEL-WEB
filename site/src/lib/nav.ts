@@ -20,14 +20,26 @@ export const DEFAULT_SITE_NAV: NavItem[] = [
     label: "Products",
     href: "/products",
     children: [
-      { label: "All products", href: "/products" },
+      { label: "All Product", href: "/products" },
       { label: "PIR Panels", href: "/products/pir" },
+      { label: "Roof Panels", href: "/products/roof" },
       { label: "PU Panels", href: "/products/pu" },
+      { label: "Applications", href: "/products/applications" },
+      { label: "Refrigeration Systems", href: "/products/refrigeration-systems" },
+      { label: "Insulated Doors", href: "/products/insulated-doors" },
       { label: "RockWool Panels", href: "/products/rockwool" },
     ],
   },
   { label: "Services", href: "/services" },
-  { label: "Refrigeration Parts", href: "/parts" },
+  {
+    label: "Refrigeration Parts",
+    href: "/parts",
+    children: [{ label: "Partners", href: "/partners" }],
+  },
+  { label: "News", href: "/news" },
+  { label: "Career", href: "/career" },
+  { label: "Virtual Tour", href: "/virtual-tour" },
+  { label: "Catalogues", href: "/catalogues" },
   { label: "Contact Us", href: "/contact" },
 ];
 

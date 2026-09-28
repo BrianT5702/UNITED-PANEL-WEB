@@ -27,6 +27,11 @@ export default async function VisualEditCatchAllPage({
   let id = pageIdFromPathSegments(segments);
   if (ALIASES[id]) id = ALIASES[id];
 
+  // Catalogues & Brochures is managed on its own admin screen, not the page editor.
+  if (id === "catalogues" || id.startsWith("catalogues/") || id === "r") {
+    redirect("/catalogues");
+  }
+
   await ensureSeeded();
   const page = await findSitePage(id);
   if (!page) notFound();

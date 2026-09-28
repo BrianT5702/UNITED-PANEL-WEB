@@ -1,3 +1,5 @@
+import type { ImageFocus } from "@/lib/page-document";
+
 export type NavItem = {
   label: string;
   href: string;
@@ -14,6 +16,10 @@ export type HeroContent = {
   secondaryCtaHref: string;
   backgroundImage: string;
   mediaLabel: string;
+  /** Visible crop point for the banner photo */
+  imageFocus?: ImageFocus;
+  /** Banner darkening 0–100 (missing = 100 / full veil) */
+  veilStrength?: number;
 };
 
 export type ProofItem = {
@@ -115,6 +121,8 @@ export type FooterContent = {
 export type SiteSettings = {
   logoUrl: string;
   siteName: string;
+  /** Optional second line under the company name in the header brand lockup */
+  brandTagline?: string;
 };
 
 export type HomeContent = {

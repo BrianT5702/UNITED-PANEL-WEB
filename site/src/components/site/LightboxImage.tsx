@@ -1,23 +1,23 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useState, type CSSProperties, type MouseEvent } from "react";
 
-type LightboxImageProps = {
+export type LightboxDialogProps = {
+  open: boolean;
+  onClose: () => void;
   src: string;
   alt: string;
-  className?: string;
   caption?: string;
 };
 
-export function LightboxImage({ src, alt, className, caption }: LightboxImageProps) {
-  const [open, setOpen] = useState(false);
+export function LightboxDialog({ open, onClose, src, alt, caption }: LightboxDialogProps) {
   const titleId = useId();
 
   useEffect(() => {
     if (!open) return;
 
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") onClose();
     };
 
     const previousOverflow = document.body.style.overflow;
@@ -28,49 +28,87 @@ export function LightboxImage({ src, alt, className, caption }: LightboxImagePro
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKey);
     };
-  }, [open]);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="lightbox-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      onClick={onClose}
+    >
+      <div className="lightbox-dialog" onClick={(event) => event.stopPropagation()}>
+        <div className="lightbox-toolbar">
+          <p id={titleId}>{caption || alt}</p>
+          <button
+            type="button"
+            className="lightbox-close"
+            onClick={onClose}
+            aria-label="Close enlarged image"
+          >
+            Close
+          </button>
+        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={src} alt={alt} />
+      </div>
+    </div>
+  );
+}
+
+type LightboxImageProps = {
+  src: string;
+  alt: string;
+  className?: string;
+  imgClassName?: string;
+  style?: CSSProperties;
+  caption?: string;
+  /** Show the "Click to enlarge" chip. Default true. */
+  hint?: boolean;
+  /** Stop click from bubbling (e.g. inside a parent click handler). */
+  stopPropagation?: boolean;
+};
+
+export function LightboxImage({
+  src,
+  alt,
+  className,
+  imgClassName,
+  style,
+  caption,
+  hint = true,
+  stopPropagation = false,
+}: LightboxImageProps) {
+  const [open, setOpen] = useState(false);
+
+  const onTriggerClick = (event: MouseEvent<HTMLButtonElement>) => {
+    if (stopPropagation) event.stopPropagation();
+    setOpen(true);
+  };
 
   return (
     <>
       <button
         type="button"
         className={`lightbox-trigger${className ? ` ${className}` : ""}`}
-        onClick={() => setOpen(true)}
-        aria-label={`Enlarge image: ${alt}`}
+        onClick={onTriggerClick}
+        aria-label={`Enlarge image: ${alt || "photo"}`}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt={alt} />
-        <span className="lightbox-hint">Click to enlarge</span>
+        <img src={src} alt={alt} className={imgClassName} style={style} />
+        {hint ? <span className="lightbox-hint">Click to enlarge</span> : null}
       </button>
 
-      {open ? (
-        <div
-          className="lightbox-overlay"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby={titleId}
-          onClick={() => setOpen(false)}
-        >
-          <div
-            className="lightbox-dialog"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="lightbox-toolbar">
-              <p id={titleId}>{caption || alt}</p>
-              <button
-                type="button"
-                className="lightbox-close"
-                onClick={() => setOpen(false)}
-                aria-label="Close enlarged image"
-              >
-                Close
-              </button>
-            </div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={src} alt={alt} />
-          </div>
-        </div>
-      ) : null}
+      <LightboxDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        src={src}
+        alt={alt}
+        caption={caption}
+      />
     </>
   );
 }

@@ -1,88 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import type { PirContent } from "@/lib/pir";
 import { LogoutButton } from "./LogoutButton";
 import { AdminPageSwitcher } from "./AdminPageSwitcher";
-
-function EText({
-  value,
-  onChange,
-  className,
-  as: Tag = "div",
-  multiline,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  className?: string;
-  as?: "div" | "h1" | "h2" | "h3" | "p" | "span";
-  multiline?: boolean;
-}) {
-  const ref = useRef<HTMLElement | null>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || document.activeElement === el) return;
-    const current = (el.innerText || "").replace(/\n$/, "");
-    if (current !== value) el.innerText = value;
-  }, [value]);
-  return (
-    <Tag
-      // @ts-expect-error polymorphic ref
-      ref={ref}
-      className={`ve-text ${className || ""}`}
-      contentEditable
-      suppressContentEditableWarning
-      onKeyDown={(e) => {
-        if (e.key !== "Enter") return;
-        e.preventDefault();
-        document.execCommand("insertText", false, "\n");
-      }}
-      onBlur={(e) => onChange((e.currentTarget.innerText || "").replace(/\n$/, ""))}
-      title="Click to edit"
-      style={{ whiteSpace: "pre-wrap" }}
-    />
-  );
-}
-
-function EImage({
-  value,
-  onChange,
-  className,
-  label = "Change photo",
-}: {
-  value: string;
-  onChange: (url: string) => void;
-  className?: string;
-  label?: string;
-}) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [uploading, setUploading] = useState(false);
-  async function onFile(file: File | null) {
-    if (!file) return;
-    setUploading(true);
-    const body = new FormData();
-    body.append("file", file);
-    const res = await fetch("/api/admin/upload", { method: "POST", body });
-    setUploading(false);
-    if (!res.ok) {
-      alert("Upload failed");
-      return;
-    }
-    onChange((await res.json()).url);
-  }
-  return (
-    <button type="button" className={`ve-image ${className || ""}`} onClick={() => inputRef.current?.click()}>
-      {value ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={value} alt="" />
-      ) : (
-        <span>{uploading ? "Uploading…" : label}</span>
-      )}
-      <span className="ve-image-badge">{uploading ? "…" : "Change photo"}</span>
-      <input ref={inputRef} type="file" accept="image/*" hidden onChange={(e) => onFile(e.target.files?.[0] ?? null)} />
-    </button>
-  );
-}
+import { EImage, EText } from "./visual/Editable";
+import { VeilStrengthControl } from "./visual/VeilStrengthControl";
+import { veilOpacity } from "@/lib/page-document";
 
 export function VisualPirEditor({ initial }: { initial: PirContent }) {
   const [content, setContent] = useState(initial);
@@ -140,8 +64,12 @@ export function VisualPirEditor({ initial }: { initial: PirContent }) {
               className="ve-hero-bg"
               value={content.heroImage}
               onChange={(heroImage) => patch({ heroImage })}
+              focus={content.imageFocus}
+              onFocusChange={(imageFocus) => patch({ imageFocus })}
+              underChrome={
+                <div className="hero-veil" style={{ opacity: veilOpacity(content.veilStrength) }} />
+              }
             />
-            <div className="hero-veil" />
           </div>
           <div className="hero-content">
             <EText as="p" className="hero-brand" value={content.brand} onChange={(brand) => patch({ brand })} />
@@ -155,6 +83,12 @@ export function VisualPirEditor({ initial }: { initial: PirContent }) {
                 <EText as="span" value={content.secondaryCta} onChange={(secondaryCta) => patch({ secondaryCta })} />
               </span>
             </div>
+          </div>
+          <div className="ve-hero-tools">
+            <VeilStrengthControl
+              value={content.veilStrength}
+              onChange={(veilStrength) => patch({ veilStrength })}
+            />
           </div>
         </section>
 

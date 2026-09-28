@@ -1,8 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import type {
   CardItem,
+  GalleryItem,
   HeroButton,
   PageDocument,
   PageSection,
@@ -20,12 +29,17 @@ import {
   createDataTableSection,
   createEmptySection,
   createSpecsTableSection,
+  cardGridLayout,
+  gridClass,
   imageAspectStyle,
   newId,
+  proofColumnsClass,
   resizeDataTable,
   resolveContactFields,
   resolveSectionButtons,
   resolveSectionNote,
+  resolveSlideshowIntervalMs,
+  veilOpacity,
 } from "@/lib/page-document";
 import type { ContactField } from "@/lib/page-document";
 import { adminEditHref, livePathToAdminEdit, navItemsForAdminEdit, SITE_PAGES, type SitePage } from "@/lib/pages";
@@ -34,12 +48,14 @@ import { defaultHomeContent } from "@/lib/defaults";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { AboutShell } from "@/components/site/AboutShell";
+import { LogoSlideshow } from "@/components/site/LogoSlideshow";
 import { LogoutButton } from "./LogoutButton";
 import { AdminGuide, AdminGuideButton } from "./AdminGuide";
 import { EImage, EText } from "./visual/Editable";
 import { ImageAspectPicker } from "./visual/ImageAspectPicker";
 import { ImageAlignPicker } from "./visual/ImageAlignPicker";
 import { SlideshowIntervalControl } from "./visual/SlideshowIntervalControl";
+import { VeilStrengthControl } from "./visual/VeilStrengthControl";
 import { SectionButtonsEditor } from "./visual/SectionButtons";
 import { PageLinkField } from "./visual/PageLinkField";
 
@@ -50,6 +66,151 @@ function reorder<T>(items: T[], from: number, to: number): T[] {
   next.splice(to, 0, moved);
   return next;
 }
+
+type SectionSelection = {
+  selectedSectionId: string | null;
+  selectSection: (id: string | null) => void;
+};
+
+const SectionSelectionContext = createContext<SectionSelection>({
+  selectedSectionId: null,
+  selectSection: () => {},
+});
+
+function useSectionSelection() {
+  return useContext(SectionSelectionContext);
+}
+
+
+/** Slide list thumbnail + in-flow "Change picture" button (no chrome over the picture) */
+function SlidePicturePicker({
+  value,
+  alt,
+  onChange,
+}: {
+  value: string;
+  alt: string;
+  onChange: (url: string) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  async function onFile(file: File | null) {
+    if (!file) return;
+    setUploading(true);
+    const body = new FormData();
+    body.append("file", file);
+    const res = await fetch("/api/admin/upload", { method: "POST", body });
+    setUploading(false);
+    if (!res.ok) {
+      alert("Upload failed. Try a JPG or PNG under 8MB.");
+      return;
+    }
+    const data = await res.json();
+    onChange(data.url);
+  }
+  return (
+    <div className="ve-logo-slides-picture">
+      <div className="ve-logo-slides-thumb">
+        {value ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={value} alt={alt} />
+        ) : (
+          <span className="ve-logo-slides-thumb-empty">No picture yet</span>
+        )}
+      </div>
+      <button
+        type="button"
+        className="ve-mini-btn"
+        disabled={uploading}
+        onClick={() => inputRef.current?.click()}
+      >
+        {uploading ? "Uploading…" : value ? "Change picture" : "Add picture"}
+      </button>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        hidden
+        onChange={(e) => {
+          void onFile(e.target.files?.[0] ?? null);
+          e.target.value = "";
+        }}
+      />
+    </div>
+  );
+}
+
+function OptionalEText({
+  value,
+  onChange,
+  as = "p",
+  className,
+  multiline,
+  rich,
+  addLabel,
+  seedValue,
+  removeLabel,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  as?: "div" | "h1" | "h2" | "h3" | "p" | "span" | "strong";
+  className?: string;
+  multiline?: boolean;
+  rich?: boolean;
+  addLabel: string;
+  seedValue: string;
+  /** Shown next to the field so beginners can clear it without guessing */
+  removeLabel?: string;
+}) {
+  const clearLabel =
+    removeLabel ||
+    (addLabel.toLowerCase().includes("label")
+      ? "Remove label"
+      : addLabel.toLowerCase().includes("intro")
+        ? "Remove intro"
+        : addLabel.toLowerCase().includes("title")
+          ? "Remove title"
+          : "Remove");
+
+  if ((value || "").trim()) {
+    return (
+      <div className="ve-optional-field">
+        <EText
+          as={as}
+          className={className}
+          multiline={multiline}
+          rich={rich}
+          value={value}
+          onChange={(next) => {
+            // Clearing all text removes the field (back to + Add …)
+            // Strip tags when checking emptiness
+            const plain = next.replace(/<[^>]+>/g, "").trim();
+            if (!plain) onChange("");
+            else onChange(next);
+          }}
+        />
+        <button
+          type="button"
+          className="ve-mini-btn ve-remove-optional"
+          title={clearLabel}
+          onClick={() => onChange("")}
+        >
+          {clearLabel}
+        </button>
+      </div>
+    );
+  }
+  return (
+    <button
+      type="button"
+      className="ve-mini-btn ve-add-optional"
+      onClick={() => onChange(seedValue)}
+    >
+      {addLabel}
+    </button>
+  );
+}
+
 
 function SectionToolbar({
   label,
@@ -79,33 +240,34 @@ function SectionToolbar({
       <span className="ve-section-label">{label}</span>
       <div className="ve-section-toolbar-actions">
         {canColumns && onColumns ? (
-          <span className="ve-tool-group" title="How many across">
+          <span className="ve-tool-group" title="How many items in a row on a wide screen">
             <span className="ve-tool-group-label">Layout</span>
-            {([1, 2, 3] as SectionColumns[]).map((c) => (
+            {([1, 2, 3, 4] as SectionColumns[]).map((c) => (
               <button
                 key={c}
                 type="button"
                 className={`ve-tool-btn ${(columns || 1) === c ? "is-active" : ""}`}
                 onClick={() => onColumns(c)}
+                title={`${c} in a row`}
               >
-                {c} across
+                {c} in a row
               </button>
             ))}
           </span>
         ) : null}
         <span className="ve-tool-group">
-          <button type="button" className="ve-tool-btn" onClick={onMoveUp} title="Move this block up">
-            ↑ Up
+          <button type="button" className="ve-tool-btn" onClick={onMoveUp} title="Move up">
+            Move up
           </button>
-          <button type="button" className="ve-tool-btn" onClick={onMoveDown} title="Move this block down">
-            ↓ Down
+          <button type="button" className="ve-tool-btn" onClick={onMoveDown} title="Move down">
+            Move down
           </button>
-          <button type="button" className="ve-tool-btn" onClick={onDuplicate} title="Make a copy of this block">
-            Duplicate
+          <button type="button" className="ve-tool-btn" onClick={onDuplicate} title="Make a copy">
+            Make a copy
           </button>
         </span>
-        <button type="button" className="ve-tool-btn is-danger" onClick={confirmDelete} title="Remove this block">
-          Remove
+        <button type="button" className="ve-tool-btn is-danger" onClick={confirmDelete} title="Delete block">
+          Delete block
         </button>
       </div>
     </div>
@@ -133,9 +295,13 @@ function EditableSection({
   sectionTargets?: { id: string; label: string }[];
   sitePages?: SitePage[];
 }) {
+  const { selectedSectionId, selectSection } = useSectionSelection();
+  const selected = selectedSectionId === section.id;
+  const typeLabel = SECTION_TYPE_LABELS[section.type];
+
   const setData = <T,>(data: T) => onChange({ ...section, data } as PageSection);
   const setColumns = (columns: SectionColumns) => onChange({ ...section, columns });
-  const canColumns = ["cardGrid", "gallery", "featureList"].includes(section.type);
+  const canColumns = ["cardGrid", "gallery", "featureList", "proof"].includes(section.type);
   const [noteOpen, setNoteOpen] = useState(Boolean(resolveSectionNote(section).trim()));
 
   function setButtons(buttons: HeroButton[]) {
@@ -224,9 +390,13 @@ function EditableSection({
               className="ve-hero-bg"
               value={d.backgroundImage}
               onChange={(backgroundImage) => setData({ ...d, backgroundImage })}
+              focus={d.imageFocus}
+              onFocusChange={(imageFocus) => setData({ ...d, imageFocus })}
               label="Click to add banner photo"
+              underChrome={
+                <div className="hero-veil" style={{ opacity: veilOpacity(d.veilStrength) }} />
+              }
             />
-            <div className="hero-veil" />
           </div>
           <div className="hero-content">
             <EText as="p" className="hero-brand" multiline value={d.brand} onChange={(brand) => setData({ ...d, brand })} />
@@ -262,8 +432,16 @@ function EditableSection({
     }
     case "proof": {
       const d = section.data;
+      const syncProofColumns = (items: typeof d.items) => {
+        const n = items.length;
+        if (n >= 2 && n <= 4) {
+          onChange({ ...section, columns: n as SectionColumns, data: { items } });
+        } else {
+          setData({ items });
+        }
+      };
       body = (
-        <section className="proof ve-block">
+        <section className={`proof ve-block ${proofColumnsClass(section.columns)}`}>
           {d.items.map((item, index) => (
             <div className="proof-item ve-card" key={item.id}>
               <EText
@@ -299,7 +477,11 @@ function EditableSection({
                 <button
                   type="button"
                   className="ve-remove"
-                  onClick={() => setData({ items: d.items.filter((_, i) => i !== index) })}
+                  title="Remove this highlight"
+                  onClick={() => {
+                    if (!window.confirm("Remove this highlight from the row?")) return;
+                    syncProofColumns(d.items.filter((_, i) => i !== index));
+                  }}
                 >
                   Remove highlight
                 </button>
@@ -310,17 +492,15 @@ function EditableSection({
             type="button"
             className="ve-add-btn ve-add-wide"
             onClick={() =>
-              setData({
-                items: [
-                  ...d.items,
-                  {
-                    id: newId("p"),
-                    index: String(d.items.length + 1).padStart(2, "0"),
-                    title: "New highlight",
-                    text: "Short description",
-                  },
-                ],
-              })
+              syncProofColumns([
+                ...d.items,
+                {
+                  id: newId("p"),
+                  index: String(d.items.length + 1).padStart(2, "0"),
+                  title: "New highlight",
+                  text: "Short description",
+                },
+              ])
             }
           >
             + Add highlight
@@ -334,11 +514,13 @@ function EditableSection({
       body = (
         <section className={`section section-compact ve-block ${nested ? "pb-nested" : ""}`}>
           <div className="section-head">
-            <EText
+            <OptionalEText
               as="p"
               className="eyebrow"
               value={d.eyebrow || ""}
               onChange={(eyebrow) => setData({ ...d, eyebrow })}
+              addLabel="+ Add small label above title"
+              seedValue="Label"
             />
             <EText as="h2" value={d.title} onChange={(title) => setData({ ...d, title })} />
             <EText
@@ -349,19 +531,6 @@ function EditableSection({
               onChange={(body) => setData({ ...d, body })}
             />
           </div>
-          <EImage
-            value={d.image || ""}
-            onChange={(image) => setData({ ...d, image })}
-            focus={d.imageFocus}
-            onFocusChange={(imageFocus) => setData({ ...d, imageFocus })}
-            label="Optional image"
-          />
-          {d.image ? (
-            <ImageAspectPicker
-              value={d.imageAspect}
-              onChange={(imageAspect) => setData({ ...d, imageAspect })}
-            />
-          ) : null}
         </section>
       );
       break;
@@ -373,67 +542,75 @@ function EditableSection({
       const slideshowOn = slides.length > 0;
       body = (
         <section className={`section ve-block ${nested ? "pb-nested" : ""}`}>
-          <div className="ve-tool-group ve-placement-bar" title="Photo placement">
-            <span className="ve-placement-label">Layout</span>
-            <button
-              type="button"
-              className={`ve-tool-btn ${!photoRight ? "is-active" : ""}`}
-              onClick={() => setData({ ...d, imageSide: "left" })}
-            >
-              Photo left · Text right
-            </button>
-            <button
-              type="button"
-              className={`ve-tool-btn ${photoRight ? "is-active" : ""}`}
-              onClick={() => setData({ ...d, imageSide: "right" })}
-            >
-              Text left · Photo right
-            </button>
+          <div className="ve-block-toolbar">
+            <div className="ve-block-toolbar-row">
+              <span className="ve-placement-label">Layout</span>
+              <div className="ve-seg" title="Where the photo sits">
+                <button
+                  type="button"
+                  className={`ve-seg-btn ${!photoRight ? "is-active" : ""}`}
+                  onClick={() => setData({ ...d, imageSide: "left" })}
+                >
+                  Photo left · Text right
+                </button>
+                <button
+                  type="button"
+                  className={`ve-seg-btn ${photoRight ? "is-active" : ""}`}
+                  onClick={() => setData({ ...d, imageSide: "right" })}
+                >
+                  Text left · Photo right
+                </button>
+              </div>
+            </div>
+            <div className="ve-block-toolbar-row">
+              <span className="ve-placement-label">Photos</span>
+              <div className="ve-seg" title="One photo or a rotating set">
+                <button
+                  type="button"
+                  className={`ve-seg-btn ${!slideshowOn ? "is-active" : ""}`}
+                  onClick={() => {
+                    const kept =
+                      [d.image, ...slides.map((s) => s.src)].find((src) => Boolean(src?.trim())) || "";
+                    setData({
+                      ...d,
+                      images: undefined,
+                      image: kept,
+                    });
+                  }}
+                >
+                  One photo
+                </button>
+                <button
+                  type="button"
+                  className={`ve-seg-btn ${slideshowOn ? "is-active" : ""}`}
+                  onClick={() =>
+                    setData({
+                      ...d,
+                      image: d.image || slides[0]?.src || "",
+                      images:
+                        slides.length > 0
+                          ? slides
+                          : [
+                              {
+                                id: newId("slide"),
+                                src: d.image || "",
+                                alt: "Photo",
+                              },
+                            ],
+                    })
+                  }
+                >
+                  Slideshow
+                </button>
+              </div>
+            </div>
+            <ImageAspectPicker
+              compact
+              value={d.imageAspect}
+              onChange={(imageAspect) => setData({ ...d, imageAspect })}
+            />
+            <p className="ve-toolbar-hint">Choose layout, then photo shape.</p>
           </div>
-          <div className="ve-tool-group ve-placement-bar" title="Photo mode">
-            <span className="ve-placement-label">Photos</span>
-            <button
-              type="button"
-              className={`ve-tool-btn ${!slideshowOn ? "is-active" : ""}`}
-              onClick={() => {
-                const kept =
-                  [d.image, ...slides.map((s) => s.src)].find((src) => Boolean(src?.trim())) || "";
-                setData({
-                  ...d,
-                  images: undefined,
-                  image: kept,
-                });
-              }}
-            >
-              One photo
-            </button>
-            <button
-              type="button"
-              className={`ve-tool-btn ${slideshowOn ? "is-active" : ""}`}
-              onClick={() =>
-                setData({
-                  ...d,
-                  image: d.image || slides[0]?.src || "",
-                  images:
-                    slides.length > 0
-                      ? slides
-                      : [
-                          {
-                            id: newId("slide"),
-                            src: d.image || "",
-                            alt: "Photo",
-                          },
-                        ],
-                })
-              }
-            >
-              Slideshow
-            </button>
-          </div>
-          <ImageAspectPicker
-            value={d.imageAspect}
-            onChange={(imageAspect) => setData({ ...d, imageAspect })}
-          />
           {slideshowOn ? (
             <SlideshowIntervalControl
               value={d.slideshowIntervalSec}
@@ -528,19 +705,23 @@ function EditableSection({
               </div>
             )}
             <div className="ve-media-copy">
-              <EText
+              <OptionalEText
                 as="p"
                 className="eyebrow"
-                value={d.eyebrow}
+                value={d.eyebrow || ""}
                 onChange={(eyebrow) => setData({ ...d, eyebrow })}
+                addLabel="+ Add small label above title"
+                seedValue="Label"
               />
               <EText as="h2" value={d.title} onChange={(title) => setData({ ...d, title })} />
               <EText as="p" multiline value={d.body} onChange={(body) => setData({ ...d, body })} />
-              <EText
+              <OptionalEText
                 as="p"
                 multiline
                 value={d.body2 || ""}
                 onChange={(body2) => setData({ ...d, body2 })}
+                addLabel="+ Add second paragraph"
+                seedValue="More detail"
               />
               <div className="ve-field-row">
                 <label>
@@ -572,30 +753,53 @@ function EditableSection({
         setData({ ...d, items });
       };
       const hasHeading = Boolean(d.eyebrow || d.title || d.lead);
+      // Same layout rules as the live page (cardGridLayout) so editor = live
+      const layout = cardGridLayout(
+        section.columns,
+        d.variant,
+        d.items.some((item) => Boolean(item.image)),
+      );
+      const isGateway = layout.kind === "gateway";
+      const isCerts = layout.kind === "certs";
+      const isHub = layout.kind === "hub";
       body = (
-        <section className={`section section-compact ve-block ve-card-grid ${nested ? "pb-nested" : ""}`}>
+        <section
+          className={`section section-compact ve-block ve-card-grid ${isHub ? "about-hub-section" : ""} ${nested ? "pb-nested" : ""}`}
+        >
           {hasHeading ? (
             <div className="section-head ve-optional-head">
-              <EText
+              <OptionalEText
                 as="p"
                 className="eyebrow"
                 value={d.eyebrow || ""}
                 onChange={(eyebrow) => setData({ ...d, eyebrow })}
+                addLabel="+ Add small label above title"
+                seedValue="Label"
               />
-              <EText as="h2" value={d.title || ""} onChange={(title) => setData({ ...d, title })} />
-              <EText
+              <OptionalEText
+                as="h2"
+                value={d.title || ""}
+                onChange={(title) => setData({ ...d, title })}
+                addLabel="+ Add title"
+                seedValue="Section title"
+              />
+              <OptionalEText
                 as="p"
                 className="section-lead"
                 value={d.lead || ""}
                 onChange={(lead) => setData({ ...d, lead })}
+                addLabel="+ Add intro line under title"
+                seedValue="Intro line"
               />
-              <button
-                type="button"
-                className="ve-mini-btn"
-                onClick={() => setData({ ...d, eyebrow: "", title: "", lead: "" })}
-              >
-                Clear heading
-              </button>
+              {selected ? (
+                <button
+                  type="button"
+                  className="ve-remove-heading"
+                  onClick={() => setData({ ...d, eyebrow: "", title: "", lead: "" })}
+                >
+                  Remove heading
+                </button>
+              ) : null}
             </div>
           ) : (
             <div className="ve-optional-head-toggle">
@@ -624,37 +828,33 @@ function EditableSection({
                   className={`ve-seg-btn ${d.variant === "certs" ? "is-active" : ""}`}
                   onClick={() => setData({ ...d, variant: "certs" })}
                 >
-                  Cert / logo
+                  Logo cards
                 </button>
               </div>
             </div>
-            {d.variant !== "certs" ? (
-              <ImageAspectPicker
-                compact
-                value={d.imageAspect}
-                onChange={(imageAspect) => setData({ ...d, imageAspect })}
-              />
-            ) : (
+            {isCerts ? (
               <p className="ve-toolbar-hint">Logo cards keep marks sharp without photo cropping.</p>
-            )}
-            {d.variant !== "certs" ? (
+            ) : isGateway ? (
               <p className="ve-toolbar-hint">
-                Drag a photo to reframe. Use − / + to zoom. Change replaces the file.
+                2-column photo cards use side-by-side layout (image left) · Drag to reframe · − / + zoom
               </p>
-            ) : null}
+            ) : (
+              <>
+                <ImageAspectPicker
+                  compact
+                  value={d.imageAspect}
+                  onChange={(imageAspect) => setData({ ...d, imageAspect })}
+                />
+                <p className="ve-toolbar-hint">
+                  Drag to reframe · − / + zoom · Change photo replaces the file
+                </p>
+              </>
+            )}
           </div>
-          <div
-            className={
-              d.variant === "certs"
-                ? "panel-cert-grid"
-                : (section.columns || 3) === 2
-                  ? "home-gateway-grid"
-                  : "product-grid"
-            }
-          >
+          <div className={layout.grid}>
             {d.items.map((item, index) => (
               <article
-                className={d.variant === "certs" ? "panel-cert-card ve-card" : "product-card ve-card"}
+                className={`${layout.card} ve-card`}
                 key={item.id}
               >
                 <div className="ve-card-toolbar">
@@ -664,6 +864,7 @@ function EditableSection({
                       type="button"
                       className="ve-move"
                       title="Move left"
+                      aria-label="Move left"
                       disabled={index === 0}
                       onClick={() => setData({ ...d, items: reorder(d.items, index, index - 1) })}
                     >
@@ -673,6 +874,7 @@ function EditableSection({
                       type="button"
                       className="ve-move"
                       title="Move right"
+                      aria-label="Move right"
                       disabled={index >= d.items.length - 1}
                       onClick={() => setData({ ...d, items: reorder(d.items, index, index + 1) })}
                     >
@@ -683,16 +885,35 @@ function EditableSection({
                       className="ve-remove"
                       onClick={() => setData({ ...d, items: d.items.filter((_, i) => i !== index) })}
                     >
-                      Remove
+                      Remove card
                     </button>
                   </div>
                 </div>
-                {d.variant === "certs" ? (
+                {isCerts ? (
                   <div className="panel-cert-logo">
                     <EImage
                       value={item.image || ""}
                       onChange={(image) => updateItem(index, { image })}
                       label="Logo / mark"
+                    />
+                  </div>
+                ) : isGateway ? (
+                  <div className="home-gateway-media">
+                    <EImage
+                      value={item.image || ""}
+                      onChange={(image) => updateItem(index, { image })}
+                      focus={item.focus}
+                      onFocusChange={(focus) => updateItem(index, { focus })}
+                      label="Card photo"
+                    />
+                  </div>
+                ) : isHub ? (
+                  // Text cards (live shows no photo area): slim editor-only strip to add one
+                  <div className="ve-hub-photo">
+                    <EImage
+                      value={item.image || ""}
+                      onChange={(image) => updateItem(index, { image })}
+                      label="Card photo (optional)"
                     />
                   </div>
                 ) : (
@@ -706,12 +927,14 @@ function EditableSection({
                     />
                   </div>
                 )}
-                <div className={d.variant === "certs" ? "panel-cert-body" : "product-card-body"}>
-                  <EText
+                <div className={layout.body}>
+                  <OptionalEText
                     as="p"
                     className="eyebrow"
                     value={item.eyebrow || ""}
                     onChange={(eyebrow) => updateItem(index, { eyebrow })}
+                    addLabel="+ Add small label"
+                    seedValue="Label"
                   />
                   <EText as="h3" value={item.title} onChange={(title) => updateItem(index, { title })} />
                   <EText as="p" multiline value={item.text} onChange={(text) => updateItem(index, { text })} />
@@ -719,7 +942,7 @@ function EditableSection({
                     value={item.href || ""}
                     onChange={(href) => updateItem(index, { href })}
                     pages={sitePages}
-                    label="Opens this page"
+                    label={isGateway ? "Open →" : "Opens this page"}
                     allowEmpty
                   />
                 </div>
@@ -844,18 +1067,22 @@ function EditableSection({
           <div className={images.length ? "panel-app-layout" : undefined}>
             <div>
               <div className="section-head">
-                <EText
+                <OptionalEText
                   as="p"
                   className="eyebrow"
                   value={d.eyebrow || ""}
                   onChange={(eyebrow) => setData({ ...d, eyebrow })}
+                  addLabel="+ Add small label above title"
+                  seedValue="Label"
                 />
                 <EText as="h2" value={d.title} onChange={(title) => setData({ ...d, title })} />
-                <EText
+                <OptionalEText
                   as="p"
                   className="section-lead"
                   value={d.lead || ""}
                   onChange={(lead) => setData({ ...d, lead })}
+                  addLabel="+ Add intro line under title"
+                  seedValue="Intro line"
                 />
               </div>
               <ul className={images.length ? "panel-app-grid panel-app-grid-two" : "feature-list"}>
@@ -908,18 +1135,22 @@ function EditableSection({
       body = (
         <section className={`section section-compact ve-block ${nested ? "pb-nested" : ""}`}>
           <div className="section-head">
-            <EText
+            <OptionalEText
               as="p"
               className="eyebrow"
               value={d.eyebrow || ""}
               onChange={(eyebrow) => setData({ ...d, eyebrow })}
+              addLabel="+ Add small label above title"
+              seedValue="Label"
             />
             <EText as="h2" value={d.title} onChange={(title) => setData({ ...d, title })} />
-            <EText
+            <OptionalEText
               as="p"
               className="section-lead"
               value={d.lead || ""}
               onChange={(lead) => setData({ ...d, lead })}
+              addLabel="+ Add intro line under title"
+              seedValue="Intro line"
             />
           </div>
           <div className="ve-table-size-bar">
@@ -995,11 +1226,13 @@ function EditableSection({
         <section className={`section section-compact ve-block ${nested ? "pb-nested" : ""}`}>
           <div className="section-head">
             <EText as="h2" value={d.title} onChange={(title) => setData({ ...d, title })} />
-            <EText
+            <OptionalEText
               as="p"
               className="section-lead"
               value={d.lead || ""}
               onChange={(lead) => setData({ ...d, lead })}
+              addLabel="+ Add intro line under title"
+              seedValue="Intro line"
             />
           </div>
           <div className="ve-table-size-bar">
@@ -1137,68 +1370,260 @@ function EditableSection({
     }
     case "gallery": {
       const d = section.data;
+      if (d.layout === "logoSlides") {
+        const updateSlide = (index: number, patch: Partial<GalleryItem>) => {
+          const items = [...d.items];
+          items[index] = { ...items[index], ...patch };
+          setData({ ...d, items });
+        };
+        const autoplay = d.slideshowAutoplay !== false;
+        body = (
+          <section className={`section section-compact ve-block pb-logo-slides ${nested ? "pb-nested" : ""}`}>
+            <div className="section-head ve-optional-head">
+              <OptionalEText
+                as="p"
+                className="eyebrow"
+                value={d.eyebrow || ""}
+                onChange={(eyebrow) => setData({ ...d, eyebrow })}
+                addLabel="+ Add small label above title"
+                seedValue="Label"
+              />
+              <OptionalEText
+                as="h2"
+                value={d.title || ""}
+                onChange={(title) => setData({ ...d, title })}
+                addLabel="+ Add title"
+                seedValue="Our brand partners"
+              />
+            </div>
+            {/* Exactly what visitors see */}
+            <LogoSlideshow
+              slides={d.items}
+              label={d.title || d.eyebrow || "Logo slideshow"}
+              intervalMs={resolveSlideshowIntervalMs(d.slideshowIntervalSec)}
+              autoplay={autoplay}
+            />
+            <div className="ve-logo-slides-editor">
+              <div className="ve-block-toolbar">
+                <div className="ve-block-toolbar-row">
+                  <span className="ve-placement-label">Show as</span>
+                  <div className="ve-seg">
+                    <button type="button" className="ve-seg-btn is-active">
+                      Logo slideshow
+                    </button>
+                    <button
+                      type="button"
+                      className="ve-seg-btn"
+                      onClick={() => setData({ ...d, layout: "logos" })}
+                      title="Show every image as a separate tile instead"
+                    >
+                      Logo tiles
+                    </button>
+                  </div>
+                  <label className="ve-logo-slides-autoplay">
+                    <input
+                      type="checkbox"
+                      checked={autoplay}
+                      onChange={(e) => setData({ ...d, slideshowAutoplay: e.target.checked })}
+                    />
+                    Play slides automatically
+                  </label>
+                </div>
+                {autoplay ? (
+                  <SlideshowIntervalControl
+                    value={d.slideshowIntervalSec}
+                    onChange={(slideshowIntervalSec) => setData({ ...d, slideshowIntervalSec })}
+                  />
+                ) : null}
+                <p className="ve-toolbar-hint">
+                  Each slide is one wide picture (for example several logos). It is shown whole,
+                  never cropped. Visitors can use the arrows, dots or swipe; it pauses when hovered.
+                </p>
+              </div>
+              <p className="ve-logo-slides-heading">
+                Slides ({d.items.length}) — the text under each picture is shown as its caption
+              </p>
+              <ol className="ve-logo-slides-list">
+                {d.items.map((item, index) => (
+                  <li className="ve-logo-slides-item" key={item.id}>
+                    <span className="ve-logo-slides-num">{index + 1}</span>
+                    <SlidePicturePicker
+                      value={item.src}
+                      alt={item.alt}
+                      onChange={(src) => updateSlide(index, { src })}
+                    />
+                    <div className="ve-logo-slides-caption">
+                      <EText
+                        as="p"
+                        value={item.alt}
+                        onChange={(alt) => updateSlide(index, { alt })}
+                      />
+                    </div>
+                    <div className="ve-logo-slides-actions">
+                      <button
+                        type="button"
+                        className="ve-move"
+                        disabled={index === 0}
+                        onClick={() => setData({ ...d, items: reorder(d.items, index, index - 1) })}
+                        aria-label={`Move slide ${index + 1} earlier`}
+                      >
+                        ↑
+                      </button>
+                      <button
+                        type="button"
+                        className="ve-move"
+                        disabled={index === d.items.length - 1}
+                        onClick={() => setData({ ...d, items: reorder(d.items, index, index + 1) })}
+                        aria-label={`Move slide ${index + 1} later`}
+                      >
+                        ↓
+                      </button>
+                      <button
+                        type="button"
+                        className="ve-remove"
+                        onClick={() => {
+                          if (window.confirm(`Remove slide ${index + 1}?`)) {
+                            setData({ ...d, items: d.items.filter((_, i) => i !== index) });
+                          }
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+              <button
+                type="button"
+                className="ve-add-btn"
+                onClick={() =>
+                  setData({
+                    ...d,
+                    items: [...d.items, { id: newId("g"), src: "", alt: "Slide caption" }],
+                  })
+                }
+              >
+                + Add slide
+              </button>
+            </div>
+          </section>
+        );
+        break;
+      }
       body = (
         <section className={`section section-compact ve-block ${nested ? "pb-nested" : ""}`}>
-          <EText as="h2" value={d.title || ""} onChange={(title) => setData({ ...d, title })} />
-          <div className="ve-tool-group" style={{ marginBottom: "0.75rem" }}>
-            <button
-              type="button"
-              className={`ve-tool-btn ${(d.layout || "grid") === "grid" ? "is-active" : ""}`}
-              onClick={() => setData({ ...d, layout: "grid" })}
-            >
-              Grid
-            </button>
-            <button
-              type="button"
-              className={`ve-tool-btn ${d.layout === "slideshow" ? "is-active" : ""}`}
-              onClick={() => setData({ ...d, layout: "slideshow" })}
-            >
-              Slideshow
-            </button>
-            <button
-              type="button"
-              className={`ve-tool-btn ${d.layout === "logos" ? "is-active" : ""}`}
-              onClick={() => setData({ ...d, layout: "logos" })}
-            >
-              Logos
-            </button>
-            <button
-              type="button"
-              className={`ve-tool-btn ${d.layout === "pages" ? "is-active" : ""}`}
-              onClick={() => setData({ ...d, layout: "pages" })}
-            >
-              Pages
-            </button>
+          <OptionalEText
+            as="h2"
+            value={d.title || ""}
+            onChange={(title) => setData({ ...d, title })}
+            addLabel="+ Add gallery title"
+            seedValue="Gallery"
+          />
+          <div className="ve-block-toolbar">
+            <div className="ve-block-toolbar-row">
+              <span className="ve-placement-label">Show as</span>
+              <div className="ve-seg" title="How this gallery looks on the page">
+                <button
+                  type="button"
+                  className={`ve-seg-btn ${(d.layout || "grid") === "grid" ? "is-active" : ""}`}
+                  onClick={() => setData({ ...d, layout: "grid" })}
+                >
+                  Photo grid
+                </button>
+                <button
+                  type="button"
+                  className={`ve-seg-btn ${d.layout === "slideshow" ? "is-active" : ""}`}
+                  onClick={() => setData({ ...d, layout: "slideshow" })}
+                >
+                  Slideshow
+                </button>
+                <button
+                  type="button"
+                  className={`ve-seg-btn ${d.layout === "logos" ? "is-active" : ""}`}
+                  onClick={() => setData({ ...d, layout: "logos" })}
+                >
+                  Logos
+                </button>
+                <button
+                  type="button"
+                  className={`ve-seg-btn ${d.layout === "pages" ? "is-active" : ""}`}
+                  onClick={() => setData({ ...d, layout: "pages" })}
+                >
+                  Document pages
+                </button>
+                <button
+                  type="button"
+                  className="ve-seg-btn"
+                  onClick={() => setData({ ...d, layout: "logoSlides" })}
+                  title="Wide slides shown whole, e.g. several brand logos per slide"
+                >
+                  Logo slideshow
+                </button>
+              </div>
+            </div>
+            {d.layout === "logos" ? (
+              <ImageAlignPicker
+                value={d.imageAlign}
+                onChange={(imageAlign) => setData({ ...d, imageAlign })}
+              />
+            ) : (
+              <ImageAspectPicker
+                compact
+                value={d.imageAspect}
+                onChange={(imageAspect) => setData({ ...d, imageAspect })}
+              />
+            )}
+            <p className="ve-toolbar-hint">
+              {d.layout === "logos"
+                ? "Logos sit whole in the tile — adjust position if a mark looks off-centre."
+                : d.layout === "pages"
+                  ? "Auto = large full photo (same as live). Wide/Square/Tall change the frame shape itself."
+                  : "Photo shape crops inside the frame. One-column galleries match live size."}
+            </p>
           </div>
-          {d.layout !== "logos" && d.layout !== "pages" ? (
-            <ImageAspectPicker
-              value={d.imageAspect}
-              onChange={(imageAspect) => setData({ ...d, imageAspect })}
-            />
-          ) : (
-            <ImageAlignPicker
-              value={d.imageAlign}
-              onChange={(imageAlign) => setData({ ...d, imageAlign })}
-            />
-          )}
           {d.layout === "slideshow" ? (
             <SlideshowIntervalControl
               value={d.slideshowIntervalSec}
               onChange={(slideshowIntervalSec) => setData({ ...d, slideshowIntervalSec })}
             />
           ) : null}
-          <div className="pb-gallery pb-cols pb-cols-3">
+          <div className={`pb-gallery ${gridClass(section.columns || 3)}`}>
             {d.items.map((item, index) => (
-              <div className="ve-card ve-slide-card" key={item.id}>
+              <div
+                className={`ve-card ve-slide-card${
+                  d.layout === "pages"
+                    ? " is-pages-layout"
+                    : d.layout === "logos"
+                      ? ""
+                      : " is-grid-layout"
+                }`}
+                key={item.id}
+              >
                 <div
-                  className={`ve-slide-frame${d.layout === "logos" ? " about-figure-logo" : " pb-photo-frame"}`}
+                  className={`ve-slide-frame${
+                    d.layout === "logos"
+                      ? " about-figure-logo"
+                      : " pb-photo-frame"
+                  }${
+                    d.layout === "pages"
+                      ? " is-pages-frame"
+                      : d.layout === "logos"
+                        ? ""
+                        : " is-grid-frame"
+                  }`}
                   data-align={d.layout === "logos" ? d.imageAlign || "center" : undefined}
+                  data-photo-shape={
+                    d.layout === "logos" ? undefined : d.imageAspect || "auto"
+                  }
                   style={
                     d.layout === "logos"
                       ? undefined
-                      : imageAspectStyle(d.imageAspect) ?? {
-                          aspectRatio: d.layout === "pages" ? "3 / 4" : "2 / 1",
-                        }
+                      : d.layout === "pages"
+                        ? imageAspectStyle(d.imageAspect)
+                        : // 1-col Auto: no forced ratio (sit whole under CSS cap).
+                          // Multi-col without shape: default wide cell. Shapes use imageAspectStyle.
+                          imageAspectStyle(d.imageAspect) ??
+                          ((section.columns || 3) <= 1 ? undefined : { aspectRatio: "2 / 1" })
                   }
                 >
                   <EImage
@@ -1261,11 +1686,13 @@ function EditableSection({
           <div className="panel-joint ve-joint-edit">
             <div className="panel-joint-summary">
               <div className="section-head panel-joint-head">
-                <EText
+                <OptionalEText
                   as="p"
                   className="eyebrow"
-                  value={d.eyebrow}
+                  value={d.eyebrow || ""}
                   onChange={(eyebrow) => setData({ ...d, eyebrow })}
+                  addLabel="+ Add small label above title"
+                  seedValue="Label"
                 />
                 <EText as="h2" value={d.title} onChange={(title) => setData({ ...d, title })} />
                 <EText
@@ -1378,11 +1805,13 @@ function EditableSection({
         <section className={`section section-compact ve-block ${nested ? "pb-nested" : ""}`}>
           <div className="home-contact-teaser">
             <div>
-              <EText
+              <OptionalEText
                 as="p"
                 className="eyebrow"
-                value={d.eyebrow}
+                value={d.eyebrow || ""}
                 onChange={(eyebrow) => setData({ ...d, eyebrow })}
+                addLabel="+ Add small label above title"
+                seedValue="Label"
               />
               <EText as="h2" value={d.title} onChange={(title) => setData({ ...d, title })} />
               <EText as="p" multiline value={d.body} onChange={(body) => setData({ ...d, body })} />
@@ -1519,13 +1948,38 @@ function EditableSection({
   }
 
   return (
-    <div className="ve-section-stack">
-      {body}
-      <div className={`ve-section-footer${section.type === "hero" ? " is-after-hero" : ""}`}>
-        {toolbar}
-        {section.type === "hero" ? null : buttonsEditor}
-        {noteEditor}
+    <div
+      className={`ve-section-stack${selected ? " is-selected" : ""}${nested ? " is-nested" : ""}`}
+      data-section-id={section.id}
+      onClick={(e) => {
+        const nearest = (e.target as HTMLElement).closest("[data-section-id]");
+        if (nearest !== e.currentTarget) return;
+        selectSection(section.id);
+      }}
+      onFocusCapture={(e) => {
+        const nearest = (e.target as HTMLElement).closest("[data-section-id]");
+        if (nearest !== e.currentTarget) return;
+        selectSection(section.id);
+      }}
+    >
+      <div className={`ve-section-chrome-label${selected ? " is-editing" : ""}`}>
+        {selected ? `Editing: ${typeLabel}` : typeLabel}
       </div>
+      {body}
+      {selected ? (
+        <div className={`ve-section-footer${section.type === "hero" ? " is-after-hero" : ""}`}>
+          {toolbar}
+          {section.type === "hero" ? (
+            <VeilStrengthControl
+              value={section.data.veilStrength}
+              onChange={(veilStrength) => setData({ ...section.data, veilStrength })}
+            />
+          ) : (
+            buttonsEditor
+          )}
+          {noteEditor}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -1638,6 +2092,7 @@ function SectionList({
   sectionTargets?: { id: string; label: string }[];
   sitePages?: SitePage[];
 }) {
+  const { selectedSectionId, selectSection } = useSectionSelection();
   const [insertAt, setInsertAt] = useState<number | null>(null);
   const [pendingTable, setPendingTable] = useState<"dataTable" | "specsTable" | null>(null);
   const [tableCols, setTableCols] = useState(3);
@@ -1662,8 +2117,10 @@ function SectionList({
     const next = [...sections];
     // Page banners always go first so they sit at the top of the page
     const insertAt = type === "hero" ? 0 : at;
-    next.splice(insertAt, 0, createEmptySection(type));
+    const created = createEmptySection(type);
+    next.splice(insertAt, 0, created);
     onChange(next);
+    selectSection(created.id);
     setInsertAt(null);
     setPendingTable(null);
   }
@@ -1676,6 +2133,7 @@ function SectionList({
     const next = [...sections];
     next.splice(at, 0, section);
     onChange(next);
+    selectSection(section.id);
     setInsertAt(null);
     setPendingTable(null);
   }
@@ -1839,34 +2297,43 @@ function SectionList({
   return (
     <>
       <InsertPicker at={0} label="+ Add a block at the top" prominent />
-      {sections.map((section, index) => (
-        <div key={section.id}>
-          <EditableSection
-            section={section}
-            nested={nested}
-            sectionTargets={sectionTargets}
-            sitePages={sitePages}
-            onChange={(s) => patch(index, s)}
-            onMoveUp={() => onChange(reorder(sections, index, index - 1))}
-            onMoveDown={() => onChange(reorder(sections, index, index + 1))}
-            onDuplicate={() => {
-              const copy = structuredClone(section);
-              copy.id = newId(section.type);
-              const next = [...sections];
-              next.splice(index + 1, 0, copy);
-              onChange(next);
-            }}
-            onDelete={() => onChange(sections.filter((_, i) => i !== index))}
-          />
-          <InsertPicker
-            at={index + 1}
-            label={
-              index === sections.length - 1 ? "+ Add a block at the bottom" : "+ Add a block here"
-            }
-            prominent
-          />
-        </div>
-      ))}
+      {sections.map((section, index) => {
+        const nearSelected =
+          section.id === selectedSectionId ||
+          (index > 0 && sections[index - 1]?.id === selectedSectionId) ||
+          sections[index + 1]?.id === selectedSectionId;
+        const isLast = index === sections.length - 1;
+        return (
+          <div key={section.id}>
+            <EditableSection
+              section={section}
+              nested={nested}
+              sectionTargets={sectionTargets}
+              sitePages={sitePages}
+              onChange={(s) => patch(index, s)}
+              onMoveUp={() => onChange(reorder(sections, index, index - 1))}
+              onMoveDown={() => onChange(reorder(sections, index, index + 1))}
+              onDuplicate={() => {
+                const copy = structuredClone(section);
+                copy.id = newId(section.type);
+                const next = [...sections];
+                next.splice(index + 1, 0, copy);
+                onChange(next);
+                selectSection(copy.id);
+              }}
+              onDelete={() => {
+                if (selectedSectionId === section.id) selectSection(null);
+                onChange(sections.filter((_, i) => i !== index));
+              }}
+            />
+            <InsertPicker
+              at={index + 1}
+              label={isLast ? "+ Add a block at the bottom" : "+ Add a block here"}
+              prominent={isLast || nearSelected}
+            />
+          </div>
+        );
+      })}
     </>
   );
 }
@@ -1957,6 +2424,11 @@ export function VisualPageEditor({
   const [moreOpen, setMoreOpen] = useState(false);
   const [showTip, setShowTip] = useState(true);
   const [guideOpen, setGuideOpen] = useState(false);
+  const [guideFocus, setGuideFocus] = useState("start");
+  const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
+  const selectSection = useCallback((id: string | null) => {
+    setSelectedSectionId(id);
+  }, []);
   const dirtyRef = useRef(false);
   const docRef = useRef(doc);
   const pastRef = useRef(past);
@@ -1969,6 +2441,12 @@ export function VisualPageEditor({
   useEffect(() => {
     try {
       if (window.localStorage.getItem("ve-hide-howto") === "1") setShowTip(false);
+      // First visit: open Help once, focused on Start here
+      if (window.localStorage.getItem("ve-opened-guide-once") !== "1") {
+        setGuideFocus("start");
+        setGuideOpen(true);
+        window.localStorage.setItem("ve-opened-guide-once", "1");
+      }
     } catch {
       /* ignore */
     }
@@ -1991,6 +2469,20 @@ export function VisualPageEditor({
     } catch {
       /* ignore */
     }
+  }
+
+  function showQuickTips() {
+    setShowTip(true);
+    try {
+      window.localStorage.removeItem("ve-hide-howto");
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function openHelp(chapter = "start") {
+    setGuideFocus(chapter);
+    setGuideOpen(true);
   }
 
   function update(next: PageDocument) {
@@ -2024,7 +2516,21 @@ export function VisualPageEditor({
   }
 
   useEffect(() => {
+    function onSelectSection(e: Event) {
+      const detail = (e as CustomEvent<{ id?: string }>).detail;
+      if (detail?.id) setSelectedSectionId(detail.id);
+    }
+    window.addEventListener("ve-select-section", onSelectSection as EventListener);
+    return () => window.removeEventListener("ve-select-section", onSelectSection as EventListener);
+  }, []);
+
+  useEffect(() => {
     function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setSelectedSectionId(null);
+        setMoreOpen(false);
+        return;
+      }
       const mod = e.metaKey || e.ctrlKey;
       if (!mod) return;
       const key = e.key.toLowerCase();
@@ -2054,7 +2560,7 @@ export function VisualPageEditor({
       return;
     }
     setDirty(false);
-    setMessage("Saved.");
+    setMessage("Saved — refresh the live page to see it");
   }
 
   const settings = defaultHomeContent.settings;
@@ -2070,18 +2576,64 @@ export function VisualPageEditor({
     />
   );
 
+  const selectionValue = { selectedSectionId, selectSection };
+
   return (
-    <div className={`ve-root ve-root-site${showTip ? " has-howto" : ""}`}>
+    <SectionSelectionContext.Provider value={selectionValue}>
+    <div
+      className={`ve-root ve-root-site${showTip ? " has-howto" : ""}`}
+      onMouseDown={(e) => {
+        const t = e.target as HTMLElement;
+        if (
+          t.closest(
+            "[data-section-id], .ve-insert-slot, .ve-edit-bar, .ve-howto, .ve-more, .ve-page-menu, .ag-panel, .ag-backdrop, .ve-section-picker, .ve-section-groups",
+          )
+        ) {
+          return;
+        }
+        selectSection(null);
+      }}
+    >
       <div className="ve-edit-bar">
         <div className="ve-edit-bar-left">
           <span className="ve-edit-pill">Admin</span>
           <PageSwitcher currentId={pageId} pages={sitePages} />
         </div>
         <div className="ve-toolbar-actions">
-          {dirty ? <span className="ve-dirty">Not saved yet</span> : null}
+          {dirty ? (
+            <span className="ve-dirty" title="Visitors still see the last saved version">
+              Not saved yet — visitors still see the old page
+            </span>
+          ) : null}
           {message ? <span className="ve-msg">{message}</span> : null}
-          <AdminGuideButton onClick={() => setGuideOpen(true)} />
-          <button className="btn btn-primary ve-bar-btn" type="button" onClick={save} disabled={saving}>
+          <AdminGuideButton onClick={() => openHelp("start")} />
+          <span className="ve-tool-group ve-history-group" role="group" aria-label="History">
+            <button
+              type="button"
+              className="ve-tool-btn"
+              onClick={undo}
+              disabled={!past.length}
+              title="Undo last change"
+            >
+              Undo
+            </button>
+            <button
+              type="button"
+              className="ve-tool-btn"
+              onClick={redo}
+              disabled={!future.length}
+              title="Redo"
+            >
+              Redo
+            </button>
+          </span>
+          <button
+            className={`btn btn-primary ve-bar-btn ve-save-btn${dirty ? " is-dirty" : ""}`}
+            type="button"
+            onClick={save}
+            disabled={saving}
+            title={dirty ? "Publish your edits to the live website" : "Save this page"}
+          >
             {saving ? "Saving…" : "Save changes"}
           </button>
           <div className={`ve-more${moreOpen ? " is-open" : ""}`}>
@@ -2103,7 +2655,7 @@ export function VisualPageEditor({
                 />
                 <div className="ve-more-panel">
                   <button type="button" className="ve-more-item" onClick={undo} disabled={!past.length}>
-                    Undo
+                    Undo last change
                   </button>
                   <button type="button" className="ve-more-item" onClick={redo} disabled={!future.length}>
                     Redo
@@ -2113,13 +2665,26 @@ export function VisualPageEditor({
                     className="ve-more-item"
                     onClick={() => {
                       setMoreOpen(false);
-                      setGuideOpen(true);
+                      openHelp("start");
                     }}
                   >
                     Help
                   </button>
+                  <button
+                    type="button"
+                    className="ve-more-item"
+                    onClick={() => {
+                      setMoreOpen(false);
+                      showQuickTips();
+                    }}
+                  >
+                    Show quick tips
+                  </button>
                   <a className="ve-more-item" href="/admin/nav" onClick={() => setMoreOpen(false)}>
                     Edit website menu
+                  </a>
+                  <a className="ve-more-item" href="/admin/catalogues" onClick={() => setMoreOpen(false)}>
+                    Catalogues & brochures
                   </a>
                   <a
                     className="ve-more-item"
@@ -2141,31 +2706,35 @@ export function VisualPageEditor({
       </div>
 
       {showTip ? (
-        <div className="ve-howto">
-          <p>
-            <strong>How to edit:</strong> click text to change it, use <em>Change photo</em> on pictures,
-            then <strong>Save changes</strong>. Open <em>Help</em> for a full walkthrough of each
-            button and what it does.
-          </p>
+        <div className="ve-howto" role="region" aria-label="Quick start">
+          <div className="ve-howto-main">
+            <strong className="ve-howto-title">Quick start</strong>
+            <p className="ve-howto-one-liner">
+              Click a section to edit it. Change text or photos. Then <strong>Save changes</strong>.
+            </p>
+          </div>
           <div className="ve-howto-actions">
             <button
               type="button"
               className="ve-howto-dismiss"
               onClick={() => {
-                setGuideOpen(true);
-                dismissTip();
+                openHelp("start");
               }}
             >
               Open help
             </button>
-            <button type="button" className="ve-howto-dismiss" onClick={dismissTip}>
+            <button type="button" className="ve-howto-dismiss is-primary" onClick={dismissTip}>
               Got it
             </button>
           </div>
         </div>
       ) : null}
 
-      <AdminGuide open={guideOpen} onClose={() => setGuideOpen(false)} />
+      <AdminGuide
+        open={guideOpen}
+        onClose={() => setGuideOpen(false)}
+        focusChapter={guideFocus}
+      />
 
       {doc.chrome === "about" && doc.about ? (
         <AboutShell
@@ -2178,22 +2747,49 @@ export function VisualPageEditor({
           lead={doc.about.lead}
           navItems={liveNav}
           mapHref={livePathToAdminEdit}
-          heroLabel={<div className="ve-section-label">Page banner — click photo or text to edit</div>}
-          mediaSlot={
-            <>
-              <EImage
-                className="ve-about-hero-bg"
-                value={doc.about.image || ""}
-                onChange={(image) =>
+          heroLabel={
+            <div className="ve-section-label">
+              Page banner — drag the photo to move it
+            </div>
+          }
+          heroTools={
+            <div className="ve-hero-tools ve-about-veil-tools">
+              <VeilStrengthControl
+                value={doc.about.veilStrength}
+                onChange={(veilStrength) =>
                   update({
                     ...doc,
-                    about: { ...doc.about!, image },
+                    about: { ...doc.about!, veilStrength },
                   })
                 }
-                label="Banner background photo"
               />
-              <div className="about-hero-veil" />
-            </>
+            </div>
+          }
+          mediaSlot={
+            <EImage
+              className="ve-about-hero-bg"
+              value={doc.about.image || ""}
+              onChange={(image) =>
+                update({
+                  ...doc,
+                  about: { ...doc.about!, image },
+                })
+              }
+              focus={doc.about.imageFocus}
+              onFocusChange={(imageFocus) =>
+                update({
+                  ...doc,
+                  about: { ...doc.about!, imageFocus },
+                })
+              }
+              label="Banner background photo"
+              underChrome={
+                <div
+                  className="about-hero-veil"
+                  style={{ opacity: veilOpacity(doc.about.veilStrength) }}
+                />
+              }
+            />
           }
           brandSlot={
             <EText
@@ -2266,5 +2862,6 @@ export function VisualPageEditor({
         </>
       )}
     </div>
+    </SectionSelectionContext.Provider>
   );
 }

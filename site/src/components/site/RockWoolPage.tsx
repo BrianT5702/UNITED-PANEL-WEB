@@ -1,11 +1,10 @@
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SITE_NAV } from "@/lib/nav";
+import { LightboxImage } from "@/components/site/LightboxImage";
+import { defaultHomeContent } from "@/lib/defaults";
 
-const settings = {
-  logoUrl: "https://www.ur.com.my/images/logo-2.png",
-  siteName: "United Panel-System",
-};
+const settings = defaultHomeContent.settings;
 
 const footer = {
   companyName: "United Panel-System(M) Sdn Bhd",
@@ -105,10 +104,10 @@ export function RockWoolPage() {
               </div>
             </div>
             <div className="rw-material-media">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <LightboxImage
                 src="/uploads/rockwool/RockWool Material.jpeg"
                 alt="RockWool mineral-wool core material stacked for panel production"
+                caption="RockWool material"
               />
             </div>
           </div>
@@ -199,10 +198,10 @@ export function RockWoolPage() {
                 </div>
               </div>
               <figure className="rw-product-photo">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <LightboxImage
                   src="/uploads/rockwool/RockWool Panels.jpeg"
                   alt="Finished RockWool insulated panel"
+                  caption="RockWool panel"
                 />
               </figure>
             </div>

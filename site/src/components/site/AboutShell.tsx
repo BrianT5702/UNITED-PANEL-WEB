@@ -5,14 +5,15 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SITE_NAV } from "@/lib/nav";
 import { AboutSideNav } from "./AboutSideNav";
+import { LightboxImage } from "./LightboxImage";
+import { imageFocusStyle, veilOpacity, type ImageFocus } from "@/lib/page-document";
+import { defaultHomeContent } from "@/lib/defaults";
+import { RichText } from "@/components/site/RichText";
 
 export { ABOUT_NAV } from "./AboutSideNav";
 export type { AboutNavItem } from "./AboutSideNav";
 
-const settings = {
-  logoUrl: "https://www.ur.com.my/images/logo-2.png",
-  siteName: "United Panel-System",
-};
+const settings = defaultHomeContent.settings;
 
 const footer = {
   companyName: "United Panel-System(M) Sdn Bhd",
@@ -26,6 +27,8 @@ export function AboutShell({
   crumbs,
   activeHref,
   image = "https://www.ur.com.my/userfiles/image/newfactoryoutlok.png",
+  imageFocus,
+  veilStrength,
   eyebrow = "About Us",
   brand,
   lead,
@@ -37,12 +40,15 @@ export function AboutShell({
   titleSlot,
   leadSlot,
   heroLabel,
+  heroTools,
   navItems: navItemsProp,
 }: {
   title: string;
   crumbs: { label: string; href?: string }[];
   activeHref: string;
   image?: string;
+  imageFocus?: ImageFocus;
+  veilStrength?: number;
   eyebrow?: string;
   brand?: string;
   lead?: string;
@@ -56,6 +62,8 @@ export function AboutShell({
   titleSlot?: ReactNode;
   leadSlot?: ReactNode;
   heroLabel?: ReactNode;
+  /** Optional foot tools bar (e.g. veil slider) rendered directly below the banner (edit only) */
+  heroTools?: ReactNode;
   /** Top bar menu (CMS). Falls back to default SITE_NAV. */
   navItems?: NavItem[];
 }) {
@@ -66,7 +74,7 @@ export function AboutShell({
     href: href(item.href),
     children: item.children?.map((child) => ({ ...child, href: href(child.href) })),
   }));
-  const editing = Boolean(mediaSlot || brandSlot || eyebrowSlot || titleSlot || leadSlot);
+  const editing = Boolean(mediaSlot || brandSlot || eyebrowSlot || titleSlot || leadSlot || heroTools);
 
   return (
     <>
@@ -74,12 +82,23 @@ export function AboutShell({
       <main className="about-page">
         <div className={`about-hero${editing ? " ve-about-hero" : ""}`}>
           {heroLabel}
-          <div className="about-hero-media" aria-hidden="true">
+          <div className="about-hero-media">
             {mediaSlot || (
               <>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={image} alt="" />
-                <div className="about-hero-veil" />
+                {image ? (
+                  <LightboxImage
+                    src={image}
+                    alt={title}
+                    caption={title}
+                    hint={false}
+                    style={imageFocusStyle(imageFocus)}
+                  />
+                ) : null}
+                <div
+                  className="about-hero-veil"
+                  aria-hidden="true"
+                  style={{ opacity: veilOpacity(veilStrength) }}
+                />
               </>
             )}
           </div>
@@ -87,7 +106,7 @@ export function AboutShell({
             {brandSlot || (brand ? <p className="hero-brand">{brand}</p> : null)}
             {eyebrowSlot || <p className="eyebrow">{eyebrow}</p>}
             {titleSlot || <h1>{title}</h1>}
-            {leadSlot || (lead ? <p className="about-hero-lead">{lead}</p> : null)}
+            {leadSlot || (lead ? <RichText as="p" className="about-hero-lead" text={lead} /> : null)}
             <nav className="about-crumbs" aria-label="Breadcrumb">
               <Link href={href("/")}>Home</Link>
               <span>/</span>
@@ -101,6 +120,8 @@ export function AboutShell({
             </nav>
           </div>
         </div>
+        {/* Edit-only foot tools sit below the banner so the banner box and photo crop match live */}
+        {heroTools}
 
         <div className="about-layout">
           <AboutSideNav activeHref={activeHref} mapHref={mapHref} />

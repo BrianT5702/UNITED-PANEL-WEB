@@ -5,7 +5,7 @@ import type { NavItem, SiteSettings } from "@/lib/types";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
 
 const STAFF_CLICKS = 5;
-const STAFF_CLICK_WINDOW_MS = 900;
+const STAFF_CLICK_WINDOW_MS = 1200;
 
 export function SiteHeader({
   settings,
@@ -17,6 +17,10 @@ export function SiteHeader({
   brandHref?: string;
 }) {
   const [scrolled, setScrolled] = useState(false);
+  /** Page scrolled at all → header gets a shadow (and a slightly smaller logo on live pages) */
+  const [raised, setRaised] = useState(false);
+  /** Current path, for the active-link underline (set after mount to avoid hydration drift) */
+  const [currentPath, setCurrentPath] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
   const staffClicks = useRef(0);
@@ -27,6 +31,7 @@ export function SiteHeader({
       const overlayHero = document.querySelector("main .hero, main .about-hero");
       // Pages without a photo banner keep a solid header (same as scrolled home)
       setScrolled(!overlayHero || window.scrollY > 12);
+      setRaised(window.scrollY > 8);
     };
     sync();
     window.addEventListener("scroll", sync, { passive: true });
@@ -48,6 +53,16 @@ export function SiteHeader({
       if (staffTimer.current) clearTimeout(staffTimer.current);
     };
   }, []);
+
+  useEffect(() => {
+    setCurrentPath(window.location.pathname.replace(/\/+$/, "") || "/");
+  }, []);
+
+  const isCurrent = (href: string) => {
+    if (!currentPath || !href.startsWith("/")) return false;
+    const clean = href.replace(/[?#].*$/, "").replace(/\/+$/, "") || "/";
+    return clean === currentPath || (clean !== "/" && currentPath.startsWith(`${clean}/`));
+  };
 
   const closeMenu = () => {
     setOpen(false);
@@ -76,7 +91,9 @@ export function SiteHeader({
   }
 
   return (
-    <header className={`site-header${scrolled ? " is-scrolled" : ""}${open ? " is-nav-open" : ""}`}>
+    <header
+      className={`site-header${scrolled ? " is-scrolled" : ""}${raised ? " is-raised" : ""}${open ? " is-nav-open" : ""}`}
+    >
       {open ? (
         <button type="button" className="nav-backdrop" aria-label="Close menu" onClick={closeMenu} />
       ) : null}
@@ -85,10 +102,16 @@ export function SiteHeader({
         href={brandHref}
         aria-label={`${settings.siteName} home`}
         onClick={onBrandClick}
-        title={settings.siteName}
+        title={settings.brandTagline ? `${settings.siteName} — ${settings.brandTagline}` : settings.siteName}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="brand-logo" src={settings.logoUrl} alt={settings.siteName} />
+        <img className="brand-logo" src={settings.logoUrl} alt="" />
+        <span className="brand-copy">
+          <span className="brand-title">{settings.siteName}</span>
+          {settings.brandTagline ? (
+            <span className="brand-tagline">{settings.brandTagline}</span>
+          ) : null}
+        </span>
       </a>
       <div className="header-tools">
         <nav className={`nav${open ? " is-open" : ""}`} aria-label="Primary">
@@ -101,6 +124,7 @@ export function SiteHeader({
                 <a
                   key={`${item.label}-${item.href}`}
                   href={item.href}
+                  aria-current={isCurrent(item.href) ? "page" : undefined}
                   onClick={closeMenu}
                 >
                   {item.label}
@@ -114,7 +138,16 @@ export function SiteHeader({
                 key={`${item.label}-${item.href}`}
               >
                 <div className="nav-item-row">
-                  <a href={item.href} className="nav-link" onClick={closeMenu}>
+                  <a
+                    href={item.href}
+                    className="nav-link"
+                    aria-current={
+                      isCurrent(item.href) || item.children!.some((child) => isCurrent(child.href))
+                        ? "page"
+                        : undefined
+                    }
+                    onClick={closeMenu}
+                  >
                     {item.label}
                   </a>
                   <button
@@ -135,6 +168,7 @@ export function SiteHeader({
                       key={`${child.label}-${child.href}`}
                       href={child.href}
                       role="menuitem"
+                      aria-current={isCurrent(child.href) ? "page" : undefined}
                       onClick={closeMenu}
                     >
                       {child.label}

@@ -5,6 +5,19 @@ import { panelProductToDocument } from "./panel-to-document";
 import type { PageDocument, PageSection } from "./page-document";
 import { newId } from "./page-document";
 import { SITE_PAGES } from "./pages";
+import {
+  applicationsDocument as phase2ApplicationsDocument,
+  careerDocument as phase2CareerDocument,
+  insulatedDoorsDocument as phase2InsulatedDoorsDocument,
+  newsDocument as phase2NewsDocument,
+  partnersDocument as phase2PartnersDocument,
+  partsDocument as phase2PartsDocument,
+  productsHubExtraSections,
+  refrigerationSystemsDocument as phase2RefrigerationSystemsDocument,
+  roofPanelsDocument as phase2RoofPanelsDocument,
+  servicesDocument as phase2ServicesDocument,
+  virtualTourDocument as phase2VirtualTourDocument,
+} from "./phase2-documents";
 
 function aboutDoc(
   title: string,
@@ -132,6 +145,7 @@ function productsHubDocument(): PageDocument {
           },
         }),
       ),
+      ...productsHubExtraSections(),
     ],
   };
 }
@@ -876,83 +890,11 @@ const aboutDefaults: Record<string, PageDocument> = {
 };
 
 function partsDocument(): PageDocument {
-  const parts = defaultHomeContent.parts;
-  return {
-    title: "Refrigeration Parts",
-    chrome: "default",
-    sections: [
-      {
-        id: "parts-hero",
-        type: "richText",
-        data: { eyebrow: parts.eyebrow, title: parts.title, body: parts.lead },
-      },
-      {
-        id: "parts-cards",
-        type: "cardGrid",
-        columns: 2,
-        data: {
-          items: parts.items.map((item) => ({
-            id: item.id,
-            title: item.title,
-            text: item.text,
-            image: item.image,
-            href: item.href,
-          })),
-        },
-      },
-      {
-        id: "parts-cta",
-        type: "contactCta",
-        data: {
-          eyebrow: "Enquire",
-          title: "Need refrigeration parts?",
-          body: "Contact our team about authorised brands and components.",
-          ctaLabel: "Enquire about parts →",
-          ctaHref: "/contact",
-        },
-      },
-    ],
-  };
+  return phase2PartsDocument();
 }
 
 function servicesDocument(): PageDocument {
-  const services = defaultHomeContent.services;
-  return {
-    title: "Services",
-    chrome: "default",
-    sections: [
-      {
-        id: "svc-hero",
-        type: "richText",
-        data: { eyebrow: services.eyebrow, title: services.title, body: services.lead },
-      },
-      {
-        id: "svc-cards",
-        type: "cardGrid",
-        columns: 2,
-        data: {
-          items: services.items.map((item) => ({
-            id: item.id,
-            title: item.title,
-            text: item.text,
-            image: item.image,
-            href: item.href,
-          })),
-        },
-      },
-      {
-        id: "svc-cta",
-        type: "contactCta",
-        data: {
-          eyebrow: "Enquire",
-          title: "Need advisory support?",
-          body: "Contact our team about cold storage planning and project delivery.",
-          ctaLabel: "Enquire about services →",
-          ctaHref: "/contact",
-        },
-      },
-    ],
-  };
+  return phase2ServicesDocument();
 }
 
 function contactDocument(): PageDocument {
@@ -984,15 +926,116 @@ function contactDocument(): PageDocument {
   };
 }
 
+function productStubDocument(opts: {
+  title: string;
+  brand: string;
+  headline: string;
+  lead: string;
+  introTitle: string;
+  introBody: string;
+}): PageDocument {
+  return {
+    title: opts.title,
+    chrome: "default",
+    sections: [
+      {
+        id: newId("hero"),
+        type: "hero",
+        data: {
+          brand: opts.brand,
+          headline: opts.headline,
+          lead: opts.lead,
+          backgroundImage: "/uploads/About/FactoryLook.png",
+          size: "short",
+          buttons: [],
+        },
+      },
+      {
+        id: newId("richText"),
+        type: "richText",
+        data: {
+          eyebrow: "Overview",
+          title: opts.introTitle,
+          body: opts.introBody,
+        },
+      },
+      {
+        id: newId("contactCta"),
+        type: "contactCta",
+        data: {
+          eyebrow: "Enquire",
+          title: `Enquire about ${opts.title}`,
+          body: "Contact our team for specifications, availability, and project support.",
+          ctaLabel: "Contact us →",
+          ctaHref: "/contact",
+        },
+      },
+    ],
+  };
+}
+
+function roofPanelsDocument(): PageDocument {
+  return phase2RoofPanelsDocument();
+}
+
+function psPanelsDocument(): PageDocument {
+  return productStubDocument({
+    title: "PS Panels",
+    brand: "United Panel · PS",
+    headline: "Polystyrene insulation panels",
+    lead: "Expanded polystyrene (PS) core panels for cost-effective cold storage and partition insulation.",
+    introTitle: "Polystyrene insulation panels",
+    introBody:
+      "PS panels combine metal facings with a polystyrene insulation core — a practical option for cold rooms, partitions, and light industrial envelopes where budget and thermal performance need to balance.\n\nDiscuss core density, facing finishes, and thickness options with our sales team for your application.",
+  });
+}
+
+function applicationsDocument(): PageDocument {
+  return phase2ApplicationsDocument();
+}
+
+function refrigerationSystemsDocument(): PageDocument {
+  return phase2RefrigerationSystemsDocument();
+}
+
+function insulatedDoorsDocument(): PageDocument {
+  return phase2InsulatedDoorsDocument();
+}
+
+function newsDocument(): PageDocument {
+  return phase2NewsDocument();
+}
+
+function partnersDocument(): PageDocument {
+  return phase2PartnersDocument();
+}
+
+function careerDocument(): PageDocument {
+  return phase2CareerDocument();
+}
+
+function virtualTourDocument(): PageDocument {
+  return phase2VirtualTourDocument();
+}
+
 /** Default page documents keyed by page id */
 export const defaultPageDocuments: Record<string, PageDocument> = {
   home: homeDocument(),
   products: productsHubDocument(),
   "products/pir": panelProductToDocument(defaultPirContent),
   "products/pu": panelProductToDocument(defaultPuContent),
+  "products/roof": roofPanelsDocument(),
+  "products/ps": psPanelsDocument(),
+  "products/applications": applicationsDocument(),
+  "products/refrigeration-systems": refrigerationSystemsDocument(),
+  "products/insulated-doors": insulatedDoorsDocument(),
   "products/rockwool": rockwoolDocument(),
   parts: partsDocument(),
+  partners: partnersDocument(),
   services: servicesDocument(),
+  news: newsDocument(),
+  career: careerDocument(),
+  "virtual-tour": virtualTourDocument(),
   contact: contactDocument(),
   ...aboutDefaults,
 };

@@ -89,6 +89,13 @@ export function SectionEditor({
             value={(data as HomeContent["settings"]).siteName}
             onChange={(siteName) => setData({ ...(data as HomeContent["settings"]), siteName })}
           />
+          <Field
+            label="Header tagline"
+            value={(data as HomeContent["settings"]).brandTagline ?? ""}
+            onChange={(brandTagline) =>
+              setData({ ...(data as HomeContent["settings"]), brandTagline: brandTagline || undefined })
+            }
+          />
           <ImageField
             label="Logo image"
             value={(data as HomeContent["settings"]).logoUrl}

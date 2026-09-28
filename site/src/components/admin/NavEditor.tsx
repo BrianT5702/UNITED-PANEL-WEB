@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import type { NavItem } from "@/lib/types";
 import {
@@ -130,10 +131,13 @@ export function NavEditor({
       <div className="ve-edit-bar">
         <div className="ve-edit-bar-left">
           <span className="ve-edit-pill">Admin</span>
-          <strong>Top navigation</strong>
-          <a className="ve-tool-btn" href="/admin/edit">
-            ← Back to pages
-          </a>
+          <strong className="ve-edit-bar-title">Top navigation</strong>
+          <Link className="ve-tool-btn ve-bar-link" href="/admin/edit">
+            ← Back to site editor
+          </Link>
+          <Link className="ve-tool-btn ve-bar-link" href="/admin/catalogues">
+            Catalogues
+          </Link>
         </div>
         <div className="ve-toolbar-actions">
           {message ? <span className="ve-msg">{message}</span> : null}

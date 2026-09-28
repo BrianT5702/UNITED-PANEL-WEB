@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { DM_Sans, Syne } from "next/font/google";
 import { THEME_BOOT_SCRIPT } from "@/lib/theme";
+import { MOTION_BOOT_SCRIPT } from "@/lib/motion";
+import { SiteMotion } from "@/components/site/SiteMotion";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -39,12 +41,14 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: MOTION_BOOT_SCRIPT }} />
       </head>
       <body
         className={`${dmSans.variable} ${syne.variable}`}
         suppressHydrationWarning
       >
         {children}
+        <SiteMotion />
       </body>
     </html>
   );

@@ -44,6 +44,8 @@ export function PageRenderer({
           crumbs={document.about.crumbs}
           activeHref={document.about.activeHref}
           image={document.about.image}
+          imageFocus={document.about.imageFocus}
+          veilStrength={document.about.veilStrength}
           eyebrow={document.about.eyebrow || "About Us"}
           brand={document.about.brand}
           lead={document.about.lead}
