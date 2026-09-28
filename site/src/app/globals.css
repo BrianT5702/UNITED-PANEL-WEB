@@ -535,6 +535,7 @@ html[data-theme="light"] .hero-content .btn-ghost:hover {
   font-size: 0.92rem;
   line-height: 1;
   color: var(--muted);
+  white-space: nowrap;
   transition: color 0.2s ease;
 }
 
@@ -1191,7 +1192,7 @@ main > .page-hero:first-child {
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transition: opacity 0.8s var(--ease);
+  transition: opacity 0.5s ease;
   filter: brightness(0.92) saturate(0.95);
 }
 
@@ -4828,6 +4829,7 @@ a.about-hub-body {
     padding: 0.85rem 0.5rem;
     font-size: 0.92rem;
     color: var(--muted);
+    white-space: normal;
   }
 
   .nav-item-row {
@@ -4904,7 +4906,6 @@ a.about-hub-body {
     align-self: center;
   }
 
-
 @media (max-width: 1100px) {
   .proof.proof-cols-4 {
     grid-template-columns: repeat(2, 1fr);
@@ -4932,6 +4933,46 @@ a.about-hub-body {
 
   .product-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Phone "desktop site": full menu, but every label stays on one line */
+@media (min-width: 901px) and (max-width: 1100px) {
+  .site-header {
+    gap: 0.45rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+  }
+
+  .brand {
+    flex: 0 0 auto;
+    max-width: none;
+  }
+
+  .brand-copy {
+    display: none;
+  }
+
+  .brand-logo {
+    height: 34px;
+  }
+
+  .header-tools {
+    gap: 0.35rem;
+  }
+
+  .nav {
+    gap: 0.45rem;
+  }
+
+  .nav > a,
+  .nav-item {
+    flex-shrink: 0;
+  }
+
+  .nav > a,
+  .nav-link {
+    font-size: 0.74rem;
   }
 }
 
@@ -9270,7 +9311,7 @@ h3.rich-text {
   height: max(70vh, calc(100vh - var(--header-h) - 3rem));
 }
 
-.cat-view-pdf.is-cover {
+.cat-view-pdf.is-pages {
   height: auto;
 }
 
@@ -9385,6 +9426,74 @@ h3.rich-text {
   height: 100vh;
   border: 0;
   border-radius: 0;
+}
+
+/* Phone reader: pages drawn in the page, so opening the file does not download it */
+.cat-pdf-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: color-mix(in srgb, var(--bg-soft) 70%, #808080 8%);
+}
+
+.cat-pdf-pages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.65rem;
+}
+
+.cat-pdf-page {
+  position: relative;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 10px 28px -16px rgba(0, 0, 0, 0.55);
+}
+
+.cat-pdf-page canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cat-pdf-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 2.5rem 1.25rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.cat-pdf-status .cat-view-spinner {
+  border-color: color-mix(in srgb, var(--muted) 35%, transparent);
+  border-top-color: var(--text);
+}
+
+.cat-view-zoom {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.cat-view-bar-pages {
+  margin-left: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Phones download a PDF opened in a new tab; the page itself is the reader */
+@media (max-width: 720px), (hover: none) and (pointer: coarse) {
+  .cat-view-open-tab {
+    display: none;
+  }
 }
 
 /* Mobile / no built-in PDF viewer: tappable first-page cover */
@@ -11691,9 +11800,9 @@ html.fx .pb-gallery .about-figure {
     border-color: color-mix(in srgb, var(--accent) 30%, var(--line));
   }
 
-  /* Product page photos: gentle zoom */
+  /* Product page photos: gentle zoom. Slideshow frames keep their crossfade. */
   html.fx .capability-visual:not(.pb-gallery-slideshow) img {
-    transition: scale 1s var(--fx-ease);
+    transition: opacity 0.5s ease, scale 1s var(--fx-ease);
   }
 
   html.fx .capability-visual:not(.pb-gallery-slideshow):hover img {
@@ -11783,6 +11892,11 @@ html.fx .logo-slides-dots button.is-active {
   html.fx .capability-visual:hover img,
   html.fx .logo-slides-slide:not(.is-active) img {
     scale: none;
+  }
+
+  .overview-slideshow img,
+  .logo-slides-track {
+    transition: none;
   }
 
   html.fx .btn-primary::after {

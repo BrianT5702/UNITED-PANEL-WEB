@@ -9,7 +9,7 @@ type PdfJs = typeof import("pdfjs-dist");
 
 let pdfjsPromise: Promise<PdfJs> | null = null;
 
-function loadPdfJs(): Promise<PdfJs> {
+export function loadPdfJs(): Promise<PdfJs> {
   if (!pdfjsPromise) {
     pdfjsPromise = import("pdfjs-dist").then((pdfjs) => {
       // Served by our own route (src/app/pdfjs/…) with a JavaScript MIME type;
@@ -22,6 +22,12 @@ function loadPdfJs(): Promise<PdfJs> {
     });
   }
   return pdfjsPromise;
+}
+
+/** Open a PDF in the browser (same worker setup as thumbnails). */
+export async function openPdf(url: string) {
+  const pdfjs = await loadPdfJs();
+  return pdfjs.getDocument({ url }).promise;
 }
 
 export async function renderPdfFirstPageJpeg(

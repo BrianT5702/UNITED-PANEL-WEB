@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LightboxImage } from "./LightboxImage";
+import { CataloguePdfPages } from "./CataloguePdfPages";
 
 type Props = {
   title: string;
@@ -12,10 +13,13 @@ type Props = {
   thumbUrl: string | null;
 };
 
-type Mode = "pending" | "embed" | "cover";
+type Mode = "pending" | "embed" | "pages";
 
-/** Phones/tablets and browsers without a built-in PDF viewer get a cover instead of an iframe */
-function prefersCover(): boolean {
+/**
+ * Phones and browsers without a built-in PDF viewer draw the file in the page.
+ * Linking straight to the PDF makes those browsers download it.
+ */
+function prefersInlinePages(): boolean {
   if (typeof window === "undefined") return true;
   const narrow = window.matchMedia("(max-width: 720px)").matches;
   const ua = navigator.userAgent;
@@ -39,7 +43,6 @@ function Icon({ d }: { d: string }) {
 const ICON_EXTERNAL = "M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5";
 const ICON_FULL = "M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5";
 const ICON_EXIT_FULL = "M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5";
-const ICON_DOWNLOAD = "M12 4v11M7 10l5 5 5-5M5 20h14";
 
 export function CatalogueViewer({ title, fileUrl, fileName, isPdf, thumbUrl }: Props) {
   const frameRef = useRef<HTMLDivElement>(null);
@@ -48,12 +51,15 @@ export function CatalogueViewer({ title, fileUrl, fileName, isPdf, thumbUrl }: P
   const [thumbOk, setThumbOk] = useState(Boolean(thumbUrl));
   const [canFullscreen, setCanFullscreen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [pageCount, setPageCount] = useState(0);
+  const [zoom, setZoom] = useState(1);
+  const onPageCount = useCallback((count: number) => setPageCount(count), []);
 
   // Decide after mount (needs the browser) and follow window resizes
   useEffect(() => {
     if (!isPdf) return;
     const mq = window.matchMedia("(max-width: 720px)");
-    const update = () => setMode(prefersCover() ? "cover" : "embed");
+    const update = () => setMode(prefersInlinePages() ? "pages" : "embed");
     update();
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
@@ -90,33 +96,6 @@ export function CatalogueViewer({ title, fileUrl, fileName, isPdf, thumbUrl }: P
   }
 
   const pdfSrc = `${fileUrl}#view=FitH&toolbar=1&navpanes=0`;
-  const cover = (
-    <div className="cat-view-cover">
-      <a className="cat-view-cover-link" href={fileUrl} target="_blank" rel="noreferrer">
-        {thumbUrl && thumbOk ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={thumbUrl}
-            alt={`First page of ${title}`}
-            onError={() => setThumbOk(false)}
-          />
-        ) : (
-          <span className="cat-view-cover-fallback" aria-hidden>
-            PDF
-          </span>
-        )}
-        <span className="cat-view-cover-tap">Tap to open</span>
-      </a>
-      <div className="cat-view-cover-actions">
-        <a className="btn btn-primary" href={fileUrl} target="_blank" rel="noreferrer">
-          Open PDF
-        </a>
-        <a className="btn btn-ghost" href={fileUrl} download={fileName}>
-          <Icon d={ICON_DOWNLOAD} /> Download
-        </a>
-      </div>
-    </div>
-  );
 
   return (
     <div
@@ -128,21 +107,50 @@ export function CatalogueViewer({ title, fileUrl, fileName, isPdf, thumbUrl }: P
           {fileName}
         </span>
         <div className="cat-view-bar-actions">
+          {mode === "pages" ? (
+            <div className="cat-view-zoom" role="group" aria-label="Zoom">
+              <button
+                type="button"
+                className="cat-view-bar-btn"
+                onClick={() => setZoom((z) => Math.max(1, Math.round((z - 0.25) * 100) / 100))}
+                disabled={zoom <= 1}
+                aria-label="Zoom out"
+              >
+                −
+              </button>
+              <button
+                type="button"
+                className="cat-view-bar-btn"
+                onClick={() => setZoom((z) => Math.min(2.5, Math.round((z + 0.25) * 100) / 100))}
+                disabled={zoom >= 2.5}
+                aria-label="Zoom in"
+              >
+                +
+              </button>
+              {pageCount > 0 ? (
+                <span className="cat-view-bar-pages">
+                  {pageCount} {pageCount === 1 ? "page" : "pages"}
+                </span>
+              ) : null}
+            </div>
+          ) : null}
           {mode === "embed" && canFullscreen ? (
             <button type="button" className="cat-view-bar-btn" onClick={() => void toggleFullscreen()}>
               <Icon d={isFullscreen ? ICON_EXIT_FULL : ICON_FULL} />
               {isFullscreen ? "Exit full screen" : "Full screen"}
             </button>
           ) : null}
-          <a className="cat-view-bar-btn" href={fileUrl} target="_blank" rel="noreferrer">
-            <Icon d={ICON_EXTERNAL} />
-            Open in new tab
-          </a>
+          {mode === "embed" ? (
+            <a className="cat-view-bar-btn" href={fileUrl} target="_blank" rel="noreferrer">
+              <Icon d={ICON_EXTERNAL} />
+              Open in new tab
+            </a>
+          ) : null}
         </div>
       </div>
 
-      {mode === "cover" ? (
-        cover
+      {mode === "pages" ? (
+        <CataloguePdfPages fileUrl={fileUrl} title={title} zoom={zoom} onPageCount={onPageCount} />
       ) : (
         // "pending" (server render / before hydration): placeholder only, never an empty iframe
         <div className="cat-view-stage">

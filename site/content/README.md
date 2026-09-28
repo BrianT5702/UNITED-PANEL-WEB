@@ -14,14 +14,16 @@ Or run manually:
 npm run content:export
 ```
 
-## Server (pull → update)
+## Server (deploy.sh)
 
-On app start, `ensureSeeded` imports this snapshot into the server database.
+Run `./deploy.sh` from `site/`. It pulls code, then merges CMS content:
 
-You can also run:
+- Sections editors changed on the server stay.
+- Sections that changed only in git are updated.
+- If both sides changed the same section, the server edit is kept and the conflict is printed.
 
-```bash
-npm run content:import
-```
+On app start, `ensureSeeded` imports `cms-snapshot.json` into the server database. After `deploy.sh`, that file is already the merge, so a restart does not put the raw GitHub copy back over live pages.
+
+Do not `git checkout` or `git reset --hard` this file on the server. That deletes the live copy `deploy.sh` merges.
 
 **Note:** New photos must be committed under `public/uploads/` as well — the snapshot only stores CMS text/structure, not binary uploads.

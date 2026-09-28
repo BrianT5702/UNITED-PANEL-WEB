@@ -85,7 +85,7 @@ export default async function CatalogueRedirectLanding({ params }: Props) {
                 Download
               </a>
               <CatalogueShareButton id={item.id} title={item.title} permanentUrl={permanentUrl} />
-              <a className="btn btn-ghost" href={item.fileUrl} target="_blank" rel="noreferrer">
+              <a className="btn btn-ghost cat-view-open-tab" href={item.fileUrl} target="_blank" rel="noreferrer">
                 Open in new tab
               </a>
             </div>

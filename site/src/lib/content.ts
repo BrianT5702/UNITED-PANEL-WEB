@@ -505,7 +505,8 @@ export async function ensureSeeded() {
     });
   }
 
-  // Deploy sync: load committed CMS snapshot from git (localhost edits you pushed).
+  // Load content/cms-snapshot.json. deploy.sh merges server edits into that file
+  // before restart, so this import does not replace live pages with a raw git pull.
   await importCmsSnapshot();
 
   // Then fill any default blocks still missing from code defaults.

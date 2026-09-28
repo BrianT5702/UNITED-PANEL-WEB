@@ -65,7 +65,7 @@ Page text and layout live in the database locally. To ship localhost admin edits
 
 1. Save in admin (updates `content/cms-snapshot.json` automatically), or run `npm run content:export`.
 2. Commit `content/cms-snapshot.json` and any new `public/uploads/` files.
-3. Push, pull on the server, and restart (or run `npm run content:import`).
+3. Push, then on the server run `./deploy.sh` from `site/`.
 
-The server loads the snapshot on startup so deployed content matches what you edited locally.
+`deploy.sh` merges the snapshot with edits made on the live site. Server edits stay. Sections that changed only in git are updated. If the same section changed in both places, the server edit is kept.
 

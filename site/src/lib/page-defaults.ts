@@ -246,7 +246,7 @@ function rockwoolDocument(): PageDocument {
             "Local manufacturing capability you can visit and verify",
             "High-level process control for consistent panel output",
             "Cold room expertise backed by United Panel’s panel heritage",
-            "Technical details available on request — not published in full",
+            "Standard range published — thickness, joint, skins and finishes",
           ],
         },
         buttons: [
@@ -288,7 +288,7 @@ function rockwoolDocument(): PageDocument {
             "Project-matched options — thickness, facing finish, and joint details confirmed with our team",
           ],
         },
-        note: "Full technical specifications and thickness ranges are available on enquiry — published figures will be added once approved.",
+        note: "Standard thickness, joint, skin and finish options are listed under Product range & data.",
       },
       {
         id: "rw-specs",
@@ -296,20 +296,26 @@ function rockwoolDocument(): PageDocument {
         data: {
           eyebrow: "Product range & data",
           title: "Specifications (RockWool)",
-          lead: "Directional product data for planning. Exact thickness, facing, joint and performance figures are confirmed per project once approved for publication.",
+          lead: "UR® Rock-Panel range. Panels are manufactured in-house and delivered to project sites for installation.",
           rows: [
-            { label: "Panel type", value: "Insulated sandwich panel (metal / RockWool / metal)" },
-            { label: "Core", value: "RockWool mineral wool (stone fibre)" },
-            { label: "Facing", value: "Metal skins — finish options confirmed per project" },
-            { label: "Thickness range", value: "Available on enquiry (project-matched)" },
-            { label: "Joint system", value: "Confirmed with our team for your use case" },
-            { label: "Primary strengths", value: "Fire-conscious performance · thermal stability · dimensional integrity" },
-            { label: "Typical uses", value: "Cold rooms, freezers, food facilities, data centres, industrial envelopes" },
-            { label: "Production", value: "Malaysia’s first fully automated RockWool production line" },
-            { label: "Certificates", value: "Pending — fire / quality / standards documents to be listed when issued" },
+            { label: "Brand", value: "UR®" },
+            { label: "Model", value: "UR® Rock-Panel (TBC)" },
+            {
+              label: "Dimension",
+              value: "1000 mm × any desired length (subject to panel thickness)",
+            },
+            {
+              label: "Thickness",
+              value: "50 mm, 75 mm, 80 mm, 100 mm, 125 mm, 150 mm, 180 mm, 200 mm, 250 mm",
+            },
+            {
+              label: "Joint",
+              value: "Clip-Joint System (Male & Female) / Secret-Joint System",
+            },
+            { label: "Skins — PPGI", value: "0.5 mm, 0.6 mm, 0.7 mm" },
+            { label: "Surface finishes", value: "Ribbed / Flat" },
           ],
         },
-        note: "Stakeholder preview — final claims, thicknesses, and certificates subject to management approval.",
         buttons: [
           {
             id: "rw-specs-btn",
