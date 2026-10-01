@@ -12965,3 +12965,24 @@ button.an2-loc-row:focus-visible { outline: 2px solid var(--an2-red); outline-of
 .an2-settings-text { color: var(--an2-muted); font-size: 0.84rem !important; line-height: 1.5; }
 .an2-settings-state { font-size: 0.82rem !important; font-weight: 650; }
 .an2-switch:disabled { opacity: 0.6; cursor: progress; }
+
+/* ── v6: state-first tree, metro areas, mobile-network rows ── */
+.an2-loc-side { display: grid; gap: 1rem; align-content: start; min-width: 0; }
+.an2-loc-row.is-l2 { padding-left: 3.4rem; }
+.an2-loc-row.is-l3 { font-weight: 400; padding-left: 5rem; font-size: 0.8rem; color: var(--an2-muted); }
+.an2-loc-sub .an2-loc-row.is-l2 { padding-left: 2.4rem; font-weight: 500; color: var(--an2-text); }
+.an2-loc-sub .an2-loc-row.is-l3 { padding-left: 3.9rem; }
+.an2-loc-sub .an2-loc-row.is-l2.is-soft { color: var(--an2-muted); }
+.an2-loc-sub.is-net { border-left-style: dashed; }
+.an2-loc-sub.is-net .an2-loc-row.is-l1 { color: var(--an2-muted); }
+.an2-loc-sub.is-net .an2-loc-row.is-l1 .an2-loc-label { font-style: normal; }
+.an2-loc-sub.is-net .an2-loc-row.is-l2 { padding-left: 2.4rem; font-weight: 450; color: var(--an2-muted); }
+.an2-loc-ic { flex: none; color: var(--an2-muted); }
+.an2-loc-tag { flex: none; font-size: 0.66rem; letter-spacing: 0.03em; text-transform: uppercase; font-weight: 650; color: var(--an2-muted); background: var(--an2-card-2); border: 1px solid var(--an2-line); border-radius: 99px; padding: 0.05rem 0.45rem; white-space: nowrap; }
+@media (max-width: 720px) {
+  .an2-loc-row.is-l3 { padding-left: 2.6rem; }
+  .an2-loc-sub .an2-loc-row.is-l2 { padding-left: 1.5rem; }
+  .an2-loc-sub .an2-loc-row.is-l3 { padding-left: 2.4rem; }
+  .an2-loc-sub.is-net .an2-loc-row.is-l2 { padding-left: 1.5rem; }
+  .an2-loc-tag { display: none; }
+}

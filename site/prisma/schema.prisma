@@ -48,6 +48,7 @@ model AnalyticsSession {
   country      String   @default("Unknown") // from a host header or an offline lookup, never the IP itself
   region       String? // state / province (approximate, from the offline lookup)
   city         String? // city (approximate, from the offline lookup)
+  network      String? // "mobile", "mobile:<carrier>" or "hosting" when the visit came from a mobile carrier / VPN / data centre (then region and city are left empty); never the IP
   device       String   @default("desktop") // desktop | mobile | tablet
   browser      String   @default("Other")
   os           String   @default("Other")

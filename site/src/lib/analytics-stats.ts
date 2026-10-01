@@ -3,6 +3,7 @@ import { SITE_PAGES } from "./pages";
 import { getAllSitePages } from "./content";
 import { getSiteLinkKinds } from "./analytics-site-links";
 import { geoStatus } from "./geoip";
+import { areaOfCity } from "./metro-areas";
 import {
   EVENT_LABELS,
   fmtDuration,
@@ -12,7 +13,9 @@ import {
   type Bucket,
   type ClickRow,
   type CountRow,
+  type AreaNode,
   type CountryNode,
+  type NetworkNode,
   type PlaceStat,
   type DashboardData,
   type DownloadRow,
@@ -44,6 +47,7 @@ type SessionRow = {
   country: string;
   region: string | null;
   city: string | null;
+  network: string | null;
   entryPath: string;
   pageviews: number;
   isNewVisitor: boolean;
@@ -59,6 +63,7 @@ const sessionSelect = {
   country: true,
   region: true,
   city: true,
+  network: true,
   entryPath: true,
   pageviews: true,
   isNewVisitor: true,
@@ -165,7 +170,13 @@ function countryName(code: string) {
     return code;
   }
 }
-/** Country > state/region > city, with visits, visitors and average visit time at each level. */
+/**
+ * Country > state/region > metro area or city, with visits, visitors and average visit time at each level.
+ * The state is the reliable level. Cities are secondary: nearby cities are grouped into a metro area ("Greater Johor
+ * Bahru") and the specific cities sit underneath it as approximate. Visits from a mobile carrier or a VPN / data
+ * centre (session.network) count in the country total, but NOT in any state or city, because the lookup only shows
+ * where the carrier's or data centre's hub is. They get their own row under the country instead.
+ */
 function buildLocationTree(f: Facts): CountryNode[] {
   type Acc = { n: number; v: Set<string>; time: number };
   const mk = (): Acc => ({ n: 0, v: new Set<string>(), time: 0 });
@@ -181,22 +192,42 @@ function buildLocationTree(f: Facts): CountryNode[] {
     share: pct(a.n, f.sessions.length),
     avgTimeSec: Math.round(avg(a.time, a.n)),
   });
-  type RegAcc = Acc & { cities: Map<string, Acc> };
-  type CtyAcc = Acc & { regions: Map<string, RegAcc> };
+  type AreaAcc = Acc & { cluster: boolean; cities: Map<string, Acc> };
+  type RegAcc = Acc & { areas: Map<string, AreaAcc> };
+  type NetAcc = Acc & { carriers: Map<string, Acc> };
+  type CtyAcc = Acc & { regions: Map<string, RegAcc>; nets: Map<"mobile" | "hosting", NetAcc> };
   const countries = new Map<string, CtyAcc>();
   for (const s of f.sessions) {
     const code = s.country || "Unknown";
     let c = countries.get(code);
-    if (!c) countries.set(code, (c = { ...mk(), regions: new Map() }));
+    if (!c) countries.set(code, (c = { ...mk(), regions: new Map(), nets: new Map() }));
     add(c, s);
+    if (s.network) {
+      const kind = s.network === "hosting" ? "hosting" : "mobile";
+      let nk = c.nets.get(kind);
+      if (!nk) c.nets.set(kind, (nk = { ...mk(), carriers: new Map() }));
+      add(nk, s);
+      const brand = kind === "mobile" ? s.network.replace(/^mobile:?/, "") : "";
+      let cr = nk.carriers.get(brand);
+      if (!cr) nk.carriers.set(brand, (cr = mk()));
+      add(cr, s);
+      continue;
+    }
     const rk = s.region || "";
     let r = c.regions.get(rk);
-    if (!r) c.regions.set(rk, (r = { ...mk(), cities: new Map() }));
+    if (!r) c.regions.set(rk, (r = { ...mk(), areas: new Map() }));
     add(r, s);
-    const ck = s.city || "";
-    let ci = r.cities.get(ck);
-    if (!ci) r.cities.set(ck, (ci = mk()));
-    add(ci, s);
+    const city = s.city || "";
+    const area = areaOfCity(s.region, city);
+    const ak = area || city;
+    let ar = r.areas.get(ak);
+    if (!ar) r.areas.set(ak, (ar = { ...mk(), cluster: !!area, cities: new Map() }));
+    add(ar, s);
+    if (area) {
+      let ci = ar.cities.get(city);
+      if (!ci) ar.cities.set(city, (ci = mk()));
+      add(ci, s);
+    }
   }
   const byVisits = <T extends { n: number }>(a: [string, T], b: [string, T]) => b[1].n - a[1].n;
   // "not known" entries always go last in their list
@@ -212,10 +243,51 @@ function buildLocationTree(f: Facts): CountryNode[] {
         .slice(0, 40)
         .map(([rk, r]) => ({
           ...stat(rk || "State not known", r),
-          cities: sortKnownFirst(r.cities)
+          areas: sortKnownFirst(r.areas)
             .slice(0, 40)
-            .map(([ck, ci]) => stat(ck || "City not known", ci)),
+            .map(([ak, ar]): AreaNode => ({
+              ...stat(ak || "City not known", ar),
+              cluster: ar.cluster,
+              cities: [...ar.cities.entries()].sort(byVisits).slice(0, 40).map(([ck, ci]) => stat(ck, ci)),
+            })),
         })),
+      networks: [...c.nets.entries()]
+        .sort(byVisits)
+        .map(([kind, nk]): NetworkNode => ({
+          ...stat(kind === "mobile" ? "Mobile network (location unreliable)" : "VPN or data centre (location unreliable)", nk),
+          kind,
+          carriers: [...nk.carriers.entries()]
+            .sort((a, b) => (a[0] === "" ? 1 : 0) - (b[0] === "" ? 1 : 0) || byVisits(a, b))
+            .slice(0, 20)
+            .map(([brand, cr]) => stat(brand || (kind === "mobile" ? "Other carrier" : "Hosting network"), cr)),
+        })),
+    }));
+}
+
+/** Top states / regions across countries, from reliable visits only (not mobile carriers or VPNs). */
+function buildTopStates(f: Facts): (PlaceStat & { country: string; code: string })[] {
+  type Acc = { n: number; v: Set<string>; time: number; code: string; region: string };
+  const map = new Map<string, Acc>();
+  for (const s of f.sessions) {
+    if (s.network || !s.region) continue;
+    const k = `${s.country}|${s.region}`;
+    const e = map.get(k) || { n: 0, v: new Set<string>(), time: 0, code: s.country, region: s.region };
+    e.n += 1;
+    e.v.add(s.visitorId);
+    e.time += f.sessionSec(s);
+    map.set(k, e);
+  }
+  return [...map.values()]
+    .sort((a, b) => b.n - a.n)
+    .slice(0, 12)
+    .map((e) => ({
+      label: e.region,
+      country: countryName(e.code),
+      code: e.code,
+      sessions: e.n,
+      visitors: e.v.size,
+      share: pct(e.n, f.sessions.length),
+      avgTimeSec: Math.round(avg(e.time, e.n)),
     }));
 }
 
@@ -478,6 +550,12 @@ export async function buildDashboard(
   // ---- audience (countries only) ----
   const countries = groupCounts(f, (s) => s.country || "Unknown", countryName, 15);
   const locations = buildLocationTree(f);
+  const topStates = buildTopStates(f);
+  const networkTotals = {
+    mobile: sessions.filter((x) => x.network && x.network !== "hosting").length,
+    hosting: sessions.filter((x) => x.network === "hosting").length,
+    known: sessions.filter((x) => x.country !== "Local" && x.country !== "Unknown").length,
+  };
 
   // ---- engagement distributions ----
   const sessionDuration = distribution(
@@ -690,6 +768,8 @@ export async function buildDashboard(
     pageCount: viewedPages.length,
     countries,
     locations,
+    topStates,
+    networkTotals,
     sessionDuration,
     scrollDepth,
     newReturning,

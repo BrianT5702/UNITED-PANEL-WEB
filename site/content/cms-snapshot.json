@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exportedAt": "2026-10-01T07:30:31.889Z",
+  "exportedAt": "2026-10-01T07:41:36.491Z",
   "sections": [
     {
       "page": "about",
@@ -4337,16 +4337,6 @@
                   "id": "sv1",
                   "src": "/uploads/services/support.png",
                   "alt": "United Panel support"
-                },
-                {
-                  "id": "sv2",
-                  "src": "/uploads/services/img-support.jpg",
-                  "alt": "Advisory and installation support"
-                },
-                {
-                  "id": "sv3",
-                  "src": "/uploads/services/front-advisory.jpg",
-                  "alt": "Cold storage project support"
                 }
               ],
               "imageAspect": "square"

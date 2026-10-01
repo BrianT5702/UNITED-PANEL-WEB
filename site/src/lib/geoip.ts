@@ -5,8 +5,8 @@ import { brotliDecompressSync } from "node:zlib";
 
 /**
  * Offline location lookup (no npm package, no network call).
- * Data: DB-IP.com "IP to City Lite" and "IP to Country Lite" (CC BY 4.0), pre-built into data/geoip/*.bin
- * by `npm run geoip:update`.
+ * Data: DB-IP.com "IP to City Lite", "IP to Country Lite" and "IP to ASN Lite" (CC BY 4.0), pre-built into
+ * data/geoip/*.bin by `npm run geoip:update`.
  *
  * PRIVACY: an address is only ever used inside `lookupLocation()` / `lookupCountry()` for the moment of the lookup.
  * It is never stored, never logged and never sent anywhere. Only the country code, state/region name and city name
@@ -263,20 +263,103 @@ export function lookupLocation(header: (name: string) => string | null): Locatio
   }
 }
 
-/** For the dashboard: which offline data is present, and which month is it from? (No addresses involved.) */
-export function geoStatus(): { available: boolean; city: boolean; month: string | null } {
+/* ───────────── network type (data/geoip/asn.bin, loaded lazily) ───────────── */
+/**
+ * Which kind of network is the visitor on? Only "mobile" (a mobile carrier) and "hosting" (VPN / data centre) are
+ * recognised; ordinary home and office broadband returns null. For these two kinds the state and city from the city
+ * file only say where the carrier's or data centre's hub is, not where the person is.
+ */
+export type NetworkInfo = { kind: "mobile" | "hosting"; carrier: string | null };
+
+type AsnDb = {
+  kinds: [string, string][]; // [kind, brand label]
+  s4: Float64Array;
+  e4: Float64Array;
+  k4: Uint16Array;
+  s6: Float64Array;
+  e6: Float64Array;
+  k6: Uint16Array;
+};
+let asnDb: AsnDb | null | undefined;
+
+function loadAsn(): AsnDb | null {
   try {
-    if (process.env.ANALYTICS_GEOIP === "0") return { available: false, city: false, month: null };
+    const raw = brotliDecompressSync(readFileSync(path.join(process.cwd(), "data", "geoip", "asn.bin")));
+    if (raw.toString("ascii", 0, 4) !== "ASN1") return null;
+    const n = (i: number) => raw.readUInt32LE(4 + i * 4);
+    const [jl, n4, a4, l4, d4, n6, a6, l6, d6] = [0, 1, 2, 3, 4, 5, 6, 7, 8].map(n);
+    let o = 48;
+    const kinds = JSON.parse(raw.toString("utf8", o, o + jl)) as [string, string][];
+    o += jl;
+    const take = (len: number) => {
+      const b = raw.subarray(o, o + len);
+      o += len;
+      return b;
+    };
+    const s4 = readVarints(take(a4), n4, true);
+    const len4 = readVarints(take(l4), n4, false);
+    const k4 = Uint16Array.from(readVarints(take(d4), n4, false));
+    const s6 = readVarints(take(a6), n6, true);
+    const len6 = readVarints(take(l6), n6, false);
+    const k6 = Uint16Array.from(readVarints(take(d6), n6, false));
+    const e4 = Float64Array.from(len4, (l, i) => s4[i] + l);
+    const e6 = Float64Array.from(len6, (l, i) => s6[i] + l);
+    if (!Array.isArray(kinds) || !n4) return null;
+    return { kinds, s4, e4, k4, s6, e6, k6 };
+  } catch {
+    return null;
+  }
+}
+
+function networkOf(ip: string): NetworkInfo | null {
+  if (asnDb === undefined) asnDb = loadAsn();
+  const db = asnDb;
+  if (!db) return null;
+  let i: number;
+  let kid = -1;
+  if (isIP(ip) === 4) {
+    const key = v4ToInt(ip);
+    i = searchCity(db.s4, key);
+    if (i >= 0 && key <= db.e4[i]) kid = db.k4[i];
+  } else {
+    const w = v6Words(ip);
+    if (!w) return null;
+    const key = w[0] * 4294967296 + w[1] * 65536 + w[2];
+    i = searchCity(db.s6, key);
+    if (i >= 0 && key <= db.e6[i]) kid = db.k6[i];
+  }
+  const k = kid < 0 ? null : db.kinds[kid];
+  if (!k || (k[0] !== "mobile" && k[0] !== "hosting")) return null;
+  return { kind: k[0], carrier: k[1] || null };
+}
+
+/** "mobile" / "hosting" (with the carrier brand when known) for the visitor behind these headers, or null. */
+export function lookupNetwork(header: (name: string) => string | null): NetworkInfo | null {
+  if (process.env.ANALYTICS_GEOIP === "0") return null;
+  try {
+    const a = visitorAddress(header);
+    if (!a || "local" in a) return null;
+    return networkOf(a.ip);
+  } catch {
+    return null;
+  }
+}
+
+/** For the dashboard: which offline data is present, and which month is it from? (No addresses involved.) */
+export function geoStatus(): { available: boolean; city: boolean; asn: boolean; month: string | null } {
+  try {
+    if (process.env.ANALYTICS_GEOIP === "0") return { available: false, city: false, asn: false, month: null };
     if (v4 === undefined) v4 = load("country-v4.bin", "GEO4", false);
     if (cityDb === undefined) cityDb = loadCity();
+    if (asnDb === undefined) asnDb = loadAsn();
     let month: string | null = null;
     try {
       month = (JSON.parse(readFileSync(path.join(process.cwd(), "data", "geoip", "meta.json"), "utf8")) as { month?: string }).month || null;
     } catch {
       /* no meta file */
     }
-    return { available: !!v4 || !!cityDb, city: !!cityDb, month };
+    return { available: !!v4 || !!cityDb, city: !!cityDb, asn: !!asnDb, month };
   } catch {
-    return { available: false, city: false, month: null };
+    return { available: false, city: false, asn: false, month: null };
   }
 }

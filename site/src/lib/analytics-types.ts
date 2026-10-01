@@ -152,9 +152,13 @@ export type PlaceStat = {
   share: number; // % of all visits in the period
   avgTimeSec: number;
 };
-export type CityNode = PlaceStat;
-export type RegionNode = PlaceStat & { cities: CityNode[] };
-export type CountryNode = PlaceStat & { code: string; regions: RegionNode[] };
+/** A city, or a metro area ("Greater Johor Bahru") that groups several nearby cities. */
+export type AreaNode = PlaceStat & { cluster: boolean; cities: PlaceStat[] };
+/** State / region. `areas` are the cities beneath it (secondary, approximate). */
+export type RegionNode = PlaceStat & { areas: AreaNode[] };
+/** Visits from a mobile carrier or a VPN / data centre: the country is kept, the state and city are not reliable. */
+export type NetworkNode = PlaceStat & { kind: "mobile" | "hosting"; carriers: PlaceStat[] };
+export type CountryNode = PlaceStat & { code: string; regions: RegionNode[]; networks: NetworkNode[] };
 
 export type DownloadRow = {
   id: string | null;
@@ -211,8 +215,12 @@ export type DashboardData = {
   topPages: PageRow[];
   pageCount: number; // how many different pages were viewed (topPages may be capped)
   countries: CountRow[];
-  /** Country > state/region > city tree (visits, visitors, average visit time at each level) */
+  /** Country > state/region > metro area / city tree (visits, visitors, average visit time at each level) */
   locations: CountryNode[];
+  /** Top states / regions across all countries (only visits whose location is reliable) */
+  topStates: (PlaceStat & { country: string; code: string })[];
+  /** Visits from mobile carriers / VPN / data centres, whose state and city are not reliable */
+  networkTotals: { mobile: number; hosting: number; known: number };
   sessionDuration: Bucket[];
   scrollDepth: Bucket[];
   newReturning: {
@@ -231,7 +239,7 @@ export type DashboardData = {
   /** Kinds that were left out because the site has no such links and nothing was ever recorded */
   hiddenActions: ActionKind[];
   /** Status of the offline country lookup */
-  geo: { available: boolean; city: boolean; month: string | null };
+  geo: { available: boolean; city: boolean; asn: boolean; month: string | null };
   live: LiveInfo;
 };
 

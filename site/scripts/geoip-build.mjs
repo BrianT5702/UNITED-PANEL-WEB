@@ -5,14 +5,16 @@
  *   npm run geoip:update                      -> downloads the newest free DB-IP files and rebuilds everything
  *   node scripts/geoip-build.mjs --city  f.csv[.gz]   -> rebuild the city file from a CSV you already downloaded
  *   node scripts/geoip-build.mjs --country f.csv[.gz] -> rebuild the country-only file from a CSV you already downloaded
+ *   node scripts/geoip-build.mjs --asn f.csv[.gz]     -> rebuild the network-type file (mobile carriers, VPN / data centres)
  *   node scripts/geoip-build.mjs f.csv.gz             -> same as --country (the old usage)
  *
- * Data: DB-IP.com "IP to City Lite" and "IP to Country Lite", CC BY 4.0
+ * Data: DB-IP.com "IP to City Lite", "IP to Country Lite" and "IP to ASN Lite", CC BY 4.0
  * (attribution: "IP Geolocation by DB-IP", https://db-ip.com).
  *
  * Output (committed to the repo), all in data/geoip/:
  *   country-v4.bin, country-v6.bin   country only (~5 MB) - the fallback when the city file is missing
  *   city.bin                         country + state/region + city (brotli, a few MB)
+ *   asn.bin                          which address ranges belong to a mobile carrier or a VPN / data centre (small)
  *   meta.json                        data month and counts
  *
  * Size control: the city file keeps CITY detail for the countries in CITY_COUNTRIES (Malaysia and its neighbours),
@@ -238,16 +240,109 @@ async function buildCity(file, month) {
   return { cityMonth: month, places: table.length, cityV4Ranges: s4.length, cityV6Ranges: s6.length, cityBytes: packed.length };
 }
 
+/* ───────────── network type file (mobile carriers, VPN / data centres) ───────────── */
+/**
+ * The ASN file only says which organisation owns an address range. We keep the ranges whose owner name looks like
+ *  - a mobile carrier ("mobile" kind; the Malaysian carriers get a short brand label), or
+ *  - a hosting / VPN / data-centre network ("hosting" kind).
+ * For those visits the city and state from the city file only say where the carrier's or data centre's network
+ * hub is, not where the person is, so the dashboard keeps them out of the state and city numbers.
+ * Fixed-line broadband providers (TM / Unifi, TIME, ...) are NOT flagged.
+ */
+const MY_CARRIERS = [
+  [/\bcelcom\b/i, "Celcom"],
+  [/digi telecommunications/i, "Digi"],
+  [/\bmaxis\b/i, "Maxis"],
+  [/\bu mobile\b/i, "U Mobile"],
+  [/\bytl communications\b/i, "Yes (YTL)"],
+  [/\btune ?talk\b/i, "Tune Talk"],
+  [/\bredone\b/i, "redONE"],
+  [/\bxox\b/i, "XOX"],
+  [/\bfriendi\b/i, "Friendi"],
+  [/\bbuzzme\b/i, "Buzzme"],
+  [/\baltel\b/i, "Altel"],
+  [/\bsalamfone\b/i, "Salamfone"],
+  [/\bookyo\b/i, "Ookyo"],
+  [/\bspeakout\b/i, "SpeakOut"],
+];
+/** Other well-known mobile carriers nearby (no brand label is stored for them). */
+const OTHER_CARRIERS = /(\bmobile\b|\bcellular\b|\bmobility\b|telkomsel|telekomunikasi selular|indosat|xl axiata|smartfren|hutchison|advanced info service|truemove|total access communication|\bdtac\b|viettel|vinaphone|mobifone|globe telecom|smart communications|\bm1 limited|singtel|starhub|simba telecom|vodafone|t-mobile|verizon wireless|at&t mobility|ntt docomo|softbank|\bkddi\b|reliance jio|bharti airtel|\bvodacom\b|\bmtn\b)/i;
+const NOT_CARRIER = /(hosting|data ?cent|cloud|server|software|bank|shop|game|universit|media|broadcast|satellite|payment|insurance|retail|electronics|studio|app\b|labs?\b|solutions)/i;
+const HOSTING = /(hosting|data ?cent(re|er)|datacent|\bvps\b|\bservers?\b|colo(cation)?\b|digitalocean|amazon|google (llc|cloud)|microsoft|alibaba|akamai|oracle|linode|vultr|\bovh\b|hetzner|datacamp|\bm247\b|zscaler|\bvpn\b|proxy|leaseweb|contabo|choopa|packethub|cdn77|fastly|cloudflare|\bcloud\b|ipserverone|shinjiru|\baws\b|tencent cloud|huawei cloud)/i;
+
+function classify(org) {
+  for (const [re, label] of MY_CARRIERS) if (re.test(org)) return ["mobile", label];
+  if (OTHER_CARRIERS.test(org) && !NOT_CARRIER.test(org)) return ["mobile", ""];
+  if (HOSTING.test(org)) return ["hosting", ""];
+  return null;
+}
+
+async function buildAsn(file, month) {
+  const kinds = []; // [kind, label]
+  const kindId = new Map();
+  const idOf = (c) => {
+    const k = c.join("|");
+    let id = kindId.get(k);
+    if (id === undefined) { id = kinds.length; kindId.set(k, id); kinds.push(c); }
+    return id;
+  };
+  const v4 = []; // [start, end, id]
+  const v6 = [];
+  const cache = new Map();
+  await eachRow(file, (f) => {
+    const org = f[3] || "";
+    let c = cache.get(org);
+    if (c === undefined) { c = classify(org); cache.set(org, c); }
+    if (!c) return;
+    const kind = isIP(f[0]);
+    const id = idOf(c);
+    if (kind === 4 && isIP(f[1]) === 4) v4.push([v4ToInt(f[0]), v4ToInt(f[1]), id]);
+    else if (kind === 6 && isIP(f[1]) === 6) v6.push([Number(v6ToBig(f[0]) >> 80n), Number(v6ToBig(f[1]) >> 80n), id]);
+  });
+  const prep = (rows) => {
+    rows.sort((a, b) => a[0] - b[0]);
+    const out = [];
+    for (const r of rows) {
+      const last = out[out.length - 1];
+      if (last && last[2] === r[2] && r[0] <= last[1] + 1) last[1] = Math.max(last[1], r[1]);
+      else out.push([...r]);
+    }
+    return out;
+  };
+  const r4 = prep(v4);
+  const r6 = prep(v6);
+  const enc = (rows) => {
+    const a = [], l = [], d = [];
+    let prev = 0;
+    for (const [s, e, id] of rows) { varint(a, s - prev); prev = s; varint(l, e - s); varint(d, id); }
+    return [Buffer.from(a), Buffer.from(l), Buffer.from(d)];
+  };
+  const [a4, l4, d4] = enc(r4);
+  const [a6, l6, d6] = enc(r6);
+  const json = Buffer.from(JSON.stringify(kinds), "utf8");
+  const head = Buffer.alloc(48);
+  head.write("ASN1", 0, "ascii");
+  [json.length, r4.length, a4.length, l4.length, d4.length, r6.length, a6.length, l6.length, d6.length].forEach((n, i) => head.writeUInt32LE(n, 4 + i * 4));
+  const raw = Buffer.concat([head, json, a4, l4, d4, a6, l6, d6]);
+  const packed = brotliCompressSync(raw, { params: { [zc.BROTLI_PARAM_QUALITY]: 11, [zc.BROTLI_PARAM_LGWIN]: 24, [zc.BROTLI_PARAM_SIZE_HINT]: raw.length } });
+  writeFileSync(path.join(OUT, "asn.bin"), packed);
+  const count = (id) => r4.filter((r) => kinds[r[2]][0] === id).length;
+  console.log(`Network file: ${r4.length} IPv4 + ${r6.length} IPv6 ranges (${count("mobile")} IPv4 mobile, ${count("hosting")} IPv4 hosting/VPN), ${(packed.length / 1e6).toFixed(2)} MB on disk.`);
+  return { asnMonth: month, asnV4Ranges: r4.length, asnV6Ranges: r6.length, asnBytes: packed.length };
+}
+
 /* ───────────── main ───────────── */
 const args = process.argv.slice(2);
 mkdirSync(OUT, { recursive: true });
 let meta = {};
 try { meta = JSON.parse(readFileSync(path.join(OUT, "meta.json"), "utf8")); } catch { /* first run */ }
 const flag = (n) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] || "" : null; };
-const bare = args.find((a) => !a.startsWith("--"));
+const bare = args.find((a, i) => !a.startsWith("--") && !(args[i - 1] || "").startsWith("--"));
 let cityFile = flag("--city");
 let countryFile = flag("--country") ?? (cityFile === null ? bare ?? null : null);
-const auto = cityFile === null && countryFile === null;
+let asnFile = flag("--asn");
+const auto = cityFile === null && countryFile === null && asnFile === null;
+let asnMonth;
 let cityMonth;
 let countryMonth;
 if (auto) {
@@ -255,16 +350,25 @@ if (auto) {
   cityFile = c.file; cityMonth = c.month;
   const k = await download("country");
   countryFile = k.file; countryMonth = k.month;
+  try {
+    const a = await download("asn");
+    asnFile = a.file; asnMonth = a.month;
+  } catch (e) {
+    console.warn("Skipping the network-type file:", e.message);
+  }
 } else {
+  if (asnFile) asnMonth = monthOf(asnFile);
   if (cityFile) cityMonth = monthOf(cityFile);
   if (countryFile) countryMonth = monthOf(countryFile);
 }
 if (cityFile && !existsSync(cityFile)) throw new Error("File not found: " + cityFile);
 if (countryFile && !existsSync(countryFile)) throw new Error("File not found: " + countryFile);
+if (asnFile && !existsSync(asnFile)) throw new Error("File not found: " + asnFile);
 let next = { ...meta };
 if (countryFile) next = { ...next, ...(await buildCountry(countryFile, countryMonth)), countryMonth };
 if (cityFile) next = { ...next, ...(await buildCity(cityFile, cityMonth)) };
-next.source = "DB-IP.com IP to City Lite + IP to Country Lite";
+if (asnFile) next = { ...next, ...(await buildAsn(asnFile, asnMonth)) };
+next.source = "DB-IP.com IP to City Lite + IP to Country Lite + IP to ASN Lite";
 next.license = "CC BY 4.0 - attribution: IP Geolocation by DB-IP (https://db-ip.com)";
 next.month = cityMonth || next.cityMonth || countryMonth || next.month;
 next.builtAt = new Date().toISOString();

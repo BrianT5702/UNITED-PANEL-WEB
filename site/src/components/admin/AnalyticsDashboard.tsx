@@ -430,7 +430,7 @@ export function AnalyticsDashboard() {
               <ul>
                 <li>Tracking is <strong>on</strong> for public pages. It uses no cookies and <strong>stores no IP addresses</strong>, only a random anonymous id kept in the visitor&apos;s browser.</li>
                 <li>You, other signed-in editors and bots are never counted.{respectDnt === true ? " Visitors whose browser sends “Do Not Track” or “Global Privacy Control” are also not counted (you can change this in “Tracking settings” above)." : respectDnt === false ? " Visitors are counted even if their browser sends “Do Not Track” or “Global Privacy Control” (you can change this in “Tracking settings” above)." : ""}</li>
-                <li>Place is looked up from the visitor&apos;s network address <strong>at the moment of the visit, using a file on this server</strong>{data.geo.month ? ` (IP Geolocation by DB-IP, ${data.geo.month})` : ""}. The address is used only for that lookup and is never saved or logged; only the <strong>country, state and city names</strong> are kept. They are approximate and can show the internet provider&apos;s location. Visits from your own computer or a private network show as “Local / private network”.</li>
+                <li>Place is looked up from the visitor&apos;s network address <strong>at the moment of the visit, using files on this server</strong>{data.geo.month ? ` (IP Geolocation by DB-IP, ${data.geo.month})` : ""}. The address is used only for that lookup and is never saved or logged; only the <strong>country, state and city names</strong> are kept, plus a short note when the visit came from a <strong>mobile carrier</strong> (such as “mobile:Maxis”) or a VPN / data centre. This is approximate: the <strong>state</strong> is the dependable level, and a <strong>city is only a rough area</strong>, because the lookup shows where the internet provider&apos;s network is. <strong>On mobile data it usually shows the carrier&apos;s hub</strong>, often in another state, so mobile visits are counted in the country total only and no state or city is kept for them. Visits from your own computer or a private network show as “Local / private network”.</li>
                 <li>Data older than 13 months is removed automatically. {data.totalRowsEver ? `${nf(data.totalRowsEver)} visits are stored in total${data.firstSeenAt ? `, the oldest from ${formatYmd(data.firstSeenAt, tz)}` : ""}.` : ""}</li>
               </ul>
             </div>
@@ -480,7 +480,7 @@ function EmptyState({ onRetry, loading }: { onRetry: () => void; loading: boolea
       <h2>No data yet — tracking is active</h2>
       <p>The website is already counting visits. Open any public page in a normal browser window (not while signed in as an editor) and your first numbers will appear here within a minute.</p>
       <ul>
-        <li><Icon name="check" size={15} /> Pages, time spent, scroll depth, country, state and city (approximate, from a lookup that never saves the IP address) and downloads are collected automatically.</li>
+        <li><Icon name="check" size={15} /> Pages, time spent, scroll depth, country, state and city (approximate, from a lookup that never saves the IP address; mobile-data visits are counted by country only) and downloads are collected automatically.</li>
         <li><Icon name="check" size={15} /> No cookies and no IP addresses are stored. Only the country, state and city names are kept, never the address itself.</li>
         <li><Icon name="check" size={15} /> You, other signed-in editors and search-engine bots are never counted.</li>
       </ul>
@@ -623,7 +623,7 @@ function Report({
           <Card title="Most viewed pages" hint="Share of all page views" help="The pages opened most often, and the share of all page views each one received." icon="eye" className="an2-span-2">
             {topRows.length ? <HBars rows={topRows} rank /> : <EmptyLine />}
           </Card>
-          <Card title="Top countries" hint="Share of visits · approximate" help="Where visits come from, based on the visitor's network location. It is approximate: a visitor on a VPN or a mobile network can appear in a different country." icon="globe">
+          <Card title="Top countries" hint="Share of visits · approximate" help="Where visits come from, based on the visitor's network location. It is approximate: a visitor on a VPN can appear in a different country. Mobile data is usually placed in the right country." icon="globe">
             {onlyUnreal ? <EmptyLine>{anyLocal ? "These visits came from this computer or a private network, so there is no country yet. Real countries appear once the site is live online." : "No country could be worked out for these visits yet."}</EmptyLine> : countryBars.length ? <HBars rows={countryBars.slice(0, 6)} rank /> : <EmptyLine />}
           </Card>
         </div>
@@ -694,29 +694,48 @@ function Report({
       </Section>
 
       {/* ═════════ COUNTRIES ═════════ */}
-      <Section id="countries" icon="globe" title="Countries" blurb="Where your visitors are: country, state and city, and how long each place stays.">
+      <Section id="countries" icon="globe" title="Countries" blurb="Where your visitors are: country first, then state, then the nearby city or area, and how long each place stays.">
         <div className="an2-grid">
           <Card
             title="Where visitors are"
-            hint="Country, then state, then city · click a row to open it"
-            help="Click a country to see its states, and a state to see its cities. Visits are how many times people came; visitors are different people; avg. visit is how long they stayed. Places come from the visitor's network location, so they are approximate."
+            hint="Country, then state, then area · click a row to open it"
+            help="Click a country to see its states, a state to see its cities or areas, and an area such as Greater Johor Bahru to see the towns grouped in it. The state is the dependable level. Cities are approximate because a network address cannot tell nearby towns apart. Visits on mobile data are counted in the country total only (their own row), because the location then shows the carrier's hub, not the visitor. Visits are how many times people came; visitors are different people; avg. visit is how long they stayed."
             icon="globe"
             className="an2-span-2"
           >
             <p className="an2-note is-quiet">
-              State and city are <strong>approximate</strong>. They come from the visitor&apos;s network location, so they can show where the internet provider is rather than where the person is (mobile networks and VPNs are often off by a whole state or country).
+              The <strong>state</strong> is the level to trust. <strong>Cities are approximate</strong>: they come from the visitor&apos;s network location, so nearby towns are grouped into an area (for example Greater Johor Bahru) and the specific towns are shown underneath. On <strong>mobile data</strong> the location is usually the carrier&apos;s hub, often in another state, so those visits are counted in the country only and shown in their own “Mobile network (location unreliable)” row.
             </p>
+            {data.networkTotals.mobile + data.networkTotals.hosting > 0 ? (
+              <p className="an2-note">
+                <strong>{nf(data.networkTotals.mobile)}</strong> visit{data.networkTotals.mobile === 1 ? "" : "s"} came from a mobile network
+                {data.networkTotals.hosting > 0 ? <> and <strong>{nf(data.networkTotals.hosting)}</strong> from a VPN or data centre</> : null}
+                {data.networkTotals.known > 0 ? ` (${Math.round(((data.networkTotals.mobile + data.networkTotals.hosting) / data.networkTotals.known) * 100)}% of visits with a known country)` : ""}. They are in the country totals but not in any state or city.
+              </p>
+            ) : null}
             {anyLocal ? (
               <p className="an2-note">
                 <strong>{nf(anyLocal.sessions)}</strong> visit{anyLocal.sessions === 1 ? "" : "s"} came from this computer or a private network (shown as “Local / private network”). That is normal while you are testing on localhost. Real places appear once the website is live online.
               </p>
             ) : null}
-            {!data.geo.available ? <p className="an2-note">The location file is missing on this computer (run <code>npm run geoip:update</code>), so new visits will show “Unknown location” unless the web host sends a country.</p> : !data.geo.city ? <p className="an2-note">Only the country file is installed, so states and cities cannot be worked out. Run <code>npm run geoip:update</code> to add them.</p> : null}
+            {!data.geo.available ? <p className="an2-note">The location file is missing on this computer (run <code>npm run geoip:update</code>), so new visits will show “Unknown location” unless the web host sends a country.</p> : !data.geo.city ? <p className="an2-note">Only the country file is installed, so states and cities cannot be worked out. Run <code>npm run geoip:update</code> to add them.</p> : !data.geo.asn ? <p className="an2-note">The mobile-network file is missing, so mobile-data visits cannot be told apart and their state and city may be wrong. Run <code>npm run geoip:update</code> to add it.</p> : null}
             {data.locations.length ? <LocationTree rows={data.locations} /> : <EmptyLine />}
           </Card>
-          <Card title="Top countries" hint="Share of visits · approximate" help="The countries that send the most visits, based on the visitor's network location. It is approximate: a visitor on a VPN or a mobile network can appear in a different country." icon="chart">
-            {countryBars.length ? <HBars rows={countryBars.slice(0, 8)} rank /> : <EmptyLine />}
-          </Card>
+          <div className="an2-loc-side">
+            <Card title="Top states" hint="Share of visits · state is the reliable level" help="The states or regions that send the most visits. Visits on mobile data or a VPN are left out here (their state is unreliable) but they are still counted in the country totals." icon="globe">
+              {data.topStates.length ? (
+                <HBars
+                  rows={data.topStates.slice(0, 8).map((r) => ({ key: `${r.code}|${r.label}`, label: r.label, flag: countryFlag(r.code), sub: r.country, value: r.sessions, display: nf(r.sessions), note: `${r.share}%`, tone: "accent" as const }))}
+                  rank
+                />
+              ) : (
+                <EmptyLine>No state could be worked out yet. States appear for real visitors once the site is live online.</EmptyLine>
+              )}
+            </Card>
+            <Card title="Top countries" hint="Share of visits · approximate" help="The countries that send the most visits, based on the visitor's network location. It is approximate: a visitor on a VPN can appear in a different country." icon="chart">
+              {countryBars.length ? <HBars rows={countryBars.slice(0, 8)} rank /> : <EmptyLine />}
+            </Card>
+          </div>
         </div>
       </Section>
 

@@ -44,16 +44,27 @@ export function buildCsv(d: DashboardData): string {
   sec("Scroll depth", ["Depth", "Page views", "Share %"], d.scrollDepth.map((b) => [b.label, b.value, b.share]));
   const cr = (title: string, rs: DashboardData["countries"]) => sec(title, ["Name", "Visits", "Visitors", "Share %", "Avg time (s)", "Bounce %"], rs.map((r) => [r.label, r.sessions, r.visitors, r.share, r.avgTimeSec, r.bounceRate]));
   cr("Countries", d.countries);
-  // Country > state > city, one line per place (blank cells = the level above)
+  // Country > state > area / city, one line per place (blank cells = the level above)
   const loc: (string | number)[][] = [];
   for (const c of d.locations) {
-    loc.push([c.label, "", "", c.sessions, c.visitors, c.share, c.avgTimeSec]);
+    loc.push([c.label, "", "", "", c.sessions, c.visitors, c.share, c.avgTimeSec]);
     for (const r of c.regions) {
-      loc.push([c.label, r.label, "", r.sessions, r.visitors, r.share, r.avgTimeSec]);
-      for (const x of r.cities) loc.push([c.label, r.label, x.label, x.sessions, x.visitors, x.share, x.avgTimeSec]);
+      loc.push([c.label, r.label, "", "", r.sessions, r.visitors, r.share, r.avgTimeSec]);
+      for (const a of r.areas) {
+        loc.push([c.label, r.label, a.label, a.cluster ? "Metro area (approximate)" : a.label === "City not known" ? "" : "City (approximate)", a.sessions, a.visitors, a.share, a.avgTimeSec]);
+        if (a.cluster) for (const x of a.cities) loc.push([c.label, r.label, a.label, `City inside the area: ${x.label}`, x.sessions, x.visitors, x.share, x.avgTimeSec]);
+      }
+    }
+    for (const n of c.networks) {
+      loc.push([c.label, n.label, "", "Counted in the country total only", n.sessions, n.visitors, n.share, n.avgTimeSec]);
+      for (const x of n.carriers) loc.push([c.label, n.label, x.label, "Carrier / network", x.sessions, x.visitors, x.share, x.avgTimeSec]);
     }
   }
-  sec("Countries, states and cities (approximate; a blank State or City means that row is the total for the level above)", ["Country", "State / region", "City", "Visits", "Visitors", "Share %", "Avg time (s)"], loc);
+  sec(
+    "Countries, states and areas (State is the reliable level. Area and city are approximate: nearby cities are grouped into a metro area. Mobile-carrier and VPN visits are counted in the country total only, because their state and city are unreliable. A blank cell means that row is the total for the level above.)",
+    ["Country", "State / region", "Metro area / city", "Note", "Visits", "Visitors", "Share %", "Avg time (s)"],
+    loc,
+  );
   sec("Catalogues, downloads and QR scans", ["Document", "Type", "Opens", "QR scans", "Downloads", "Visitors"], d.downloads.map((r) => [r.label, r.kind, r.opens, r.qrScans, r.downloads, r.visitors]));
   sec("Actions", ["Type", "This period", "Previous period"], d.eventTotals.map((e) => [e.label, e.count, e.prev ?? ""]));
   sec("Clicks (outbound, WhatsApp, phone, email, forms)", ["Type", "Target", "Clicks", "Visitors"], d.clicks.map((c) => [c.typeLabel, c.target, c.clicks, c.visitors]));

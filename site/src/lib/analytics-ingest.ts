@@ -7,7 +7,7 @@ import {
   hostFromUrl,
   parseUserAgent,
 } from "./analytics-ua";
-import { isPrivateAddress, lookupLocation } from "./geoip";
+import { isPrivateAddress, lookupLocation, lookupNetwork } from "./geoip";
 
 /** Retention: anything older than this is deleted by the purge. */
 export const ANALYTICS_RETENTION_MONTHS = 13;
@@ -126,7 +126,7 @@ export function rateLimited(key: string, limit: number, windowMs = 60_000): bool
  * the offline lookup of the visitor's address (used only for that moment, never stored or logged) adds state and city.
  * Private/loopback addresses become "Local". Only these three text values are ever stored.
  */
-type Where = { country: string; region: string | null; city: string | null };
+type Where = { country: string; region: string | null; city: string | null; network: string | null };
 function resolveLocation(header: (name: string) => string | null, host: string): Where {
   const fromHeader = countryFromHeaders(header);
   let found: ReturnType<typeof lookupLocation> = null;
@@ -135,19 +135,33 @@ function resolveLocation(header: (name: string) => string | null, host: string):
   } catch {
     /* never let a lookup problem break tracking */
   }
-  if (found && "local" in found) return { country: fromHeader !== "Unknown" ? fromHeader : "Local", region: null, city: null };
+  if (found && "local" in found) return { country: fromHeader !== "Unknown" ? fromHeader : "Local", region: null, city: null, network: null };
   if (found) {
     // a CDN header for a different country than the lookup: trust the header, drop state/city
-    if (fromHeader !== "Unknown" && fromHeader !== found.country) return { country: fromHeader, region: null, city: null };
-    return { country: found.country, region: cleanPlace(found.region), city: cleanPlace(found.city) };
+    if (fromHeader !== "Unknown" && fromHeader !== found.country) return { country: fromHeader, region: null, city: null, network: resolveNetwork(header) };
+    // On a mobile carrier or a VPN / data centre the state and city only show where the network hub is, not where
+    // the person is, so they are not stored (the country is kept). Only a short label is kept, never the address.
+    const network = resolveNetwork(header);
+    if (network) return { country: found.country, region: null, city: null, network };
+    return { country: found.country, region: cleanPlace(found.region), city: cleanPlace(found.city), network: null };
   }
-  if (fromHeader !== "Unknown") return { country: fromHeader, region: null, city: null };
+  if (fromHeader !== "Unknown") return { country: fromHeader, region: null, city: null, network: null };
   // opened through localhost / a LAN address with no forwarded address at all: that is a local visit
   const bare = host.replace(/:\d+$/, "").replace(/^\[|\]$/g, "");
   if (bare === "localhost" || bare.endsWith(".local") || (isIP(bare) !== 0 && isPrivateAddress(bare))) {
-    return { country: "Local", region: null, city: null };
+    return { country: "Local", region: null, city: null, network: null };
   }
-  return { country: "Unknown", region: null, city: null };
+  return { country: "Unknown", region: null, city: null, network: null };
+}
+/** "mobile", "mobile:Maxis" or "hosting" (VPN / data centre), else null. */
+function resolveNetwork(header: (name: string) => string | null): string | null {
+  try {
+    const n = lookupNetwork(header);
+    if (!n) return null;
+    return n.kind === "mobile" ? (n.carrier ? `mobile:${cleanPlace(n.carrier) || ""}`.replace(/:$/, "") : "mobile") : "hosting";
+  } catch {
+    return null;
+  }
 }
 function cleanPlace(v: string | null): string | null {
   const s = (v || "").replace(/[\u0000-\u001f\u007f<>]/g, "").replace(/\s+/g, " ").trim().slice(0, 60);
