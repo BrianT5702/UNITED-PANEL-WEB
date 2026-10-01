@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exportedAt": "2026-09-28T07:29:55.684Z",
+  "exportedAt": "2026-10-01T07:30:31.889Z",
   "sections": [
     {
       "page": "about",
@@ -2183,6 +2183,25 @@
             }
           },
           {
+            "id": "mediaText_e55q2uhr",
+            "type": "mediaText",
+            "columns": 2,
+            "data": {
+              "eyebrow": "Insulation advantage",
+              "title": "Equivalent thickness for the same degree of insulation",
+              "body": "<span style=\"font-size: 17.28px\">Panel cores such as polyurethane (PU) deliver strong thermal performance in a modest thickness. The chart below compares the approximate material thickness needed for a similar degree of insulation — from common bricks down to polyurethane (PU).</span>",
+              "image": "/uploads/1790821741543-7fad0e4f03d0.png",
+              "imageSide": "left",
+              "imageFocus": {
+                "x": 0.4053180782722594,
+                "y": 90.72446608683825,
+                "zoom": 1
+              },
+              "body2": ""
+            },
+            "note": "Equivalent thickness required for the same degree of insulation — common bricks 860 mm down to polyurethane (PU) 25 mm"
+          },
+          {
             "id": "intro-pir",
             "type": "mediaText",
             "columns": 2,
@@ -2193,7 +2212,7 @@
               "image": "/uploads/pir/UNITED.jpeg",
               "linkLabel": "View PIR panels →",
               "linkHref": "/products/pir",
-              "imageSide": "left",
+              "imageSide": "right",
               "imageAspect": "wide"
             }
           },
@@ -2208,7 +2227,7 @@
               "image": "/uploads/pu/apps/install-blue-warehouse.jpg",
               "linkLabel": "View PU panels →",
               "linkHref": "/products/pu",
-              "imageSide": "right",
+              "imageSide": "left",
               "imageAspect": "wide"
             }
           },
@@ -2223,7 +2242,7 @@
               "image": "/uploads/About/FactoryLook.png",
               "linkLabel": "View RockWool panels →",
               "linkHref": "/products/rockwool",
-              "imageSide": "left",
+              "imageSide": "right",
               "imageAspect": "wide"
             }
           },
@@ -2238,31 +2257,12 @@
                 {
                   "id": "pir-wrap-1",
                   "src": "/uploads/products/pir-panels-wrapping.png",
-                  "alt": "PIR panel stacks and wrapping machine at the United Panel factory"
-                }
-              ]
-            }
-          },
-          {
-            "id": "prod-insulation-intro",
-            "type": "richText",
-            "data": {
-              "eyebrow": "Insulation advantage",
-              "title": "Equivalent thickness for the same degree of insulation",
-              "body": "Panel cores such as polyurethane (PU) deliver strong thermal performance in a modest thickness. The chart below compares the approximate material thickness needed for a similar degree of insulation — from common bricks down to polyurethane (PU)."
-            }
-          },
-          {
-            "id": "prod-insulation-chart",
-            "type": "gallery",
-            "columns": 1,
-            "data": {
-              "layout": "pages",
-              "items": [
-                {
-                  "id": "insul-compare-1",
-                  "src": "/uploads/products/insulation-comparison.png",
-                  "alt": "Equivalent thickness required for the same degree of insulation — common bricks 860 mm down to polyurethane (PU) 25 mm"
+                  "alt": "PIR panel stacks and wrapping machine at the United Panel factory",
+                  "focus": {
+                    "x": 48.299027341672186,
+                    "y": 0,
+                    "zoom": 1.2
+                  }
                 }
               ]
             }
@@ -2272,7 +2272,7 @@
             "type": "cardGrid",
             "columns": 3,
             "data": {
-              "eyebrow": "Also available",
+              "eyebrow": "",
               "title": "Applications, systems & openings",
               "lead": "Beyond core panel systems — specify doors, refrigeration systems, and cold-storage applications for your project.",
               "items": [
@@ -2337,7 +2337,12 @@
                   "style": "ghost",
                   "action": "link"
                 }
-              ]
+              ],
+              "imageFocus": {
+                "x": 46.76097313468774,
+                "y": 20.26315028207344,
+                "zoom": 1.2
+              }
             }
           },
           {
@@ -2410,52 +2415,62 @@
               "imageAspect": "landscape",
               "items": [
                 {
-                  "id": "a1",
-                  "title": "Chiller & freezer rooms",
-                  "text": "Fresh and frozen storage for food logistics and production staging.",
-                  "image": "/uploads/pir/app-coldroom-interior.jpg"
-                },
-                {
-                  "id": "a2",
-                  "title": "Controlled atmosphere",
-                  "text": "Tight temperature and humidity control for produce and specialised storage.",
-                  "image": "/uploads/pir/coldroom-install.jpg"
-                },
-                {
-                  "id": "a3",
-                  "title": "Food processing",
-                  "text": "Hygiene-ready process corridors with washable finishes.",
-                  "image": "/uploads/pir/app-processing-corridor.jpg"
-                },
-                {
                   "id": "a4",
                   "title": "Production facilities",
                   "text": "Insulated envelopes for manufacturing and packing lines.",
                   "image": "/uploads/pir/production-line.jpg"
                 },
                 {
+                  "id": "a1",
+                  "title": "Chiller & freezer rooms",
+                  "text": "Fresh and frozen storage for food logistics and production staging.",
+                  "image": "",
+                  "focus": {
+                    "x": 27.95603447017505,
+                    "y": 47.781751624385606,
+                    "zoom": 1
+                  }
+                },
+                {
+                  "id": "a2",
+                  "title": "Controlled atmosphere",
+                  "text": "Tight temperature and humidity control for produce and specialised storage.",
+                  "image": ""
+                },
+                {
+                  "id": "a3",
+                  "title": "Food processing",
+                  "text": "Hygiene-ready process corridors with washable finishes.",
+                  "image": ""
+                },
+                {
                   "id": "a5",
                   "title": "Clean rooms",
                   "text": "Controlled environments with clean joints and finishes.",
-                  "image": "/uploads/pir/facility.jpg"
+                  "image": ""
                 },
                 {
                   "id": "a6",
                   "title": "Pharmaceutical storage",
                   "text": "Temperature-managed storage for medical and pharma products.",
-                  "image": "/uploads/pir/app-highbay-interior.jpg"
+                  "image": ""
                 },
                 {
                   "id": "a7",
                   "title": "Warehouses",
                   "text": "Ambient and refrigerated warehouse envelopes and partitions.",
-                  "image": "/uploads/pir/cladding-project.jpg"
+                  "image": "",
+                  "focus": {
+                    "x": 50,
+                    "y": 50,
+                    "zoom": 1
+                  }
                 },
                 {
                   "id": "a8",
                   "title": "Cross-docking",
                   "text": "Fast-turn cold-chain docks, staging rooms, and partitions.",
-                  "image": "/uploads/pir/app-industrial-facade.jpg"
+                  "image": ""
                 }
               ]
             }
@@ -2515,7 +2530,7 @@
               "brand": "United Panel · Doors",
               "headline": "Insulated doors for cold rooms",
               "lead": "The right door protects freezer and chiller efficiency. We supply swing, sliding, sectional, dock, impact, and PVC curtain options — sized to your opening and temperature.",
-              "backgroundImage": "/uploads/insulated-doors/door-00.png",
+              "backgroundImage": "/uploads/1790822828851-4ac4c872171b.jpeg",
               "size": "short",
               "buttons": [
                 {
@@ -2532,7 +2547,12 @@
                   "style": "ghost",
                   "action": "link"
                 }
-              ]
+              ],
+              "imageFocus": {
+                "x": 0,
+                "y": 0,
+                "zoom": 1.1
+              }
             }
           },
           {
@@ -3716,17 +3736,22 @@
                 {
                   "id": "rs1",
                   "src": "/uploads/refrigeration-systems/system-01.png",
-                  "alt": "United Panel refrigeration system 1"
+                  "alt": "",
+                  "focus": {
+                    "x": 50,
+                    "y": 50,
+                    "zoom": 1
+                  }
                 },
                 {
                   "id": "rs2",
                   "src": "/uploads/refrigeration-systems/system-02.png",
-                  "alt": "United Panel refrigeration system 2"
+                  "alt": ""
                 },
                 {
                   "id": "rs3",
                   "src": "/uploads/refrigeration-systems/system-03.png",
-                  "alt": "United Panel refrigeration system 3"
+                  "alt": ""
                 }
               ]
             },
@@ -4139,7 +4164,7 @@
               "eyebrow": "Product photos",
               "title": "Roof panel gallery",
               "layout": "grid",
-              "imageAspect": "landscape",
+              "imageAspect": "wide",
               "items": [
                 {
                   "id": "rg1",
@@ -4152,7 +4177,8 @@
                   "alt": "UR PIR roof panel detail"
                 }
               ]
-            }
+            },
+            "columns": 2
           },
           {
             "id": "roof-specs",
@@ -4642,16 +4668,16 @@
             ]
           },
           {
+            "label": "Virtual Tour",
+            "href": "/virtual-tour"
+          },
+          {
             "label": "News",
             "href": "/news"
           },
           {
             "label": "Career",
             "href": "/career"
-          },
-          {
-            "label": "Virtual Tour",
-            "href": "/virtual-tour"
           },
           {
             "label": "Catalogues",

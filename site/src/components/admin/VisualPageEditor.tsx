@@ -21,6 +21,8 @@ import type {
 } from "@/lib/page-document";
 import {
   ADDABLE_SECTION_TYPES,
+  COLLAGE_MAX_PHOTOS,
+  COLLAGE_SLOT_LABELS,
   SECTION_TYPE_GROUPS,
   SECTION_TYPE_HELP,
   SECTION_TYPE_LABELS,
@@ -56,7 +58,7 @@ import { ImageAspectPicker } from "./visual/ImageAspectPicker";
 import { ImageAlignPicker } from "./visual/ImageAlignPicker";
 import { SlideshowIntervalControl } from "./visual/SlideshowIntervalControl";
 import { VeilStrengthControl } from "./visual/VeilStrengthControl";
-import { SectionButtonsEditor } from "./visual/SectionButtons";
+import { SectionButtonsEditor, SectionButtonsView } from "./visual/SectionButtons";
 import { PageLinkField } from "./visual/PageLinkField";
 
 function reorder<T>(items: T[], from: number, to: number): T[] {
@@ -530,6 +532,166 @@ function EditableSection({
               value={d.body}
               onChange={(body) => setData({ ...d, body })}
             />
+          </div>
+        </section>
+      );
+      break;
+    }
+    case "photoCollage": {
+      const d = section.data;
+      const items = d.items || [];
+      const photosLeft = d.photoSide === "left";
+      const setItems = (next: GalleryItem[]) => setData({ ...d, items: next });
+      const patchItem = (index: number, next: Partial<GalleryItem>) =>
+        setItems(items.map((item, i) => (i === index ? { ...item, ...next } : item)));
+      const collageButtons = resolveSectionButtons(section);
+      body = (
+        <section
+          className={`section ve-block pb-collage ${nested ? "pb-nested" : ""}`}
+          data-photo-side={photosLeft ? "left" : "right"}
+          data-count={items.length}
+        >
+          <div className="ve-block-toolbar">
+            <div className="ve-block-toolbar-row">
+              <span className="ve-placement-label">Layout</span>
+              <div className="ve-seg" title="Which side the photos sit on">
+                <button
+                  type="button"
+                  className={`ve-seg-btn ${!photosLeft ? "is-active" : ""}`}
+                  onClick={() => setData({ ...d, photoSide: "right" })}
+                >
+                  Text left · Photos right
+                </button>
+                <button
+                  type="button"
+                  className={`ve-seg-btn ${photosLeft ? "is-active" : ""}`}
+                  onClick={() => setData({ ...d, photoSide: "left" })}
+                >
+                  Photos left · Text right
+                </button>
+              </div>
+            </div>
+            <div className="ve-block-toolbar-row">
+              <span className="ve-placement-label">Small label</span>
+              <div className="ve-seg" title="Small coloured label above the heading">
+                <button
+                  type="button"
+                  className={`ve-seg-btn ${d.eyebrow ? "is-active" : ""}`}
+                  onClick={() => setData({ ...d, eyebrow: d.eyebrow || "Our projects" })}
+                >
+                  Show
+                </button>
+                <button
+                  type="button"
+                  className={`ve-seg-btn ${!d.eyebrow ? "is-active" : ""}`}
+                  onClick={() => setData({ ...d, eyebrow: "" })}
+                >
+                  Hide
+                </button>
+              </div>
+            </div>
+            <p className="ve-toolbar-hint">
+              3–5 photos look best. Click a photo to change it, drag inside it to reframe, − / + to zoom.
+              The button is set under “Buttons” at the bottom of this block.
+            </p>
+          </div>
+          <div className="ve-collage-manager">
+            <p className="ve-btns-toggle-meta">Photo order — photo 1 is the tall one; use ← → to swap places</p>
+            <ol className="ve-collage-list">
+              {items.map((item, index) => (
+                <li className="ve-collage-row" key={item.id}>
+                  <span className="ve-collage-thumb" aria-hidden="true">
+                    {item.src ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={item.src} alt="" />
+                    ) : (
+                      <span>Empty</span>
+                    )}
+                  </span>
+                  <span className="ve-collage-row-label">
+                    <strong>Photo {index + 1}</strong>
+                    <span>{COLLAGE_SLOT_LABELS[index] || "Photo"}</span>
+                  </span>
+                  <span className="ve-card-actions ve-card-actions-inline">
+                    <button
+                      type="button"
+                      className="ve-move"
+                      title="Move earlier"
+                      aria-label={`Move photo ${index + 1} earlier`}
+                      disabled={index === 0}
+                      onClick={() => setItems(reorder(items, index, index - 1))}
+                    >
+                      ←
+                    </button>
+                    <button
+                      type="button"
+                      className="ve-move"
+                      title="Move later"
+                      aria-label={`Move photo ${index + 1} later`}
+                      disabled={index >= items.length - 1}
+                      onClick={() => setItems(reorder(items, index, index + 1))}
+                    >
+                      →
+                    </button>
+                    <button
+                      type="button"
+                      className="ve-remove"
+                      onClick={() => setItems(items.filter((_, i) => i !== index))}
+                    >
+                      Remove
+                    </button>
+                  </span>
+                </li>
+              ))}
+            </ol>
+            {items.length < COLLAGE_MAX_PHOTOS ? (
+              <button
+                type="button"
+                className="ve-add-btn ve-add-slide"
+                onClick={() => setItems([...items, { id: newId("ph"), src: "", alt: "" }])}
+              >
+                + Add a photo ({items.length} of {COLLAGE_MAX_PHOTOS})
+              </button>
+            ) : (
+              <p className="ve-btns-toggle-meta">5 photos is the most this collage holds.</p>
+            )}
+          </div>
+          <div className="pb-collage-grid">
+            <span className="pb-collage-accent" aria-hidden="true" />
+            <div className="pb-collage-copy">
+              {d.eyebrow ? (
+                <EText
+                  as="p"
+                  className="eyebrow"
+                  value={d.eyebrow}
+                  onChange={(eyebrow) => setData({ ...d, eyebrow: eyebrow.replace(/<[^>]+>/g, "").trim() ? eyebrow : "" })}
+                />
+              ) : null}
+              <EText as="h2" value={d.title} onChange={(title) => setData({ ...d, title })} />
+              <div className="pb-collage-body">
+                <EText as="p" multiline value={d.body} onChange={(body) => setData({ ...d, body })} />
+              </div>
+              {collageButtons.length ? (
+                <div
+                  className="ve-collage-actions-preview"
+                  title="Edit this button under “Buttons” at the bottom of the block"
+                  onClickCapture={(e) => e.preventDefault()}
+                >
+                  <SectionButtonsView buttons={collageButtons} />
+                </div>
+              ) : null}
+            </div>
+            {items.map((item, index) => (
+              <div className="pb-collage-tile pb-photo-frame" data-slot={index + 1} key={item.id}>
+                <EImage
+                  value={item.src}
+                  onChange={(src) => patchItem(index, { src })}
+                  focus={item.focus}
+                  onFocusChange={(focus) => patchItem(index, { focus })}
+                  label={`Photo ${index + 1}`}
+                />
+              </div>
+            ))}
           </div>
         </section>
       );
@@ -2204,11 +2366,13 @@ function SectionList({
             type="button"
             className="ve-insert-btn"
             onClick={(e) => {
+              // Read the slot now — React clears e.currentTarget before the next frame
+              const slot = e.currentTarget.closest(".ve-insert-slot") as HTMLElement | null;
               setPendingTable(null);
               setInsertAt(at);
               // Keep the picker clear of the sticky admin bar
               requestAnimationFrame(() => {
-                (e.currentTarget.closest(".ve-insert-slot") as HTMLElement | null)?.scrollIntoView({
+                slot?.scrollIntoView({
                   block: "center",
                   behavior: "smooth",
                 });
@@ -2606,6 +2770,11 @@ export function VisualPageEditor({
             </span>
           ) : null}
           {message ? <span className="ve-msg">{message}</span> : null}
+          {/* Full page load on purpose: the browser's "unsaved changes" prompt must still fire. */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a className="ve-tool-btn ve-bar-link is-dashboard" href="/admin/dashboard" title="See visitor statistics">
+            Dashboard
+          </a>
           <AdminGuideButton onClick={() => openHelp("start")} />
           <span className="ve-tool-group ve-history-group" role="group" aria-label="History">
             <button
@@ -2685,6 +2854,10 @@ export function VisualPageEditor({
                   </a>
                   <a className="ve-more-item" href="/admin/catalogues" onClick={() => setMoreOpen(false)}>
                     Catalogues & brochures
+                  </a>
+                  {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                  <a className="ve-more-item" href="/admin/dashboard" onClick={() => setMoreOpen(false)}>
+                    Analytics dashboard
                   </a>
                   <a
                     className="ve-more-item"

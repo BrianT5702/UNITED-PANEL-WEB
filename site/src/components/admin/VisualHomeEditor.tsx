@@ -7,6 +7,7 @@ import { AdminPageSwitcher } from "./AdminPageSwitcher";
 import { EImage, EText } from "./visual/Editable";
 import { VeilStrengthControl } from "./visual/VeilStrengthControl";
 import { veilOpacity } from "@/lib/page-document";
+import { footerCopyText } from "@/lib/footer-text";
 
 function newId() {
   return `id_${Math.random().toString(36).slice(2, 10)}`;
@@ -623,24 +624,27 @@ export function VisualHomeEditor({ initial }: { initial: HomeContent }) {
 
       <footer className="site-footer ve-block">
         <SectionLabel>Footer</SectionLabel>
-        <div className="footer-brand">
+        <EText
+          as="p"
+          className="footer-page"
+          value={footer.tagline}
+          onChange={(tagline) => update("footer", { ...footer, tagline })}
+        />
+        <p className="footer-legal">
           <EText
             as="strong"
+            className="footer-name"
             value={footer.companyName}
             onChange={(companyName) => update("footer", { ...footer, companyName })}
           />
+          <span className="footer-dot">{" · "}</span>
           <EText
             as="span"
-            value={footer.tagline}
-            onChange={(tagline) => update("footer", { ...footer, tagline })}
+            className="footer-copy"
+            value={footerCopyText(footer.copyright, footer.companyName)}
+            onChange={(copyright) => update("footer", { ...footer, copyright })}
           />
-        </div>
-        <EText
-          as="p"
-          className="footer-copy"
-          value={footer.copyright}
-          onChange={(copyright) => update("footer", { ...footer, copyright })}
-        />
+        </p>
       </footer>
     </div>
   );

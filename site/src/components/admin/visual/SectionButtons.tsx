@@ -9,7 +9,7 @@ import {
   newId,
   normalizeButtonAction,
 } from "@/lib/page-document";
-import type { SitePage } from "@/lib/pages";
+import { findPageForHref, pagesForLinkPickers, type SitePage } from "@/lib/pages";
 
 function reorder<T>(items: T[], from: number, to: number): T[] {
   if (to < 0 || to >= items.length || from === to) return items;
@@ -58,6 +58,7 @@ export function SectionButtonsEditor({
   sitePages?: SitePage[];
 }) {
   const [open, setOpen] = useState(buttons.length > 0);
+  const linkPages = sitePages.length > 0 ? pagesForLinkPickers(sitePages) : sitePages;
 
   const patch = (index: number, next: Partial<HeroButton>) => {
     const list = [...buttons];
@@ -124,7 +125,7 @@ export function SectionButtonsEditor({
               {buttons.map((btn, index) => {
                 const action = normalizeButtonAction(btn.action);
                 const sectionId = (btn.href || "").replace(/^#/, "");
-                const matchedPage = sitePages.find((p) => p.path === btn.href);
+                const matchedPage = findPageForHref(linkPages, btn.href);
                 return (
                   <li className="ve-btns-item" key={btn.id}>
                     <input
@@ -179,14 +180,18 @@ export function SectionButtonsEditor({
                     ) : sitePages.length > 0 ? (
                       <select
                         className="ve-btns-href"
-                        value={matchedPage ? matchedPage.path : ""}
+                        value={matchedPage ? matchedPage.path : btn.href ? "__custom__" : ""}
                         aria-label="Page"
                         onChange={(e) => {
-                          if (e.target.value) patch(index, { href: e.target.value });
+                          if (e.target.value && e.target.value !== "__custom__")
+                            patch(index, { href: e.target.value });
                         }}
                       >
-                        {!matchedPage ? <option value="">Choose a page…</option> : null}
-                        {sitePages.map((p) => (
+                        {!matchedPage && !btn.href ? <option value="">Choose a page…</option> : null}
+                        {!matchedPage && btn.href ? (
+                          <option value="__custom__">Custom link: {btn.href}</option>
+                        ) : null}
+                        {linkPages.map((p) => (
                           <option key={p.id} value={p.path}>
                             {p.label}
                           </option>

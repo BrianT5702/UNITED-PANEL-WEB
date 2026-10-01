@@ -52,6 +52,9 @@ export function AdminEditBarClient({ editHref }: { editHref: string }) {
           <Link className="admin-edit-bar-btn" href="/admin/edit">
             All pages
           </Link>
+          <Link className="admin-edit-bar-btn is-dashboard" href="/admin/dashboard" title="See visitor statistics">
+            Dashboard
+          </Link>
           <Link className="admin-edit-bar-btn" href="/admin/guide">
             Help
           </Link>

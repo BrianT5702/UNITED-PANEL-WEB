@@ -1,12 +1,12 @@
 "use client";
 
-import type { SitePage } from "@/lib/pages";
+import { findPageForHref, pagesForLinkPickers, type SitePage } from "@/lib/pages";
 
 /** Page dropdown for admins — auto-fills the link path */
 export function PageLinkField({
   value,
   onChange,
-  pages,
+  pages: editablePages,
   label = "Opens this page",
   allowEmpty,
 }: {
@@ -16,21 +16,27 @@ export function PageLinkField({
   label?: string;
   allowEmpty?: boolean;
 }) {
-  const matched = pages.find((p) => p.path === value);
+  const pages = pagesForLinkPickers(editablePages);
+  const matched = findPageForHref(pages, value);
   const external = Boolean(value) && !matched && /^(https?:|mailto:|tel:)/i.test(value);
 
   return (
     <label className="ve-inline-label ve-page-link-field">
       {label}
       <select
-        value={matched ? matched.path : external ? "__external__" : value && !matched ? "__custom__" : ""}
+        value={matched ? matched.path : value ? "__custom__" : ""}
         onChange={(e) => {
           const v = e.target.value;
           if (!v || v === "__external__" || v === "__custom__") return;
           onChange(v);
         }}
       >
-        {allowEmpty || !matched ? <option value="">Choose a page…</option> : null}
+        {allowEmpty || (!matched && !value) ? <option value="">Choose a page…</option> : null}
+        {!matched && value ? (
+          <option value="__custom__">
+            {external ? "External link" : "Custom link"}: {value}
+          </option>
+        ) : null}
         {pages.map((p) => (
           <option key={p.id} value={p.path}>
             {p.group}: {p.label}

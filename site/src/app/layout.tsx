@@ -3,6 +3,7 @@ import { DM_Sans, Syne } from "next/font/google";
 import { THEME_BOOT_SCRIPT } from "@/lib/theme";
 import { MOTION_BOOT_SCRIPT } from "@/lib/motion";
 import { SiteMotion } from "@/components/site/SiteMotion";
+import { AnalyticsTracker } from "@/components/site/AnalyticsTracker";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -49,6 +50,7 @@ export default function RootLayout({
       >
         {children}
         <SiteMotion />
+        <AnalyticsTracker />
       </body>
     </html>
   );

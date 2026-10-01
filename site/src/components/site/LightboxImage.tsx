@@ -66,7 +66,7 @@ type LightboxImageProps = {
   imgClassName?: string;
   style?: CSSProperties;
   caption?: string;
-  /** Show the "Click to enlarge" chip. Default true. */
+  /** Deprecated and ignored: no visible "Click to enlarge" text is ever shown (aria-label only). */
   hint?: boolean;
   /** Stop click from bubbling (e.g. inside a parent click handler). */
   stopPropagation?: boolean;
@@ -79,7 +79,6 @@ export function LightboxImage({
   imgClassName,
   style,
   caption,
-  hint = true,
   stopPropagation = false,
 }: LightboxImageProps) {
   const [open, setOpen] = useState(false);
@@ -99,7 +98,6 @@ export function LightboxImage({
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={src} alt={alt} className={imgClassName} style={style} />
-        {hint ? <span className="lightbox-hint">Click to enlarge</span> : null}
       </button>
 
       <LightboxDialog

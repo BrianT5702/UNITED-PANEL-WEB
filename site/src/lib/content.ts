@@ -470,6 +470,146 @@ async function syncMissingDefaultSections() {
   }
 }
 
+/** Private row (not exported). Stops the Rockwool spec publish from running twice. */
+const CONTENT_PATCH_PAGE = "__cms_sync";
+const CONTENT_PATCH_KEY = "contentPatches";
+const ROCKWOOL_SPEC_PATCH_ID = "rockwool-specs-2026-09-28";
+
+const OLD_ROCKWOOL_CAPABILITY_BULLET =
+  "Technical details available on request — not published in full";
+const NEW_ROCKWOOL_CAPABILITY_BULLET =
+  "Standard range published — thickness, joint, skins and finishes";
+const OLD_ROCKWOOL_POINTS_NOTE =
+  "Full technical specifications and thickness ranges are available on enquiry — published figures will be added once approved.";
+const NEW_ROCKWOOL_POINTS_NOTE =
+  "Standard thickness, joint, skin and finish options are listed under Product range & data.";
+const OLD_ROCKWOOL_SPECS_NOTE =
+  "Stakeholder preview — final claims, thicknesses, and certificates subject to management approval.";
+
+function rockwoolSpecsArePlaceholder(rows: { label: string; value: string }[], lead?: string): boolean {
+  if ((lead ?? "").startsWith("Directional product data")) return true;
+  return rows.some(
+    (row) =>
+      row.label === "Panel type" ||
+      row.label === "Thickness range" ||
+      row.label === "Joint system" ||
+      row.value.includes("Available on enquiry"),
+  );
+}
+
+/**
+ * Replace the placeholder Rockwool spec block with the published UR® Rock-Panel range.
+ * Returns null when the page already has that range. One database apply is enough;
+ * later admin edits to the table are left in place.
+ */
+export function patchRockwoolPublishedSpecs(document: PageDocument): PageDocument | null {
+  const defaults = getDefaultPageDocument("products/rockwool");
+  const defaultSpecs = defaults.sections.find((section) => section.id === "rw-specs");
+  if (!defaultSpecs || defaultSpecs.type !== "specsTable") return null;
+
+  let changed = false;
+  const sections = document.sections.map((section) => {
+    if (section.id === "rw-capability" && section.type === "featureList") {
+      let itemsChanged = false;
+      const items = section.data.items.map((item) => {
+        if (item !== OLD_ROCKWOOL_CAPABILITY_BULLET) return item;
+        itemsChanged = true;
+        return NEW_ROCKWOOL_CAPABILITY_BULLET;
+      });
+      const buttons = (section.buttons ?? []).filter((button) => button.id !== "rw-cap-btn");
+      const buttonsChanged = buttons.length !== (section.buttons ?? []).length;
+      if (!itemsChanged && !buttonsChanged) return section;
+      changed = true;
+      return { ...section, data: { ...section.data, items }, buttons };
+    }
+
+    if (section.id === "rw-product" && section.type === "mediaText") {
+      if (section.data.linkLabel !== "Request specifications →") return section;
+      changed = true;
+      return { ...section, data: { ...section.data, linkLabel: "" } };
+    }
+
+    if (section.id === "rw-product-points" && section.type === "featureList") {
+      if (section.note !== OLD_ROCKWOOL_POINTS_NOTE) return section;
+      changed = true;
+      return { ...section, note: NEW_ROCKWOOL_POINTS_NOTE };
+    }
+
+    const isRockwoolSpecs =
+      section.type === "specsTable" &&
+      (section.id === "rw-specs" || section.data.title === "Specifications (RockWool)");
+    if (!isRockwoolSpecs || section.type !== "specsTable") return section;
+
+    const replaceTable = rockwoolSpecsArePlaceholder(section.data.rows, section.data.lead);
+    const buttons = (section.buttons ?? []).filter((button) => button.id !== "rw-specs-btn");
+    const buttonsChanged = buttons.length !== (section.buttons ?? []).length;
+    const noteChanged = section.note === OLD_ROCKWOOL_SPECS_NOTE;
+    if (!replaceTable && !buttonsChanged && !noteChanged) return section;
+
+    changed = true;
+    return {
+      ...section,
+      note: noteChanged ? undefined : section.note,
+      buttons,
+      data: replaceTable
+        ? {
+            ...section.data,
+            lead: defaultSpecs.data.lead,
+            rows: defaultSpecs.data.rows.map((row) => ({ ...row })),
+          }
+        : section.data,
+    };
+  });
+
+  if (!changed) return null;
+  return { ...document, sections };
+}
+
+async function readContentPatches(): Promise<string[]> {
+  const row = await prisma.contentSection.findUnique({
+    where: { page_key: { page: CONTENT_PATCH_PAGE, key: CONTENT_PATCH_KEY } },
+  });
+  if (!row) return [];
+  try {
+    const parsed = JSON.parse(row.data) as { ids?: unknown };
+    return Array.isArray(parsed.ids) ? parsed.ids.filter((id): id is string => typeof id === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+async function writeContentPatches(ids: string[]) {
+  const data = JSON.stringify({ ids });
+  await prisma.contentSection.upsert({
+    where: { page_key: { page: CONTENT_PATCH_PAGE, key: CONTENT_PATCH_KEY } },
+    create: { page: CONTENT_PATCH_PAGE, key: CONTENT_PATCH_KEY, data },
+    update: { data },
+  });
+}
+
+/** Publish the Rockwool spec range onto a saved page that still has the enquiry placeholder. */
+async function applyRockwoolSpecPatchOnce() {
+  const applied = await readContentPatches();
+  if (applied.includes(ROCKWOOL_SPEC_PATCH_ID)) return;
+
+  const row = await prisma.contentSection.findUnique({
+    where: { page_key: { page: "products/rockwool", key: "document" } },
+  });
+  if (row) {
+    try {
+      const saved = JSON.parse(row.data) as PageDocument;
+      if (Array.isArray(saved.sections)) {
+        const next = patchRockwoolPublishedSpecs(saved);
+        if (next) await savePageDocument("products/rockwool", next);
+      }
+    } catch {
+      return;
+    }
+  }
+
+  await writeContentPatches([...applied, ROCKWOOL_SPEC_PATCH_ID]);
+}
+
 export async function ensureSeeded() {
   const count = await prisma.contentSection.count({ where: { page: "home" } });
   if (count === 0) {
@@ -511,6 +651,10 @@ export async function ensureSeeded() {
 
   // Then fill any default blocks still missing from code defaults.
   await syncMissingDefaultSections();
+
+  // The Rockwool page is one CMS document, so a deploy merge keeps the whole
+  // server copy and the published spec table never lands. Apply it once.
+  await applyRockwoolSpecPatchOnce();
 
   const nav = await prisma.contentSection.findUnique({
     where: { page_key: { page: NAV_PAGE, key: NAV_KEY } },

@@ -18,6 +18,7 @@ export const REVEAL_GROUPS: Record<RevealKind, string[]> = {
   text: [
     "main .section-head > *",
     "main .capability > div:not(.capability-visual)",
+    "main .pb-collage-copy > *",
   ],
   card: [
     "main .product-grid > *",
@@ -32,6 +33,7 @@ export const REVEAL_GROUPS: Record<RevealKind, string[]> = {
     "main .cat-lib-grid > *",
     "main .profile-stats > li",
     "main .proof-item",
+    "main .pb-collage-tile",
   ],
   media: [
     "main .capability-visual",

@@ -7,6 +7,10 @@ export type SitePage = {
   group: PageGroup;
   /** True when created by an admin (not built into the app) */
   custom?: boolean;
+  /** Real public page that is not edited in the page editor (offered in link pickers only) */
+  linkOnly?: boolean;
+  /** Where the "Edit page" link goes for link-only pages */
+  editHref?: string;
 };
 
 /** Built-in editable public pages (always available) */
@@ -50,6 +54,59 @@ export const SITE_PAGES: SitePage[] = [
   { id: "virtual-tour", label: "Virtual Tour", path: "/virtual-tour", group: "Other" },
   { id: "contact", label: "Contact", path: "/contact", group: "Other" },
 ];
+
+/**
+ * Public pages that have their own admin screen (not the block editor). They are NOT in SITE_PAGES
+ * (no page document, no page switcher entry) but menu / button / link pickers must still offer them.
+ * Special routes such as /r/<id> (catalogue short links and QR codes) are not menu pages.
+ */
+export const LINK_ONLY_PAGES: SitePage[] = [
+  {
+    id: "catalogues",
+    label: "Catalogues",
+    path: "/catalogues",
+    group: "Other",
+    linkOnly: true,
+    editHref: "/admin/catalogues",
+  },
+];
+
+/** Pages to show in link pickers: editable pages plus link-only ones (no duplicates by path) */
+export function pagesForLinkPickers(pages: SitePage[]): SitePage[] {
+  const seen = new Set(pages.map((p) => p.path));
+  const extra = LINK_ONLY_PAGES.filter((p) => !seen.has(p.path));
+  if (extra.length === 0) return pages;
+  // keep each group together: insert extras after the last page of their group
+  const out = [...pages];
+  for (const e of extra) {
+    let at = -1;
+    out.forEach((p, i) => {
+      if (p.group === e.group) at = i;
+    });
+    out.splice(at >= 0 ? at + 1 : out.length, 0, e);
+  }
+  return out;
+}
+
+function normalizeLinkPath(href: string): string {
+  const clean = (href || "").trim();
+  if (!clean.startsWith("/")) return clean;
+  const noTail = clean.length > 1 ? clean.replace(/\/+$/, "") : clean;
+  return noTail.toLowerCase();
+}
+
+/** Find the picker page for a link (ignores a trailing slash and letter case; not query or #anchor) */
+export function findPageForHref(pages: SitePage[], href: string): SitePage | undefined {
+  const exact = pages.find((p) => p.path === href);
+  if (exact) return exact;
+  const want = normalizeLinkPath(href);
+  return pages.find((p) => normalizeLinkPath(p.path) === want);
+}
+
+/** Admin URL to edit a page (own screen for link-only pages) */
+export function adminEditHrefForPage(page: SitePage): string {
+  return page.editHref || adminEditHref(page.id);
+}
 
 /** Groups admins can put a new empty page into */
 export const CREATABLE_PAGE_GROUPS: Exclude<PageGroup, "Home">[] = ["About", "Products", "Other"];

@@ -494,6 +494,9 @@ export function CataloguesManager() {
           <Link className="ve-tool-btn ve-bar-link" href="/admin/edit">
             ← Back to site editor
           </Link>
+          <Link className="ve-tool-btn ve-bar-link is-dashboard" href="/admin/dashboard" title="See visitor statistics">
+            Dashboard
+          </Link>
           <a className="ve-tool-btn ve-bar-link" href="/catalogues" target="_blank" rel="noreferrer">
             View public page ↗
           </a>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { PageSection, TabsSectionData } from "@/lib/page-document";
 import {
   cardGridLayout,
+  COLLAGE_MAX_PHOTOS,
   gridClass,
   proofColumnsClass,
   imageAspectStyle,
@@ -207,6 +208,44 @@ export function SectionView({
             </div>
           </div>
           {foot}
+        </section>
+      );
+    }
+    case "photoCollage": {
+      const d = section.data;
+      const photos = (d.items || []).filter((p) => p.src?.trim()).slice(0, COLLAGE_MAX_PHOTOS);
+      return (
+        <section
+          className={`section pb-collage ${nested ? "pb-nested" : ""}`}
+          id={anchorId}
+          data-photo-side={d.photoSide === "left" ? "left" : "right"}
+          data-count={photos.length}
+        >
+          <div className="pb-collage-grid">
+            <span className="pb-collage-accent" aria-hidden="true" />
+            <div className="pb-collage-copy">
+              {d.eyebrow ? <p className="eyebrow">{d.eyebrow}</p> : null}
+              {d.title ? <RichText as="h2" text={d.title} /> : null}
+              {d.body ? (
+                <div className="pb-collage-body">
+                  <RichText text={d.body} paragraphs />
+                </div>
+              ) : null}
+              {actions}
+            </div>
+            {photos.map((photo, index) => (
+              <div className="pb-collage-tile pb-photo-frame" data-slot={index + 1} key={photo.id}>
+                <LightboxImage
+                  src={photo.src}
+                  alt={photo.alt || d.title || ""}
+                  caption={photo.alt || undefined}
+                  hint={false}
+                  style={imageFocusStyle(photo.focus)}
+                />
+              </div>
+            ))}
+          </div>
+          <SectionFoot note={footnote} actions={null} />
         </section>
       );
     }

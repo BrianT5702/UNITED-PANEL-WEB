@@ -1,0 +1,14 @@
+{
+  "source": "DB-IP.com IP to City Lite + IP to Country Lite",
+  "license": "CC BY 4.0 - attribution: IP Geolocation by DB-IP (https://db-ip.com)",
+  "month": "2026-09",
+  "builtAt": "2026-10-01T04:58:57.229Z",
+  "v4Ranges": 357325,
+  "v6Ranges": 359845,
+  "cityMonth": "2026-09",
+  "places": 25938,
+  "cityV4Ranges": 2251771,
+  "cityV6Ranges": 2347414,
+  "cityBytes": 4096382,
+  "countryMonth": "2026-09"
+}

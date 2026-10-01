@@ -68,9 +68,7 @@ export function OverviewSlideshow({
         className="overview-slideshow-enlarge"
         onClick={() => setLightboxOpen(true)}
         aria-label={`Enlarge image: ${label}`}
-      >
-        <span className="lightbox-hint">Click to enlarge</span>
-      </button>
+      />
       {slides.length > 1 ? (
         <div className="overview-slideshow-dots">
           {slides.map((item, i) => (

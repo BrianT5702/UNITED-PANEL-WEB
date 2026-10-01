@@ -5,7 +5,9 @@ import { useState } from "react";
 import type { NavItem } from "@/lib/types";
 import {
   CREATABLE_PAGE_GROUPS,
-  adminEditHref,
+  adminEditHrefForPage,
+  findPageForHref,
+  pagesForLinkPickers,
   type PageGroup,
   type SitePage,
 } from "@/lib/pages";
@@ -14,8 +16,10 @@ import { LogoutButton } from "@/components/admin/LogoutButton";
 import { AdminGuide, AdminGuideButton } from "@/components/admin/AdminGuide";
 
 function pageByPath(pages: SitePage[], href: string) {
-  return pages.find((p) => p.path === href);
+  return findPageForHref(pages, href);
 }
+
+const CUSTOM_LINK = "__custom__";
 
 export function NavEditor({
   initial,
@@ -25,7 +29,9 @@ export function NavEditor({
   initialPages: SitePage[];
 }) {
   const [items, setItems] = useState(() => cloneNav(initial));
-  const [pages, setPages] = useState(initialPages);
+  const [editablePages, setPages] = useState(initialPages);
+  // Link pickers also offer pages with their own admin screen (e.g. Catalogues)
+  const pages = pagesForLinkPickers(editablePages);
   const [saving, setSaving] = useState(false);
   const [creating, setCreating] = useState(false);
   const [message, setMessage] = useState("");
@@ -138,6 +144,9 @@ export function NavEditor({
           <Link className="ve-tool-btn ve-bar-link" href="/admin/catalogues">
             Catalogues
           </Link>
+          <Link className="ve-tool-btn ve-bar-link is-dashboard" href="/admin/dashboard" title="See visitor statistics">
+            Dashboard
+          </Link>
         </div>
         <div className="ve-toolbar-actions">
           {message ? <span className="ve-msg">{message}</span> : null}
@@ -228,12 +237,15 @@ export function NavEditor({
                   <label>
                     Page
                     <select
-                      value={matched ? matched.path : ""}
+                      value={matched ? matched.path : item.href ? CUSTOM_LINK : ""}
                       onChange={(e) => {
-                        if (e.target.value) assignPage(index, e.target.value);
+                        if (e.target.value && e.target.value !== CUSTOM_LINK) assignPage(index, e.target.value);
                       }}
                     >
-                      {!matched ? <option value="">Choose a page…</option> : null}
+                      {!matched && !item.href ? <option value="">Choose a page…</option> : null}
+                      {!matched && item.href ? (
+                        <option value={CUSTOM_LINK}>Custom link: {item.href}</option>
+                      ) : null}
                       {pages.map((p) => (
                         <option key={p.id} value={p.path}>
                           {p.group}: {p.label}
@@ -254,7 +266,9 @@ export function NavEditor({
                     {matched ? (
                       <>
                         {" · "}
-                        <a href={adminEditHref(matched.id)}>Edit page</a>
+                        <a href={adminEditHrefForPage(matched)}>
+                          {matched.linkOnly ? "Manage page" : "Edit page"}
+                        </a>
                       </>
                     ) : null}
                   </p>
@@ -277,12 +291,16 @@ export function NavEditor({
                           <label>
                             Page
                             <select
-                              value={childPage ? childPage.path : ""}
+                              value={childPage ? childPage.path : child.href ? CUSTOM_LINK : ""}
                               onChange={(e) => {
-                                if (e.target.value) assignChildPage(index, cIndex, e.target.value);
+                                if (e.target.value && e.target.value !== CUSTOM_LINK)
+                                  assignChildPage(index, cIndex, e.target.value);
                               }}
                             >
-                              {!childPage ? <option value="">Choose…</option> : null}
+                              {!childPage && !child.href ? <option value="">Choose…</option> : null}
+                              {!childPage && child.href ? (
+                                <option value={CUSTOM_LINK}>Custom link: {child.href}</option>
+                              ) : null}
                               {pages.map((p) => (
                                 <option key={p.id} value={p.path}>
                                   {p.label}

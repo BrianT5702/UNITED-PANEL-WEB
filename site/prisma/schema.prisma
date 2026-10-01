@@ -37,3 +37,73 @@ model CatalogueItem {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+// ── Analytics (first-party, privacy-friendly: no cookies, no IP addresses stored) ──
+// One row per visit ("session"; 30 minutes of inactivity starts a new one).
+model AnalyticsSession {
+  id           String   @id // random id made by the visitor's browser
+  visitorId    String // anonymous random id kept in the browser (not a cookie)
+  startedAt    DateTime @default(now())
+  lastSeenAt   DateTime @default(now())
+  country      String   @default("Unknown") // from a host header or an offline lookup, never the IP itself
+  region       String? // state / province (approximate, from the offline lookup)
+  city         String? // city (approximate, from the offline lookup)
+  device       String   @default("desktop") // desktop | mobile | tablet
+  browser      String   @default("Other")
+  os           String   @default("Other")
+  language     String?
+  screenW      Int?
+  screenH      Int?
+  source       String   @default("direct") // direct | search | social | email | campaign | referral
+  sourceName   String? // e.g. google.com, facebook.com or the utm_source
+  refHost      String? // referring domain only (never the full URL)
+  utmSource    String?
+  utmMedium    String?
+  utmCampaign  String?
+  entryPath    String
+  exitPath     String
+  pageviews    Int      @default(1)
+  isNewVisitor Boolean  @default(true)
+
+  views  AnalyticsPageview[]
+  events AnalyticsEvent[]
+
+  @@index([startedAt])
+  @@index([lastSeenAt])
+  @@index([visitorId, startedAt])
+}
+
+// One row per page opened (including in-site navigation).
+model AnalyticsPageview {
+  id        String   @id // random id made by the visitor's browser
+  sessionId String
+  visitorId String
+  path      String
+  createdAt DateTime @default(now())
+  activeMs  Int      @default(0) // time the page was visible and being used
+  scrollPct Int      @default(0) // deepest scroll, 0–100
+
+  session AnalyticsSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([path, createdAt])
+  @@index([sessionId])
+}
+
+// Clicks that matter: downloads, QR scans, outbound / WhatsApp / phone / email links, form submits.
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  sessionId String
+  visitorId String
+  type      String // download | qr | outbound | whatsapp | phone | email | form
+  path      String // page the visitor was on
+  target    String? // file path, link, number …
+  label     String? // e.g. catalogue id for QR scans
+  createdAt DateTime @default(now())
+
+  session AnalyticsSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([type, createdAt])
+  @@index([sessionId])
+}

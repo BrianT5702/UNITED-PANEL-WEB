@@ -447,6 +447,31 @@ export type StatsSectionData = {
   note?: string;
 };
 
+/**
+ * Photo collage: text beside a staggered mosaic of up to 5 photos (projects showcase).
+ * Photo order = mosaic slots: 1 tall (outer edge), 2 top, 3 bottom beside the tall one,
+ * 4 bottom towards the text, 5 bottom under the text.
+ */
+export type PhotoCollageSectionData = {
+  eyebrow?: string;
+  title: string;
+  body: string;
+  items: GalleryItem[];
+  /** Which side the photos sit on (default right) */
+  photoSide?: "left" | "right";
+};
+
+export const COLLAGE_MAX_PHOTOS = 5;
+
+/** Plain names for each mosaic slot (editor photo list) */
+export const COLLAGE_SLOT_LABELS = [
+  "Tall photo",
+  "Top photo",
+  "Bottom, beside tall",
+  "Bottom middle",
+  "Bottom, under text",
+];
+
 export type TabPanel = {
   id: string;
   label: string;
@@ -483,7 +508,8 @@ export type PageSection =
   | (SectionBase & { type: "contactCta"; data: ContactCtaSectionData })
   | (SectionBase & { type: "callout"; data: CalloutSectionData })
   | (SectionBase & { type: "stats"; data: StatsSectionData })
-  | (SectionBase & { type: "tabs"; data: TabsSectionData });
+  | (SectionBase & { type: "tabs"; data: TabsSectionData })
+  | (SectionBase & { type: "photoCollage"; data: PhotoCollageSectionData });
 
 /** Buttons for a section (supports older hero / CTA fields) */
 export function resolveSectionButtons(section: PageSection): HeroButton[] {
@@ -563,6 +589,7 @@ export const SECTION_TYPE_LABELS: Record<SectionType, string> = {
   callout: "Highlight note",
   stats: "Big numbers",
   tabs: "Tabs",
+  photoCollage: "Photo collage",
 };
 
 /** Short plain-language help for the add-section picker */
@@ -581,6 +608,8 @@ export const SECTION_TYPE_HELP: Record<SectionType, string> = {
   callout: "One important sentence in a standout box.",
   stats: "Large figures with short labels (year, location, capacity).",
   tabs: "Several inner pages in one block — Overview vs Specs, for example.",
+  photoCollage:
+    "Heading, text and a button beside a staggered mosaic of 3–5 photos — great for projects or the factory.",
 };
 
 export const ADDABLE_SECTION_TYPES: SectionType[] = [
@@ -593,6 +622,7 @@ export const ADDABLE_SECTION_TYPES: SectionType[] = [
   "specsTable",
   "dataTable",
   "gallery",
+  "photoCollage",
   "jointDetails",
   "contactCta",
   "callout",
@@ -607,6 +637,7 @@ export const COMMON_SECTION_TYPES: SectionType[] = [
   "mediaText",
   "cardGrid",
   "gallery",
+  "photoCollage",
   "proof",
   "contactCta",
   "callout",
@@ -639,7 +670,7 @@ export const SECTION_TYPE_GROUPS: {
     id: "photos",
     label: "Photos & cards",
     hint: "Pictures, galleries, and clickable cards",
-    types: ["mediaText", "cardGrid", "gallery", "featureList"],
+    types: ["mediaText", "photoCollage", "cardGrid", "gallery", "featureList"],
   },
   {
     id: "tables",
@@ -727,6 +758,26 @@ export function createEmptySection(type: SectionType): PageSection {
         id,
         type,
         data: { eyebrow: "Section label", title: "Type heading here", body: "Type your text here." },
+      };
+    case "photoCollage":
+      return {
+        id,
+        type,
+        buttons: [
+          { id: newId("btn"), label: "Browse more", href: "/virtual-tour", style: "primary", action: "link" },
+        ],
+        data: {
+          eyebrow: "Our projects",
+          title: "Type heading here",
+          body: "Type a short introduction here.",
+          photoSide: "right",
+          items: [
+            { id: newId("ph"), src: "", alt: "" },
+            { id: newId("ph"), src: "", alt: "" },
+            { id: newId("ph"), src: "", alt: "" },
+            { id: newId("ph"), src: "", alt: "" },
+          ],
+        },
       };
     case "mediaText":
       return {
