@@ -51,3 +51,8 @@ agent-transcripts/
 
 # Print-ready catalogue artwork (large .ai/.tif/.psd source files — keep local)
 /PUR/
+
+# SQLite backups (contain admin session tokens + CMS data) - never commit
+**/prisma/*.bak*
+**/*.db.bak*
+*.bak

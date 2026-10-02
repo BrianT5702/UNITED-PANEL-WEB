@@ -2,6 +2,7 @@ import { createHash } from "crypto";
 import { promises as fs } from "fs";
 import path from "path";
 import { prisma } from "./db";
+import { ENQUIRY_PAGE } from "./enquiries";
 
 export const CMS_SNAPSHOT_VERSION = 1 as const;
 
@@ -93,7 +94,7 @@ export function exportCmsSnapshot(): Promise<CmsSnapshot | null> {
 
 async function exportNow(): Promise<CmsSnapshot | null> {
   const rows = await prisma.contentSection.findMany({
-    where: { page: { not: SYNC_STATE_PAGE } },
+    where: { page: { notIn: [SYNC_STATE_PAGE, ENQUIRY_PAGE] } },
     orderBy: [{ page: "asc" }, { key: "asc" }],
   });
 
@@ -155,7 +156,7 @@ export function importCmsSnapshot(
 
     let updated = 0;
     for (const section of file.snapshot.sections) {
-      if (!section?.page || !section?.key || section.page === SYNC_STATE_PAGE) continue;
+      if (!section?.page || !section?.key || section.page === SYNC_STATE_PAGE || section.page === ENQUIRY_PAGE) continue;
       const data = serializeDataField(section.data);
       await prisma.contentSection.upsert({
         where: { page_key: { page: section.page, key: section.key } },

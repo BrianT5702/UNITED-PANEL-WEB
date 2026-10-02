@@ -6,7 +6,10 @@ import { defaultPirContent, type PirContent } from "./pir";
 import { DEFAULT_SITE_NAV, normalizeNavItems, cloneNav } from "./nav";
 import type { PageDocument, PageSection } from "./page-document";
 import { repairApplicationSlideshow, repairCertCardGrids, repairSectionNotes, stripRichTextImages } from "./page-document";
-import { getDefaultPageDocument } from "./page-defaults";
+import { getDefaultPageDocument, legacyContactDocument } from "./page-defaults";
+import { CAREER_ENQUIRY_HREF } from "./phase2-documents";
+import { promises as fsp } from "fs";
+import path from "path";
 import {
   SITE_PAGES,
   buildCustomPageMeta,
@@ -610,6 +613,113 @@ async function applyRockwoolSpecPatchOnce() {
   await writeContentPatches([...applied, ROCKWOOL_SPEC_PATCH_ID]);
 }
 
+const CONTACT_PAGE_PATCH_ID = "contact-page-offices-form-2026-10-02";
+const CAREER_LINK_PATCH_ID = "career-enquiry-subject-link-2026-10-02";
+
+/** Copy a saved page document to content/backups before a patch changes it (best effort). */
+async function backupSavedDocument(pageId: string, raw: string, tag: string) {
+  try {
+    const dir = path.join(process.cwd(), "content", "backups");
+    await fsp.mkdir(dir, { recursive: true });
+    const stamp = new Date().toISOString().replace(/[-:T]/g, "").slice(0, 14);
+    const name = `${pageId.replace(/[^a-z0-9]+/gi, "-")}-document-before-${tag}-${stamp}.json`;
+    await fsp.writeFile(path.join(dir, name), raw, "utf8");
+  } catch (err) {
+    console.error("[content] could not write backup", err);
+  }
+}
+
+function sortedJson(value: unknown): string {
+  return JSON.stringify(value, (_k, v) =>
+    v && typeof v === "object" && !Array.isArray(v)
+      ? Object.fromEntries(Object.entries(v as Record<string, unknown>).sort(([a], [b]) => (a < b ? -1 : 1)))
+      : v,
+  );
+}
+
+/**
+ * Career box "Send an enquiry" button → Contact page with the subject pre-filled.
+ * Only rewrites a button/link that still points at plain /contact.
+ */
+export function patchCareerEnquiryLink(document: PageDocument): PageDocument | null {
+  const isPlainContact = (href?: string) => (href || "").trim().replace(/\/+$/, "").toLowerCase() === "/contact";
+  let changed = false;
+  const sections = document.sections.map((section) => {
+    if (section.type !== "contactCta") return section;
+    let next: PageSection = section;
+    if (section.buttons?.some((b) => isPlainContact(b.href))) {
+      changed = true;
+      next = {
+        ...next,
+        buttons: section.buttons.map((b) => (isPlainContact(b.href) ? { ...b, href: CAREER_ENQUIRY_HREF } : b)),
+      } as PageSection;
+    }
+    if (section.data.ctaLabel && isPlainContact(section.data.ctaHref)) {
+      changed = true;
+      next = { ...next, data: { ...(next.data as object), ctaHref: CAREER_ENQUIRY_HREF } } as PageSection;
+    }
+    return next;
+  });
+  return changed ? { ...document, sections } : null;
+}
+
+/**
+ * One-time upgrades of saved pages (each runs once per database, backup written first):
+ * - Contact page: an untouched old copy becomes the new offices + map + enquiry form page.
+ *   (A page the admin edited is left alone; sync then just adds the new blocks.)
+ * - Career page: the enquiry button opens /contact?subject=Enquiries%20about%20jobs.
+ */
+async function applyContactAndCareerPatchesOnce() {
+  const applied = await readContentPatches();
+  const next = [...applied];
+
+  if (!applied.includes(CONTACT_PAGE_PATCH_ID)) {
+    const row = await prisma.contentSection.findUnique({
+      where: { page_key: { page: "contact", key: "document" } },
+    });
+    if (row) {
+      try {
+        const saved = JSON.parse(row.data) as PageDocument;
+        const legacy = legacyContactDocument();
+        if (
+          Array.isArray(saved.sections) &&
+          sortedJson(saved.sections) === sortedJson(legacy.sections) &&
+          (saved.title || "") === legacy.title
+        ) {
+          await backupSavedDocument("contact", row.data, "offices-form");
+          await savePageDocument("contact", getDefaultPageDocument("contact"));
+        }
+      } catch {
+        /* leave the saved page as it is */
+      }
+    }
+    next.push(CONTACT_PAGE_PATCH_ID);
+  }
+
+  if (!applied.includes(CAREER_LINK_PATCH_ID)) {
+    const row = await prisma.contentSection.findUnique({
+      where: { page_key: { page: "career", key: "document" } },
+    });
+    if (row) {
+      try {
+        const saved = JSON.parse(row.data) as PageDocument;
+        if (Array.isArray(saved.sections)) {
+          const patched = patchCareerEnquiryLink(saved);
+          if (patched) {
+            await backupSavedDocument("career", row.data, "subject-link");
+            await savePageDocument("career", patched);
+          }
+        }
+      } catch {
+        /* leave the saved page as it is */
+      }
+    }
+    next.push(CAREER_LINK_PATCH_ID);
+  }
+
+  if (next.length !== applied.length) await writeContentPatches(next);
+}
+
 export async function ensureSeeded() {
   const count = await prisma.contentSection.count({ where: { page: "home" } });
   if (count === 0) {
@@ -648,6 +758,9 @@ export async function ensureSeeded() {
   // Load content/cms-snapshot.json. deploy.sh merges server edits into that file
   // before restart, so this import does not replace live pages with a raw git pull.
   await importCmsSnapshot();
+
+  // One-time page upgrades (Contact page rebuild, Career enquiry link) before default-block sync.
+  await applyContactAndCareerPatchesOnce();
 
   // Then fill any default blocks still missing from code defaults.
   await syncMissingDefaultSections();

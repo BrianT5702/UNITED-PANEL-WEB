@@ -4,6 +4,9 @@
  */
 import type { PageDocument, PageSection } from "./page-document";
 
+/** Career "Send an enquiry" button: Contact page with the subject pre-filled */
+export const CAREER_ENQUIRY_HREF = "/contact?subject=Enquiries%20about%20jobs";
+
 const CONTACT = {
   email: "sales@ur.com.my",
   phone: "+60 00-000 0000",
@@ -982,6 +985,7 @@ export function careerDocument(): PageDocument {
         title: "Interested in working with us?",
         body: "Send your enquiry or CV to our team — we will follow up when roles are open.",
         ctaLabel: "Send an enquiry →",
+        ctaHref: CAREER_ENQUIRY_HREF,
       }),
     ],
   };

@@ -24,6 +24,9 @@ import { LightboxImage } from "@/components/site/LightboxImage";
 import { DetailsCloseButton } from "@/components/site/DetailsCloseButton";
 import type { ReactNode } from "react";
 import { RichText } from "@/components/site/RichText";
+import { ContactValue } from "@/components/site/ContactValue";
+import { OfficeMap } from "@/components/site/OfficeMap";
+import { ContactFormLive } from "@/components/site/ContactFormBody";
 import { htmlToPlainText, isRichHtml } from "@/lib/sanitize-html";
 
 function SectionFoot({
@@ -625,6 +628,74 @@ export function SectionView({
                   ))}
                 </ul>
               ) : null}
+            </div>
+          </div>
+          {foot}
+        </section>
+      );
+    }
+    case "locations": {
+      const d = section.data;
+      const offices = d.offices || [];
+      return (
+        <section className={`section pb-locations ${nested ? "pb-nested" : ""}`} id={anchorId}>
+          {d.eyebrow || d.title || d.body ? (
+            <div className="section-head">
+              {d.eyebrow ? <p className="eyebrow">{d.eyebrow}</p> : null}
+              {d.title ? <RichText as="h2" text={d.title} /> : null}
+              {d.body ? <RichText as="p" className="section-lead" text={d.body} /> : null}
+            </div>
+          ) : null}
+          <div className="office-grid">
+            {offices.map((o) => (
+              <article className="office-card" key={o.id}>
+                <header className="office-card-head">
+                  <RichText as="h3" text={o.name} />
+                  {o.role ? <RichText as="p" className="office-role" text={o.role} /> : null}
+                </header>
+                {o.companies ? <RichText as="p" className="office-companies" text={o.companies} /> : null}
+                {o.address ? <RichText as="p" className="office-address" text={o.address} /> : null}
+                {o.rows?.length ? (
+                  <dl className="office-rows">
+                    {o.rows
+                      .filter((r) => r.value?.trim())
+                      .map((r) => (
+                        <div key={r.id}>
+                          <dt>{r.label}</dt>
+                          <dd>
+                            <ContactValue label={r.label} value={r.value} />
+                          </dd>
+                        </div>
+                      ))}
+                  </dl>
+                ) : null}
+              </article>
+            ))}
+          </div>
+          <OfficeMap
+            title={d.mapTitle}
+            pins={offices.map((o) => ({
+              id: o.id,
+              label: [o.name, o.role].filter(Boolean).join(" · "),
+              query: o.mapQuery || "",
+            }))}
+          />
+          {foot}
+        </section>
+      );
+    }
+    case "contactForm": {
+      const d = section.data;
+      return (
+        <section className={`section section-compact pb-enquiry ${nested ? "pb-nested" : ""}`} id={anchorId}>
+          <div className="enq-layout">
+            <div className="enq-intro">
+              {d.eyebrow ? <p className="eyebrow">{d.eyebrow}</p> : null}
+              <RichText as="h2" text={d.title} />
+              {d.body ? <RichText as="p" className="section-lead" text={d.body} /> : null}
+            </div>
+            <div className="enq-card">
+              <ContactFormLive data={d} />
             </div>
           </div>
           {foot}

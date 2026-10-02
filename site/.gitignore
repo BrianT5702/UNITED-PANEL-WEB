@@ -45,3 +45,8 @@ prisma/*.db-wal
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# SQLite backups (contain admin session tokens + CMS data) - never commit
+prisma/*.bak*
+*.db.bak*
+*.bak

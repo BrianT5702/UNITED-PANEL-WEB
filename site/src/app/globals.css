@@ -12986,3 +12986,524 @@ button.an2-loc-row:focus-visible { outline: 2px solid var(--an2-red); outline-of
   .an2-loc-sub.is-net .an2-loc-row.is-l2 { padding-left: 1.5rem; }
   .an2-loc-tag { display: none; }
 }
+
+/* ───────────── Contact page: offices, map and enquiry form ───────────── */
+.pb-locations .section-head .section-lead {
+  max-width: 60ch;
+}
+
+.office-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr));
+  gap: clamp(0.85rem, 1.6vw, 1.25rem);
+  align-items: stretch;
+}
+
+.office-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-width: 0;
+  padding: 1.35rem 1.4rem 1.25rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+}
+
+.office-card-head h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  line-height: 1.2;
+}
+
+.office-role {
+  margin: 0.25rem 0 0;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.office-companies,
+.office-address {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.office-companies {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+.office-address {
+  color: var(--muted);
+}
+
+.office-rows {
+  margin: auto 0 0;
+  padding-top: 0.35rem;
+}
+
+.office-rows > div {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, 8.25rem) minmax(0, 1fr);
+  column-gap: 0.9rem;
+  align-items: baseline;
+  padding: 0.55rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.office-rows dt {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--steel);
+}
+
+.office-rows dd {
+  margin: 0;
+  min-width: 0;
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+
+.office-rows a,
+.enq-admin a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
+}
+
+.office-rows a:hover,
+.enq-admin a:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 560px) {
+  .office-rows > div {
+    grid-template-columns: 1fr;
+    row-gap: 0.1rem;
+  }
+}
+
+.office-map {
+  margin-top: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid var(--line);
+  background: var(--bg-elevated);
+}
+
+.office-map-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1rem;
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.office-map-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+}
+
+.office-map-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-right: auto;
+}
+
+.office-map-tab {
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--ghost-border);
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+}
+
+.office-map-tab:hover {
+  border-color: var(--ghost-border-hover);
+  background: var(--hover-fill);
+}
+
+.office-map-tab.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.office-map-open {
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
+}
+
+.office-map-frame {
+  height: clamp(280px, 42vw, 460px);
+  background: var(--bg-soft);
+}
+
+.office-map-frame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Enquiry form */
+.enq-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(1.25rem, 3.5vw, 3rem);
+  align-items: start;
+}
+
+@media (max-width: 880px) {
+  .enq-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.enq-intro h2 {
+  margin: 0 0 0.6rem;
+  font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+}
+
+.enq-intro .section-lead {
+  margin: 0;
+  color: var(--muted);
+  max-width: 44ch;
+}
+
+.enq-card {
+  padding: clamp(1.1rem, 2.4vw, 1.75rem);
+  background: var(--bg-elevated);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+}
+
+.enq-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.enq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 560px) {
+  .enq-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.enq-field {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.enq-field > span,
+.enq-types legend {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--steel);
+}
+
+.enq-field input,
+.enq-field textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 0.7rem 0.85rem;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 0;
+}
+
+.enq-field textarea {
+  resize: vertical;
+  min-height: 9rem;
+}
+
+.enq-field input:focus,
+.enq-field textarea:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+  border-color: var(--accent);
+}
+
+.enq-field input[aria-invalid="true"],
+.enq-field textarea[aria-invalid="true"] {
+  border-color: #d64545;
+}
+
+.enq-types {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.enq-types legend {
+  padding: 0;
+  margin-bottom: 0.45rem;
+}
+
+.enq-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.enq-chip {
+  position: relative;
+  cursor: pointer;
+}
+
+.enq-chip input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  cursor: pointer;
+}
+
+.enq-chip span {
+  display: inline-block;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.88rem;
+  border: 1px solid var(--ghost-border);
+  background: var(--ghost-bg);
+}
+
+.enq-chip:hover span {
+  border-color: var(--ghost-border-hover);
+}
+
+.enq-chip input:checked + span {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  font-weight: 600;
+}
+
+.enq-chip input:focus-visible + span {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.enq-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.enq-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.enq-actions .btn {
+  min-width: 11rem;
+}
+
+.enq-error {
+  margin: 0;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.92rem;
+  color: #d64545;
+  border: 1px solid #d64545;
+  background: rgba(214, 69, 69, 0.08);
+}
+
+.enq-sent {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: start;
+  padding: 0.5rem 0;
+}
+
+.enq-sent strong {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+}
+
+.enq-sent p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.enq-form[data-preview="true"] {
+  pointer-events: none;
+}
+
+/* Editor extras (in the flow of the page, never on top of content) */
+.ve-office-rows-edit input,
+.ve-office-tools input,
+.ve-enq-settings input {
+  font: inherit;
+  width: 100%;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px dashed var(--ghost-border);
+  padding: 0.15rem 0;
+  outline: none;
+}
+
+.ve-office-rows-edit input:focus,
+.ve-office-tools input:focus,
+.ve-enq-settings input:focus {
+  border-bottom-color: var(--accent);
+}
+
+.ve-office-rows-edit dd {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ve-office-tools,
+.ve-enq-settings {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.ve-office-tools {
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--line);
+}
+
+.ve-office-move {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.ve-enq-settings {
+  margin-top: 1.25rem;
+  max-width: 40rem;
+}
+
+.ve-enq-types {
+  list-style: none;
+  margin: 0.3rem 0;
+  padding: 0;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.ve-enq-types li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ve-block-preview--locations .ve-block-preview-inner {
+  background:
+    linear-gradient(#c45c26, #c45c26) 8% 22% / 26% 5px no-repeat,
+    linear-gradient(#c45c26, #c45c26) 38% 22% / 26% 5px no-repeat,
+    linear-gradient(#c45c26, #c45c26) 68% 22% / 26% 5px no-repeat,
+    linear-gradient(#d4d4d8, #d4d4d8) 50% 85% / 84% 28% no-repeat,
+    #fff7ed;
+}
+
+.ve-block-preview--contactForm .ve-block-preview-inner {
+  background:
+    linear-gradient(#c45c26, #c45c26) 70% 82% / 24% 6px no-repeat,
+    linear-gradient(#d4d4d8, #d4d4d8) 66% 52% / 56% 14px no-repeat,
+    linear-gradient(#d4d4d8, #d4d4d8) 66% 22% / 56% 8px no-repeat,
+    linear-gradient(#d4d4d8, #d4d4d8) 14% 24% / 20% 5px no-repeat,
+    #fff7ed;
+}
+
+/* Admin: enquiries inbox */
+.enq-admin {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: clamp(1.25rem, 3vw, 2.25rem) var(--page-pad);
+}
+
+.enq-admin-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.enq-admin-head h1 {
+  margin: 0 0 0.3rem;
+  font-family: var(--font-display);
+}
+
+.enq-admin-head p,
+.enq-admin-empty {
+  margin: 0;
+  color: var(--muted);
+  max-width: 52ch;
+}
+
+.enq-admin-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.enq-admin-item {
+  padding: 1rem 1.15rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line);
+  display: grid;
+  gap: 0.4rem;
+  justify-items: start;
+}
+
+.enq-admin-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.3rem 1rem;
+  width: 100%;
+}
+
+.enq-admin-top span,
+.enq-admin-meta,
+.enq-admin-types {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.enq-admin-meta,
+.enq-admin-types,
+.enq-admin-msg {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.enq-admin-msg {
+  white-space: pre-wrap;
+}

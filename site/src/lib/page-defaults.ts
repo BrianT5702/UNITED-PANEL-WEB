@@ -903,7 +903,8 @@ function servicesDocument(): PageDocument {
   return phase2ServicesDocument();
 }
 
-function contactDocument(): PageDocument {
+/** The Contact page as first shipped (kept so an untouched saved copy can be upgraded safely) */
+export function legacyContactDocument(): PageDocument {
   const contact = defaultHomeContent.contact;
   return {
     title: "Contact Us",
@@ -926,6 +927,97 @@ function contactDocument(): PageDocument {
           whatsapp: contact.whatsapp,
           ctaLabel: "Email sales",
           ctaHref: `mailto:${contact.email}`,
+        },
+      },
+    ],
+  };
+}
+
+/** Contact details copied from the previous site (ur.com.my/contact-information-23.aspx) */
+function contactDocument(): PageDocument {
+  return {
+    title: "Contact Us",
+    chrome: "default",
+    sections: [
+      {
+        id: "contact-hero",
+        type: "richText",
+        data: {
+          eyebrow: "Get in touch",
+          title: "Contact Us",
+          body: "For product and service enquiries, kindly contact us at the offices below, or send us a message using the enquiry form.",
+        },
+      },
+      {
+        id: "contact-offices",
+        type: "locations",
+        data: {
+          eyebrow: "Our offices",
+          title: "Where to find us",
+          mapTitle: "Location map",
+          offices: [
+            {
+              id: "office-jb",
+              name: "Johor Bahru",
+              role: "Headquarters",
+              companies:
+                "UNITED PANEL-SYSTEM (M) SDN. BHD. (772009-A)\nUNITED REFRIGERATION-SYSTEM (M) SDN. BHD. (772011-D)\nUNITED COLD-SYSTEM (M) SDN. BHD. (748674-K)",
+              address: "PTD 124299, Jalan Kempas Lama,\nKampung Seelong Jaya, 81300 Skudai,\nJohor, Malaysia.",
+              rows: [
+                { id: "jb-tel", label: "Telephone", value: "+607 5951588 / +607 5951288" },
+                { id: "jb-fax", label: "Facsimile", value: "+607 5951177 / 5951122" },
+                { id: "jb-email", label: "Email", value: "united@ur.com.my" },
+                { id: "jb-export", label: "Exports / International Enquiry", value: "ireneloh@ur.com.my" },
+              ],
+              mapQuery: "1.614133,103.716896",
+            },
+            {
+              id: "office-kl",
+              name: "Kuala Lumpur",
+              role: "Project Sales & Services",
+              companies: "UR REFRIGERATION SDN. BHD. (303292-A)",
+              address:
+                "No.15, Jalan 7/152, Taman Perindustrian Bukit OUG,\n58200 Kuala Lumpur,\nWilayah Persekutuan Kuala Lumpur, Malaysia.",
+              rows: [
+                { id: "kl-tel", label: "Telephone", value: "+603 77831181" },
+                { id: "kl-fax", label: "Facsimile", value: "+603 77831161" },
+              ],
+              mapQuery: "3.06925266,101.66032434",
+            },
+            {
+              id: "office-ucs",
+              name: "Kuala Lumpur",
+              role: "Refrigeration Equipment Center",
+              companies: "UNITED COOLING SYSTEMS SDN. BHD. (904175-X)",
+              address:
+                "No.6, Jalan 6/152, Taman Perindustrian Bukit OUG,\n58200 Kuala Lumpur,\nWilayah Persekutuan Kuala Lumpur, Malaysia.",
+              rows: [
+                { id: "ucs-tel", label: "Telephone", value: "+603 77702800" },
+                { id: "ucs-fax", label: "Facsimile", value: "+603 77706800" },
+                { id: "ucs-web", label: "E-Commerce Website", value: "uncs.my" },
+              ],
+              mapQuery: "3.06847057,101.65920854",
+            },
+          ],
+        },
+      },
+      {
+        id: "contact-form",
+        type: "contactForm",
+        data: {
+          eyebrow: "Enquiry form",
+          title: "Send us a message",
+          body: "Tell us what you need and our team will get back to you. Fields marked * are required.",
+          enquiryTypes: [
+            "General Enquiry",
+            "Panels",
+            "Refrigeration Systems",
+            "Insulated Doors",
+            "Refrigeration Parts",
+            "Services",
+          ],
+          submitLabel: "Send message",
+          successMessage: "Thank you — your message has been sent. We will get back to you soon.",
         },
       },
     ],

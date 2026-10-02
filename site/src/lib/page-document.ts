@@ -434,6 +434,62 @@ export type ContactCtaSectionData = {
   ctaHref?: string;
 };
 
+/** One office / branch card on the Contact page (with its own map pin) */
+export type OfficeItem = {
+  id: string;
+  /** e.g. "Johor Bahru" */
+  name: string;
+  /** e.g. "Headquarters" */
+  role?: string;
+  /** Company names / registration numbers, one per line */
+  companies?: string;
+  address: string;
+  /** Telephone, Facsimile, Email … */
+  rows: ContactField[];
+  /** What the map shows: "lat,lng" or an address / place name */
+  mapQuery?: string;
+};
+
+export type LocationsSectionData = {
+  eyebrow?: string;
+  title?: string;
+  body?: string;
+  offices: OfficeItem[];
+  /** Small heading above the map */
+  mapTitle?: string;
+};
+
+export type ContactFormSectionData = {
+  eyebrow?: string;
+  title: string;
+  body?: string;
+  /** Tick-boxes for "What is your enquiry about?" (empty = none shown) */
+  enquiryTypes: string[];
+  submitLabel?: string;
+  successMessage?: string;
+};
+
+export const CONTACT_SUBJECT_MAX = 120;
+
+/** Clean a ?subject= value (or typed subject): no control characters or markup, one line, length-limited */
+export function cleanSubject(raw: unknown, max = CONTACT_SUBJECT_MAX): string {
+  if (typeof raw !== "string") return "";
+  return raw
+    .replace(/[\u0000-\u001f\u007f\u2028\u2029]+/g, " ")
+    .replace(/[<>]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, max);
+}
+
+/** Google Maps embed + "open" links from an editor-typed place (no API key needed) */
+export function officeMapEmbedUrl(query: string): string {
+  return `https://www.google.com/maps?q=${encodeURIComponent(query)}&z=16&output=embed`;
+}
+export function officeMapOpenUrl(query: string): string {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
+
 export type CalloutSectionData = {
   title?: string;
   body: string;
@@ -506,6 +562,8 @@ export type PageSection =
   | (SectionBase & { type: "gallery"; data: GallerySectionData })
   | (SectionBase & { type: "jointDetails"; data: JointDetailsSectionData })
   | (SectionBase & { type: "contactCta"; data: ContactCtaSectionData })
+  | (SectionBase & { type: "locations"; data: LocationsSectionData })
+  | (SectionBase & { type: "contactForm"; data: ContactFormSectionData })
   | (SectionBase & { type: "callout"; data: CalloutSectionData })
   | (SectionBase & { type: "stats"; data: StatsSectionData })
   | (SectionBase & { type: "tabs"; data: TabsSectionData })
@@ -586,6 +644,8 @@ export const SECTION_TYPE_LABELS: Record<SectionType, string> = {
   gallery: "Photo gallery",
   jointDetails: "Expandable details",
   contactCta: "Contact box",
+  locations: "Offices & map",
+  contactForm: "Enquiry form",
   callout: "Highlight note",
   stats: "Big numbers",
   tabs: "Tabs",
@@ -605,6 +665,9 @@ export const SECTION_TYPE_HELP: Record<SectionType, string> = {
   gallery: "A row of photos — switch to slideshow, logos, or document pages if needed.",
   jointDetails: "A closed box visitors open to see diagrams or extra detail.",
   contactCta: "Email, phone, WhatsApp, and a button that goes to Contact.",
+  locations: "Office cards (address, phone, fax, email) with a Google Map you can switch between offices.",
+  contactForm:
+    "A working enquiry form (name, email, phone, subject, message). Messages are saved for you under Admin → Enquiries.",
   callout: "One important sentence in a standout box.",
   stats: "Large figures with short labels (year, location, capacity).",
   tabs: "Several inner pages in one block — Overview vs Specs, for example.",
@@ -625,6 +688,8 @@ export const ADDABLE_SECTION_TYPES: SectionType[] = [
   "photoCollage",
   "jointDetails",
   "contactCta",
+  "locations",
+  "contactForm",
   "callout",
   "stats",
   "tabs",
@@ -682,7 +747,7 @@ export const SECTION_TYPE_GROUPS: {
     id: "layout",
     label: "Layout & contact",
     hint: "Tabs, expandable details, contact box",
-    types: ["tabs", "jointDetails", "contactCta"],
+    types: ["tabs", "jointDetails", "contactCta", "locations", "contactForm"],
   },
 ];
 
@@ -884,6 +949,43 @@ export function createEmptySection(type: SectionType): PageSection {
             { id: newId("cf"), label: "Phone", value: "" },
             { id: newId("cf"), label: "WhatsApp", value: "" },
           ],
+        },
+      };
+    case "locations":
+      return {
+        id,
+        type,
+        data: {
+          eyebrow: "Our offices",
+          title: "Where to find us",
+          mapTitle: "Location map",
+          offices: [
+            {
+              id: newId("of"),
+              name: "Office name",
+              role: "",
+              companies: "Company name",
+              address: "Type the address here",
+              rows: [
+                { id: newId("cf"), label: "Telephone", value: "" },
+                { id: newId("cf"), label: "Email", value: "" },
+              ],
+              mapQuery: "",
+            },
+          ],
+        },
+      };
+    case "contactForm":
+      return {
+        id,
+        type,
+        data: {
+          eyebrow: "Enquiry form",
+          title: "Send us a message",
+          body: "Fill in the form and our team will get back to you.",
+          enquiryTypes: ["General Enquiry", "Panels", "Refrigeration Systems", "Insulated Doors", "Refrigeration Parts", "Services"],
+          submitLabel: "Send message",
+          successMessage: "Thank you — your message has been sent. We will get back to you soon.",
         },
       };
     case "callout":

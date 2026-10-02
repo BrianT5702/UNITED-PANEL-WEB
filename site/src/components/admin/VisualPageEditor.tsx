@@ -43,7 +43,7 @@ import {
   resolveSlideshowIntervalMs,
   veilOpacity,
 } from "@/lib/page-document";
-import type { ContactField } from "@/lib/page-document";
+import type { ContactField, OfficeItem } from "@/lib/page-document";
 import { adminEditHref, livePathToAdminEdit, navItemsForAdminEdit, SITE_PAGES, type SitePage } from "@/lib/pages";
 import { SITE_NAV } from "@/lib/nav";
 import { defaultHomeContent } from "@/lib/defaults";
@@ -51,6 +51,8 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { AboutShell } from "@/components/site/AboutShell";
 import { LogoSlideshow } from "@/components/site/LogoSlideshow";
+import { OfficeMap } from "@/components/site/OfficeMap";
+import { ContactFormFields } from "@/components/site/ContactFormBody";
 import { LogoutButton } from "./LogoutButton";
 import { AdminGuide, AdminGuideButton } from "./AdminGuide";
 import { EImage, EText } from "./visual/Editable";
@@ -2030,6 +2032,201 @@ function EditableSection({
       );
       break;
     }
+    case "locations": {
+      const d = section.data;
+      const offices = d.offices || [];
+      const setOffices = (next: OfficeItem[]) => setData({ ...d, offices: next });
+      const patchOffice = (index: number, patch: Partial<OfficeItem>) =>
+        setOffices(offices.map((o, i) => (i === index ? { ...o, ...patch } : o)));
+      body = (
+        <section className={`section ve-block pb-locations ${nested ? "pb-nested" : ""}`}>
+          <div className="section-head">
+            <OptionalEText
+              as="p"
+              className="eyebrow"
+              value={d.eyebrow || ""}
+              onChange={(eyebrow) => setData({ ...d, eyebrow })}
+              addLabel="+ Add small label above title"
+              seedValue="Our offices"
+            />
+            <EText as="h2" value={d.title || ""} onChange={(title) => setData({ ...d, title })} />
+            <OptionalEText
+              as="p"
+              className="section-lead"
+              multiline
+              value={d.body || ""}
+              onChange={(body) => setData({ ...d, body })}
+              addLabel="+ Add intro text"
+              seedValue="Type a short introduction here."
+            />
+          </div>
+          <div className="office-grid">
+            {offices.map((o, index) => {
+              const rows = o.rows || [];
+              const setRows = (next: ContactField[]) => patchOffice(index, { rows: next });
+              return (
+                <article className="office-card ve-card" key={o.id}>
+                  <header className="office-card-head">
+                    <EText as="h3" value={o.name} onChange={(name) => patchOffice(index, { name })} />
+                    <EText as="p" className="office-role" value={o.role || ""} onChange={(role) => patchOffice(index, { role })} />
+                  </header>
+                  <EText as="p" className="office-companies" multiline value={o.companies || ""} onChange={(companies) => patchOffice(index, { companies })} />
+                  <EText as="p" className="office-address" multiline value={o.address} onChange={(address) => patchOffice(index, { address })} />
+                  <dl className="office-rows ve-office-rows-edit">
+                    {rows.map((r, ri) => (
+                      <div key={r.id}>
+                        <dt>
+                          <input
+                            value={r.label}
+                            aria-label="Row label"
+                            placeholder="Label"
+                            onChange={(e) => setRows(rows.map((x, i) => (i === ri ? { ...x, label: e.target.value } : x)))}
+                          />
+                        </dt>
+                        <dd>
+                          <input
+                            value={r.value}
+                            aria-label="Row value"
+                            placeholder="Value"
+                            onChange={(e) => setRows(rows.map((x, i) => (i === ri ? { ...x, value: e.target.value } : x)))}
+                          />
+                          <button type="button" className="ve-mini-btn" title="Remove row" onClick={() => setRows(rows.filter((_, i) => i !== ri))}>
+                            ×
+                          </button>
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <div className="ve-office-tools">
+                    <button type="button" className="ve-add-btn" onClick={() => setRows([...rows, { id: newId("cf"), label: "Telephone", value: "" }])}>
+                      + Add row
+                    </button>
+                    <label className="ve-inline-label">
+                      Map shows (place name, address or lat,lng)
+                      <input
+                        value={o.mapQuery || ""}
+                        placeholder="e.g. 1.614133,103.716896"
+                        onChange={(e) => patchOffice(index, { mapQuery: e.target.value })}
+                      />
+                    </label>
+                    <div className="ve-office-move">
+                      <button type="button" className="ve-mini-btn" title="Move earlier" disabled={index === 0} onClick={() => setOffices(reorder(offices, index, index - 1))}>
+                        ←
+                      </button>
+                      <button type="button" className="ve-mini-btn" title="Move later" disabled={index === offices.length - 1} onClick={() => setOffices(reorder(offices, index, index + 1))}>
+                        →
+                      </button>
+                      <button type="button" className="ve-mini-btn" title="Remove this office" onClick={() => setOffices(offices.filter((_, i) => i !== index))}>
+                        Remove office
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+          <button
+            type="button"
+            className="ve-add-btn"
+            onClick={() =>
+              setOffices([
+                ...offices,
+                {
+                  id: newId("of"),
+                  name: "Office name",
+                  role: "",
+                  companies: "Company name",
+                  address: "Type the address here",
+                  rows: [{ id: newId("cf"), label: "Telephone", value: "" }],
+                  mapQuery: "",
+                },
+              ])
+            }
+          >
+            + Add office
+          </button>
+          <OfficeMap
+            title={d.mapTitle}
+            pins={offices.map((o) => ({
+              id: o.id,
+              label: [o.name, o.role].filter(Boolean).join(" · "),
+              query: o.mapQuery || "",
+            }))}
+          />
+          <div className="ve-enq-settings">
+            <label className="ve-inline-label">
+              Map heading (leave empty to hide)
+              <input value={d.mapTitle || ""} placeholder="Location map" onChange={(e) => setData({ ...d, mapTitle: e.target.value })} />
+            </label>
+          </div>
+        </section>
+      );
+      break;
+    }
+    case "contactForm": {
+      const d = section.data;
+      const types = d.enquiryTypes || [];
+      const setTypes = (next: string[]) => setData({ ...d, enquiryTypes: next });
+      body = (
+        <section className={`section section-compact ve-block pb-enquiry ${nested ? "pb-nested" : ""}`}>
+          <div className="enq-layout">
+            <div className="enq-intro">
+              <OptionalEText
+                as="p"
+                className="eyebrow"
+                value={d.eyebrow || ""}
+                onChange={(eyebrow) => setData({ ...d, eyebrow })}
+                addLabel="+ Add small label above title"
+                seedValue="Enquiry form"
+              />
+              <EText as="h2" value={d.title} onChange={(title) => setData({ ...d, title })} />
+              <OptionalEText
+                as="p"
+                className="section-lead"
+                multiline
+                value={d.body || ""}
+                onChange={(body) => setData({ ...d, body })}
+                addLabel="+ Add intro text"
+                seedValue="Type a short introduction here."
+              />
+            </div>
+            <div className="enq-card">
+              <ContactFormFields data={d} preview />
+            </div>
+          </div>
+          <div className="ve-enq-settings">
+            <p className="ve-btns-toggle-meta">
+              Form settings — visitors’ messages are saved under Admin → Enquiries (nothing is emailed).
+            </p>
+            <label className="ve-inline-label">
+              Send button text
+              <input value={d.submitLabel || ""} placeholder="Send message" onChange={(e) => setData({ ...d, submitLabel: e.target.value })} />
+            </label>
+            <label className="ve-inline-label">
+              Message shown after sending
+              <input value={d.successMessage || ""} onChange={(e) => setData({ ...d, successMessage: e.target.value })} />
+            </label>
+            <div className="ve-inline-label">
+              Enquiry tick-boxes (leave empty to hide)
+              <ul className="ve-enq-types">
+                {types.map((t, i) => (
+                  <li key={i}>
+                    <input value={t} aria-label="Tick-box text" onChange={(e) => setTypes(types.map((x, j) => (j === i ? e.target.value : x)))} />
+                    <button type="button" className="ve-mini-btn" title="Remove" onClick={() => setTypes(types.filter((_, j) => j !== i))}>
+                      ×
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <button type="button" className="ve-add-btn" onClick={() => setTypes([...types, "New option"])}>
+                + Add option
+              </button>
+            </div>
+          </div>
+        </section>
+      );
+      break;
+    }
     case "callout": {
       const d = section.data;
       body = (
@@ -2858,6 +3055,10 @@ export function VisualPageEditor({
                   {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                   <a className="ve-more-item" href="/admin/dashboard" onClick={() => setMoreOpen(false)}>
                     Analytics dashboard
+                  </a>
+                  {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                  <a className="ve-more-item" href="/admin/enquiries" onClick={() => setMoreOpen(false)}>
+                    Enquiries (contact form)
                   </a>
                   <a
                     className="ve-more-item"
